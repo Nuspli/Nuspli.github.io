@@ -449,7 +449,7 @@
 
 @media screen and (max-width: 960px) {
     .services {
-        height: 1600px;
+        height: 1500px;
     }
 
     .services h1 {
@@ -468,8 +468,9 @@
     }
 
     .services__card {
-        width: 300px;
+        width: 100px;
     }
+
 }
 
 .footer__container {
@@ -592,3 +593,4 @@
     color: #fff;
     font-size: 20px;
 }
+
