@@ -693,8 +693,8 @@
     }
 
     .video__container iframe, .video__container object, .video__container embed { 
-        width: 460px; 
-        height: 280px; 
+        width: 320px; 
+        height: 180px; 
     }
 
     .video p {
