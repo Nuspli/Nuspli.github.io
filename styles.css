@@ -560,8 +560,8 @@
 }
 
 .footer__container {
+    padding-bottom: 2rem ;
     background-color: #141414;
-    padding: 40rem 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -577,6 +577,7 @@
 
 .footer__link--wrapper {
     display: flex;
+    margin-left: 100px;
 }
 
 .footer__link--items {

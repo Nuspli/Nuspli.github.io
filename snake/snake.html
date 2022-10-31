@@ -17,6 +17,14 @@
       background-color: black;
     }
 
+    #score {
+      color: #fff;
+      font-size: 2rem;
+      position: absolute;
+      top: 1%;
+      left: 76%;
+    }
+
     #game-board {
       background-color: rgb(70, 70, 70);
       width: 100vmin;
@@ -36,30 +44,33 @@
       border: .25vmin solid rgb(65, 3, 3);
     }
 
-    .back {
-      background-color: #fff;
-      display: flex;
+    #back {
       position: absolute;
-      top: 2%
+      top: 1%;
+      left: 2%;
+      font-size: 2rem;
+      background-image: linear-gradient(to top, #f77062 0%, #fe5196 100%);
+      padding: 5px 24px;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      cursor: pointer;
+      outline: none;
     }
 
-    .controls {
+    #back a {
+      position: relative;
+      z-index: 2;
       color: #fff;
-      display: flex;
-      position: absolute;
-      top: 90%;
+      text-decoration: none;
     }
 
   </style>
-  <script src="game.js" defer type="module"></script>
 </head>
 <body>
   <div id="game-board"></div>
-  <div class="back">
-    <a href="/" class="button">BACK</a>
-  </div>
-  <div class="controls">
-    <p>Controls: Arrow Keys</p>
-  </div>
+  <label id="score">Score: 0</label>
+  <button id="back"><a href="/">BACK</a></button>
+  <script src="game.js" defer type="module"></script>
 </body>
 </html>
