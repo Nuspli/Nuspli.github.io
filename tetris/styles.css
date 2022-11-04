@@ -92,7 +92,7 @@ html{
 .info__container.active {
     color: #fff;
     position: absolute;
-    top: 60%;
+    top: 40%;
     left: 15%;
     transition: all 0.75s ease;
 }
