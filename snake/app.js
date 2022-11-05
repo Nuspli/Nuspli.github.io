@@ -1,4 +1,4 @@
-export var SNAKE_SPEED = 5;
+var SNAKE_SPEED = 4;
 
 const info = document.querySelector('.info__button');
 const infoText = document.querySelector('.info__container');
@@ -20,7 +20,8 @@ const play = document.querySelector('.play__button');
 
 play.addEventListener('click', function() {
     var selected = document.getElementById('diff__select').value
-    SNAKE_SPEED = selected * SNAKE_SPEED // selected has value 1, 2 or 3
+    SNAKE_SPEED = selected * SNAKE_SPEED
+    localStorage.speed = SNAKE_SPEED
     window.location.replace("snake.html");
 });
 

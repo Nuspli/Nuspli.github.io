@@ -1,6 +1,6 @@
 import { getInputDirection } from "./input.js"
 
-const snakeBody = [{ x: 11, y: 11 }]
+const snakeBody = [{ x: 7, y: 7 }]
 let newSegments = 0
 export var score = 0
 

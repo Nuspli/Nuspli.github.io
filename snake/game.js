@@ -2,8 +2,8 @@ import { update as updateSnake, draw as drawSnake, getSnakeHead, snakeIntersecti
 import { update as updateFood, draw as drawFood } from './food.js'
 import { outsideGrid } from './grid.js'
 import { score } from './snake.js'
-import { SNAKE_SPEED } from './app.js'
 
+const SNAKE_SPEED = localStorage.speed
 let lastRenderTime = 0
 let gameOver = false
 const gameBoard = document.getElementById('game-board')
