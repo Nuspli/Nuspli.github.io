@@ -73,7 +73,7 @@ html{
 
 .main__content h1 {
     justify-self: center;
-    font-size: 10rem;
+    font-size: 6rem;
     background-color: #ff8177;
     background-image: linear-gradient(to top, #ff0844 0%, #ffb199 100%);
     background-size: 100%;
