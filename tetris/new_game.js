@@ -43,19 +43,76 @@ const TBLOCK3 = [{ x: 5, y: 1 }, { x: 6, y: 0 }, { x: 6, y: 1 }, { x: 6, y: 2 }]
 const TBlocks = [TBLOCK0, TBLOCK1, TBLOCK2, TBLOCK3]
 
 const BLOCKS = [LBlocks, SBlocks, JBlocks, IBlocks, ZBlocks, OBlocks, TBlocks]
-const copy = [LBlocks, SBlocks, JBlocks, IBlocks, ZBlocks, OBlocks, TBlocks]
+
+const cLBLOCK0 = [{ x: 5, y: 1 }, { x: 6, y: 1 }, { x: 7, y: 1 }, { x: 7, y: 0 }]
+const cLBLOCK1 = [{ x: 6, y: 0 }, { x: 6, y: 1 }, { x: 6, y: 2 }, { x: 7, y: 2 }]
+const cLBLOCK2 = [{ x: 5, y: 1 }, { x: 6, y: 1 }, { x: 7, y: 1 }, { x: 5, y: 2 }]
+const cLBLOCK3 = [{ x: 5, y: 0 }, { x: 6, y: 0 }, { x: 6, y: 1 }, { x: 6, y: 2 }]
+const cLBlocks = [cLBLOCK0, cLBLOCK1, cLBLOCK2, cLBLOCK3]
+
+const cSBLOCK0 = [{ x: 5, y: 1 }, { x: 6, y: 1 }, { x: 6, y: 0 }, { x: 7, y: 0 }]
+const cSBLOCK1 = [{ x: 5, y: 0 }, { x: 5, y: 1 }, { x: 6, y: 1 }, { x: 6, y: 2 }]
+const cSBLOCK2 = [{ x: 5, y: 1 }, { x: 6, y: 1 }, { x: 6, y: 0 }, { x: 7, y: 0 }]
+const cSBLOCK3 = [{ x: 5, y: 0 }, { x: 5, y: 1 }, { x: 6, y: 1 }, { x: 6, y: 2 }]
+const cSBlocks = [cSBLOCK0, cSBLOCK1, cSBLOCK2, cSBLOCK3]
+
+const cJBLOCK0 = [{ x: 5, y: 0 }, { x: 5, y: 1 }, { x: 6, y: 1 }, { x: 7, y: 1 }]
+const cJBLOCK1 = [{ x: 6, y: 0 }, { x: 6, y: 1 }, { x: 6, y: 2 }, { x: 5, y: 0 }]
+const cJBLOCK2 = [{ x: 5, y: 1 }, { x: 6, y: 1 }, { x: 7, y: 1 }, { x: 7, y: 2 }]
+const cJBLOCK3 = [{ x: 6, y: 0 }, { x: 6, y: 1 }, { x: 6, y: 2 }, { x: 5, y: 2 }]
+const cJBlocks = [cJBLOCK0, cJBLOCK1, cJBLOCK2, cJBLOCK3]
+
+const cIBLOCK0 = [{ x: 4, y: 1 }, { x: 5, y: 1 }, { x: 6, y: 1 }, { x: 7, y: 1 }]
+const cIBLOCK1 = [{ x: 6, y: 0 }, { x: 6, y: 1 }, { x: 6, y: 2 }, { x: 6, y: 3 }]
+const cIBLOCK2 = [{ x: 4, y: 1 }, { x: 5, y: 1 }, { x: 6, y: 1 }, { x: 7, y: 1 }]
+const cIBLOCK3 = [{ x: 5, y: 0 }, { x: 5, y: 1 }, { x: 5, y: 2 }, { x: 5, y: 3 }]
+const cIBlocks = [cIBLOCK0, cIBLOCK1, cIBLOCK2, cIBLOCK3]
+
+const cZBLOCK0 = [{ x: 5, y: 0 }, { x: 6, y: 0 }, { x: 6, y: 1 }, { x: 7, y: 1 }]
+const cZBLOCK1 = [{ x: 5, y: 2 }, { x: 5, y: 1 }, { x: 6, y: 1 }, { x: 6, y: 0 }]
+const cZBLOCK2 = [{ x: 5, y: 0 }, { x: 6, y: 0 }, { x: 6, y: 1 }, { x: 7, y: 1 }]
+const cZBLOCK3 = [{ x: 5, y: 2 }, { x: 5, y: 1 }, { x: 6, y: 1 }, { x: 6, y: 0 }]
+const cZBlocks = [cZBLOCK0, cZBLOCK1, cZBLOCK2, cZBLOCK3]
+
+const cOBLOCK0 = [{ x: 5, y: 0 }, { x: 5, y: 1 }, { x: 6, y: 0 }, { x: 6, y: 1 }]
+const cOBLOCK1 = [{ x: 5, y: 0 }, { x: 5, y: 1 }, { x: 6, y: 0 }, { x: 6, y: 1 }]
+const cOBLOCK2 = [{ x: 5, y: 0 }, { x: 5, y: 1 }, { x: 6, y: 0 }, { x: 6, y: 1 }]
+const cOBLOCK3 = [{ x: 5, y: 0 }, { x: 5, y: 1 }, { x: 6, y: 0 }, { x: 6, y: 1 }]
+const cOBlocks = [cOBLOCK0, cOBLOCK1, cOBLOCK2, cOBLOCK3]
+
+const cTBLOCK0 = [{ x: 5, y: 1 }, { x: 6, y: 1 }, { x: 6, y: 0 }, { x: 7, y: 1 }]
+const cTBLOCK1 = [{ x: 6, y: 0 }, { x: 6, y: 1 }, { x: 6, y: 2 }, { x: 7, y: 1 }]
+const cTBLOCK2 = [{ x: 5, y: 1 }, { x: 6, y: 1 }, { x: 7, y: 1 }, { x: 6, y: 2 }]
+const cTBLOCK3 = [{ x: 5, y: 1 }, { x: 6, y: 0 }, { x: 6, y: 1 }, { x: 6, y: 2 }]
+const cTBlocks = [cTBLOCK0, cTBLOCK1, cTBLOCK2, cTBLOCK3]
+
+const co = [cLBlocks, cSBlocks, cJBlocks, cIBlocks, cZBlocks, cOBlocks, cTBlocks]
+
 const names = ["LBlock", "SBlock", "JBlock", "IBlock", "ZBlock", "OBlock", "TBlock"]
 
-const setBlocks = [{ x: 0, y: 17 }, { x: 1, y: 17 }, { x: 2, y: 17 }, { x: 3, y: 17 }, { x: 4, y: 17 },
-                   { x: 5, y: 17 }, { x: 6, y: 17 }, { x: 7, y: 17 }, { x: 8, y: 17 }, { x: 9, y: 17 }]
+const setBlocks = [{ x: 1, y: 17 }, { x: 2, y: 17 }, { x: 3, y: 17 }, { x: 4, y: 17 },{ x: 5, y: 17 }, 
+                   { x: 6, y: 17 }, { x: 7, y: 17 }, { x: 8, y: 17 }, { x: 9, y: 17 }, { x: 10, y: 17 }]
+                   /*
+                   { x: -1, y: 0 }, { x: -1, y: 1 }, { x: -1, y: 2 }, { x: -1, y: 3 }, { x: -1, y: 4 },
+                   { x: -1, y: 5 }, { x: -1, y: 6 }, { x: -1, y: 7 }, { x: -1, y: 8 }, { x: -1, y: 9 },
+                   { x: -1, y: 10 }, { x: -1, y: 11 }, { x: -1, y: 12 }, { x: -1, y: 13 }, { x: -1, y: 14},
+                   { x: -1, y: 15 }, { x: -1, y: 16 }, { x: -1, y: 17 }, { x: 11, y: 0 }, { x: 11, y: 1 },
+                   { x: 11, y: 2 }, { x: 11, y: 3 }, { x: 11, y: 4 }, { x: 11, y: 5 }, { x: 11, y: 6 }, 
+                   { x: 11, y: 7 }, { x: 11, y: 8 }, { x: 11, y: 9 }, { x: 11, y: 10 }, { x: 11, y: 11 }, 
+                   { x: 11, y: 12 }, { x: 11, y: 13 }, { x: 11, y: 14}, { x: 11, y: 15 }, { x: 11, y: 16 }, 
+                   { x: 11, y: 17 }
+                   */
+                   
 
 let gameOver = false
 let done = true
 
 var score = 0
+let rev = 0
+let end = false
 
-function update(BLOCKS, setBlocks) {
-    let end = false
+function update() {
+    end = false
 
     for (let t = 0; t <= setBlocks.length - 1; t ++) {
         if ( // the block would hit another block or the ground
@@ -63,17 +120,21 @@ function update(BLOCKS, setBlocks) {
         (BLOCKS[a][b][1].y + 1 == setBlocks[t].y && BLOCKS[a][b][1].x == setBlocks[t].x) ||
         (BLOCKS[a][b][2].y + 1 == setBlocks[t].y && BLOCKS[a][b][2].x == setBlocks[t].x) ||
         (BLOCKS[a][b][3].y + 1 == setBlocks[t].y && BLOCKS[a][b][3].x == setBlocks[t].x)
+
         ) {
+        //console.log("hit set block index...")
+        //console.log(t)
+        //console.log(`block was : ${setBlocks[t].x}, ${setBlocks[t].y}`)
         end = true // end the blocks updating
         }
     }
 
     if (end) // it now becomes one of the set blocks
     {
-        setBlocks.push(BLOCKS[a][b][0])
-        setBlocks.push(BLOCKS[a][b][1])
-        setBlocks.push(BLOCKS[a][b][2])
-        setBlocks.push(BLOCKS[a][b][3])
+        setBlocks.push({ x: BLOCKS[a][b][0].x, y: BLOCKS[a][b][0].y })
+        setBlocks.push({ x: BLOCKS[a][b][1].x, y: BLOCKS[a][b][1].y })
+        setBlocks.push({ x: BLOCKS[a][b][2].x, y: BLOCKS[a][b][2].y })
+        setBlocks.push({ x: BLOCKS[a][b][3].x, y: BLOCKS[a][b][3].y })
 
         if ( // it covers the area where the next block might spawn
         (BLOCKS[a][b][0].y == 0 && (BLOCKS[a][b][0].x == 4 || BLOCKS[a][b][0].x == 5 || BLOCKS[a][b][0].x == 6 || BLOCKS[a][b][0].x == 7)) ||
@@ -84,19 +145,27 @@ function update(BLOCKS, setBlocks) {
         gameOver = true // end the game
         }
 
-        BLOCKS = copy
-
         done = true // if not game over, end the updating
-        score ++
+        score += 10
 
+          for (let e = 0; e <= 3; e++){
+            for (let f = 0; f <= 3; f++){
+    
+            BLOCKS[a][e][f].x = co[a][e][f].x
+            BLOCKS[a][e][f].y = co[a][e][f].y
+    
+            }
+          }
+        Blok[0]
     }
-    else{ // move the block down by one every second roughly
-
+    else{
+        /*
         console.log("new y positions:")
-        console.log(BLOCKS[a][b][0].y + 1) // for debugging
+        console.log(BLOCKS[a][b][0].y + 1)
         console.log(BLOCKS[a][b][1].y + 1)
         console.log(BLOCKS[a][b][2].y + 1)
         console.log(BLOCKS[a][b][3].y + 1)
+        */
         
         for (let e = 0; e <= 3; e++){
         for (let f = 0; f <= 3; f++){
@@ -104,10 +173,32 @@ function update(BLOCKS, setBlocks) {
         BLOCKS[a][e][f].y = BLOCKS[a][e][f].y + 1
 
         }}
+
+        if (clearsLine()) {
+          drawDelete()
+        }
+        else {
+        draw(a, b)
+
+        drawPoints()
+        }
     }
-    
 }
 
+function containsObject(obj, list) {
+  var i;
+  for (i = 0; i < list.length; i++) {
+      if (list[i] === obj) {
+          return true;
+      }
+  }
+
+  return false;
+}
+
+function drawPoints() {
+  document.getElementById('score').innerHTML = 'Score: ' + score
+}
 
 const styles = ['block1', 'block2', 'block3', 'block4', 'block5', 'block6', 'block7']
 
@@ -126,16 +217,33 @@ function draw(a, b) {
   })
 }
 
-let a
+function clearsLine () {
+    if(
+      containsObject({x:1,y:16}, setBlocks) && containsObject({x:2,y:16}, setBlocks) && containsObject({x:3,y:16}, setBlocks) && containsObject({x:4,y:16}, setBlocks) && 
+      containsObject({x:5,y:16}, setBlocks) && containsObject({x:6,y:16}, setBlocks) && containsObject({x:7,y:16}, setBlocks) && containsObject({x:8,y:16}, setBlocks) && 
+      containsObject({x:9,y:16}, setBlocks) && containsObject({x:10,y:16}, setBlocks)
+      ){
+      return true
+    }else{
+  return false
+  }
+}
+
+function drawDelete () {
+  // think lol
+}
+
+let a = -1
 let b
 
 let Blok = []
 
 function spawn() {
+
   Blok = []
   a = Math.floor(Math.random() * 7)
   b = 0
-  console.log(`spawning ${names[a]}`)
+  //console.log(`spawning ${names[a]}`)
 
   BLOCKS[a][b].forEach(segment => {
     const Block = document.createElement('div')
@@ -163,7 +271,9 @@ function main (currentTime) {
         return
       }
     if (done) {
-        spawn()}
+      speed = localStorage.difficulty
+        
+      spawn()}
     window.requestAnimationFrame(main)
     const secondsSinceLastRender = (currentTime - lastRenderTime) / 1000
     if (secondsSinceLastRender < 1 / speed) {return} // 1/speed
@@ -173,30 +283,48 @@ function main (currentTime) {
     //console.log(`setBlocks: ${setBlocks}`) // debug
     //console.log(`Blocks: ${BLOCKS}`)
 
-    update(BLOCKS, setBlocks)
+    update()
 
     //console.log(`a in main: ${a}`)
-    draw(a, b)
     
 }
+
+function sub () {
+  draw(a, b)
+}
+
+let why = true
 
 window.addEventListener('keydown', e => {
     switch (e.key) {
       case 'ArrowUp':
+        why = true
+
         for (let t = 0; t <= setBlocks.length - 1; t ++) {
-        if ( // the block would hit another block or the ground
-        (BLOCKS[a][b+1][0].y + 1 == setBlocks[t].y && BLOCKS[a][b+1][0].x == setBlocks[t].x) ||
-        (BLOCKS[a][b+1][1].y + 1 == setBlocks[t].y && BLOCKS[a][b+1][1].x == setBlocks[t].x) ||
-        (BLOCKS[a][b+1][2].y + 1 == setBlocks[t].y && BLOCKS[a][b+1][2].x == setBlocks[t].x) ||
-        (BLOCKS[a][b+1][3].y + 1 == setBlocks[t].y && BLOCKS[a][b+1][3].x == setBlocks[t].x)
-        ){break}}
-        b ++ // localStorage.b ++
-        if (b == 4) {b = 0}
+
+        if ( // the block would hit another block
+        (BLOCKS[a][(b + 1) % 4][0].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][0].x == setBlocks[t].x) ||
+        (BLOCKS[a][(b + 1) % 4][1].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][1].x == setBlocks[t].x) ||
+        (BLOCKS[a][(b + 1) % 4][2].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][2].x == setBlocks[t].x) ||
+        (BLOCKS[a][(b + 1) % 4][3].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][3].x == setBlocks[t].x)
+        ){why = false; break}}
+        if(BLOCKS[a][(b + 1) % 4][0].x == 11 ||
+           BLOCKS[a][(b + 1) % 4][1].x == 11 ||
+           BLOCKS[a][(b + 1) % 4][2].x == 11 ||
+           BLOCKS[a][(b + 1) % 4][3].x == 11 ||
+           BLOCKS[a][(b + 1) % 4][0].x == 0 ||
+           BLOCKS[a][(b + 1) % 4][1].x == 0 ||
+           BLOCKS[a][(b + 1) % 4][2].x == 0 ||
+           BLOCKS[a][(b + 1) % 4][3].x == 0){break}
+        if(why){
+        b = (b + 1) % 4
+        sub()}
         break
       case 'ArrowDown':
         speed = 2 * localStorage.difficulty
         break
       case 'ArrowLeft':
+        why = true
         //b = localStorage.b
         for (let t = 0; t <= setBlocks.length - 1; t ++) {
         if ( // the block would hit another block or the ground
@@ -204,21 +332,24 @@ window.addEventListener('keydown', e => {
         (BLOCKS[a][b][1].y == setBlocks[t].y && BLOCKS[a][b][1].x - 1 == setBlocks[t].x) ||
         (BLOCKS[a][b][2].y == setBlocks[t].y && BLOCKS[a][b][2].x - 1 == setBlocks[t].x) ||
         (BLOCKS[a][b][3].y == setBlocks[t].y && BLOCKS[a][b][3].x - 1 == setBlocks[t].x)
-        ){break}}
+        ){why = false; break}}
 
+        if (why) {
         if(BLOCKS[a][b][0].x - 1 != 0 &&
            BLOCKS[a][b][1].x - 1 != 0 &&
            BLOCKS[a][b][2].x - 1 != 0 &&
            BLOCKS[a][b][3].x - 1 != 0){
 
-            for (let e = 0; e <= 3; e++){
-                for (let f = 0; f <= 3; f++){
-        
-                BLOCKS[a][e][f].x = BLOCKS[a][e][f].x - 1
-        
-                }}}
+        for (let e = 0; e <= 3; e++){
+            for (let f = 0; f <= 3; f++){
+    
+            BLOCKS[a][e][f].x = BLOCKS[a][e][f].x - 1
+    
+            }}}
+        sub()}
         break
       case 'ArrowRight':
+        why = true
         //b = localStorage.b
         for (let t = 0; t <= setBlocks.length - 1; t ++) {
         if ( // the block would hit another block or the ground
@@ -226,35 +357,49 @@ window.addEventListener('keydown', e => {
         (BLOCKS[a][b][1].y == setBlocks[t].y && BLOCKS[a][b][1].x + 1 == setBlocks[t].x) ||
         (BLOCKS[a][b][2].y == setBlocks[t].y && BLOCKS[a][b][2].x + 1 == setBlocks[t].x) ||
         (BLOCKS[a][b][3].y == setBlocks[t].y && BLOCKS[a][b][3].x + 1 == setBlocks[t].x)
-        ){break}}
-        if(BLOCKS[a][b][0].x + 1 != 11 &&
-           BLOCKS[a][b][1].x + 1 != 11 &&
-           BLOCKS[a][b][2].x + 1 != 11 &&
-           BLOCKS[a][b][3].x + 1 != 11){
+        ){why = false; break}}
 
+        if (why) {
+        if(BLOCKS[a][b][0].x + 1 != 11 &&
+          BLOCKS[a][b][1].x + 1 != 11 &&
+          BLOCKS[a][b][2].x + 1 != 11 &&
+          BLOCKS[a][b][3].x + 1 != 11){
+          
             for (let e = 0; e <= 3; e++){
                 for (let f = 0; f <= 3; f++){
         
                 BLOCKS[a][e][f].x = BLOCKS[a][e][f].x + 1
         
                 }}}
+                sub()}
         break
       case 'w':
+        why = true
         for (let t = 0; t <= setBlocks.length - 1; t ++) {
-            if ( // the block would hit another block or the ground
-            (BLOCKS[a][b+1][0].y + 1 == setBlocks[t].y && BLOCKS[a][b+1][0].x == setBlocks[t].x) ||
-            (BLOCKS[a][b+1][1].y + 1 == setBlocks[t].y && BLOCKS[a][b+1][1].x == setBlocks[t].x) ||
-            (BLOCKS[a][b+1][2].y + 1 == setBlocks[t].y && BLOCKS[a][b+1][2].x == setBlocks[t].x) ||
-            (BLOCKS[a][b+1][3].y + 1 == setBlocks[t].y && BLOCKS[a][b+1][3].x == setBlocks[t].x)
-            ){break}}
 
-        b ++ // localStorage.b ++
-        if (b == 4) {b = 0}
-        break
+          if ( // the block would hit another block
+          (BLOCKS[a][(b + 1) % 4][0].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][0].x == setBlocks[t].x) ||
+          (BLOCKS[a][(b + 1) % 4][1].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][1].x == setBlocks[t].x) ||
+          (BLOCKS[a][(b + 1) % 4][2].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][2].x == setBlocks[t].x) ||
+          (BLOCKS[a][(b + 1) % 4][3].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][3].x == setBlocks[t].x)
+          ){why = false; break}}
+          if(BLOCKS[a][(b + 1) % 4][0].x == 12 ||
+             BLOCKS[a][(b + 1) % 4][1].x == 12 ||
+             BLOCKS[a][(b + 1) % 4][2].x == 12 ||
+             BLOCKS[a][(b + 1) % 4][3].x == 12 ||
+             BLOCKS[a][(b + 1) % 4][0].x == 1 ||
+             BLOCKS[a][(b + 1) % 4][1].x == 1 ||
+             BLOCKS[a][(b + 1) % 4][2].x == 1 ||
+             BLOCKS[a][(b + 1) % 4][3].x == 1){break}
+          if(why){
+          b = (b + 1) % 4
+          sub()}
+          break
       case 's':
         speed = 2 * localStorage.difficulty
         break
       case 'a':
+        why = true
         //b = localStorage.b
         for (let t = 0; t <= setBlocks.length - 1; t ++) {
         if ( // the block would hit another block or the ground
@@ -262,19 +407,21 @@ window.addEventListener('keydown', e => {
         (BLOCKS[a][b][1].y == setBlocks[t].y && BLOCKS[a][b][1].x - 1 == setBlocks[t].x) ||
         (BLOCKS[a][b][2].y == setBlocks[t].y && BLOCKS[a][b][2].x - 1 == setBlocks[t].x) ||
         (BLOCKS[a][b][3].y == setBlocks[t].y && BLOCKS[a][b][3].x - 1 == setBlocks[t].x)
-        ){break}}
+        ){why = false; break}}
 
+        if (why) {
         if(BLOCKS[a][b][0].x - 1 != 0 &&
            BLOCKS[a][b][1].x - 1 != 0 &&
            BLOCKS[a][b][2].x - 1 != 0 &&
            BLOCKS[a][b][3].x - 1 != 0){
- 
-            for (let e = 0; e <= 3; e++){
-                for (let f = 0; f <= 3; f++){
-        
-                BLOCKS[a][e][f].x = BLOCKS[a][e][f].x - 1
-        
-                }}}
+
+        for (let e = 0; e <= 3; e++){
+            for (let f = 0; f <= 3; f++){
+    
+            BLOCKS[a][e][f].x = BLOCKS[a][e][f].x - 1
+    
+            }}}
+        sub()}
         break
       case 'd':
         //b = localStorage.b
@@ -297,10 +444,16 @@ window.addEventListener('keydown', e => {
                 BLOCKS[a][e][f].x = BLOCKS[a][e][f].x + 1
         
                 }}}
+                sub()
         break
-      case ' ':
-        speed = 1000 * localStorage.difficulty
     }
+  })
+
+  window.addEventListener('keydown', e=> {
+    switch (e.key) {
+    case ' ':
+        speed = 1000 * localStorage.difficulty
+    }    
   })
 
   window.addEventListener('keyup', e => {
@@ -311,8 +464,6 @@ window.addEventListener('keydown', e => {
       case 's':
         speed = localStorage.difficulty
         break
-      case ' ':
-        speed = localStorage.difficulty
     }
   })
 
