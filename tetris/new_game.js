@@ -14,7 +14,7 @@ const SBLOCK3 = [{ x: 5, y: 0 }, { x: 5, y: 1 }, { x: 6, y: 1 }, { x: 6, y: 2 }]
 const SBlocks = [SBLOCK0, SBLOCK1, SBLOCK2, SBLOCK3]
 
 const JBLOCK0 = [{ x: 5, y: 0 }, { x: 5, y: 1 }, { x: 6, y: 1 }, { x: 7, y: 1 }]
-const JBLOCK1 = [{ x: 6, y: 0 }, { x: 6, y: 1 }, { x: 6, y: 2 }, { x: 5, y: 0 }]
+const JBLOCK1 = [{ x: 6, y: 0 }, { x: 6, y: 1 }, { x: 6, y: 2 }, { x: 7, y: 0 }]
 const JBLOCK2 = [{ x: 5, y: 1 }, { x: 6, y: 1 }, { x: 7, y: 1 }, { x: 7, y: 2 }]
 const JBLOCK3 = [{ x: 6, y: 0 }, { x: 6, y: 1 }, { x: 6, y: 2 }, { x: 5, y: 2 }]
 const JBlocks = [JBLOCK0, JBLOCK1, JBLOCK2, JBLOCK3]
@@ -58,7 +58,7 @@ const cSBLOCK3 = [{ x: 5, y: 0 }, { x: 5, y: 1 }, { x: 6, y: 1 }, { x: 6, y: 2 }
 const cSBlocks = [cSBLOCK0, cSBLOCK1, cSBLOCK2, cSBLOCK3]
 
 const cJBLOCK0 = [{ x: 5, y: 0 }, { x: 5, y: 1 }, { x: 6, y: 1 }, { x: 7, y: 1 }]
-const cJBLOCK1 = [{ x: 6, y: 0 }, { x: 6, y: 1 }, { x: 6, y: 2 }, { x: 5, y: 0 }]
+const cJBLOCK1 = [{ x: 6, y: 0 }, { x: 6, y: 1 }, { x: 6, y: 2 }, { x: 7, y: 0 }]
 const cJBLOCK2 = [{ x: 5, y: 1 }, { x: 6, y: 1 }, { x: 7, y: 1 }, { x: 7, y: 2 }]
 const cJBLOCK3 = [{ x: 6, y: 0 }, { x: 6, y: 1 }, { x: 6, y: 2 }, { x: 5, y: 2 }]
 const cJBlocks = [cJBLOCK0, cJBLOCK1, cJBLOCK2, cJBLOCK3]
@@ -93,16 +93,6 @@ const names = ["LBlock", "SBlock", "JBlock", "IBlock", "ZBlock", "OBlock", "TBlo
 
 const setBlocks = [{ x: 1, y: 17 }, { x: 2, y: 17 }, { x: 3, y: 17 }, { x: 4, y: 17 },{ x: 5, y: 17 }, 
                    { x: 6, y: 17 }, { x: 7, y: 17 }, { x: 8, y: 17 }, { x: 9, y: 17 }, { x: 10, y: 17 }]
-                   /*
-                   { x: -1, y: 0 }, { x: -1, y: 1 }, { x: -1, y: 2 }, { x: -1, y: 3 }, { x: -1, y: 4 },
-                   { x: -1, y: 5 }, { x: -1, y: 6 }, { x: -1, y: 7 }, { x: -1, y: 8 }, { x: -1, y: 9 },
-                   { x: -1, y: 10 }, { x: -1, y: 11 }, { x: -1, y: 12 }, { x: -1, y: 13 }, { x: -1, y: 14},
-                   { x: -1, y: 15 }, { x: -1, y: 16 }, { x: -1, y: 17 }, { x: 11, y: 0 }, { x: 11, y: 1 },
-                   { x: 11, y: 2 }, { x: 11, y: 3 }, { x: 11, y: 4 }, { x: 11, y: 5 }, { x: 11, y: 6 }, 
-                   { x: 11, y: 7 }, { x: 11, y: 8 }, { x: 11, y: 9 }, { x: 11, y: 10 }, { x: 11, y: 11 }, 
-                   { x: 11, y: 12 }, { x: 11, y: 13 }, { x: 11, y: 14}, { x: 11, y: 15 }, { x: 11, y: 16 }, 
-                   { x: 11, y: 17 }
-                   */
 
 let gameOver = false
 let done = true
@@ -121,9 +111,6 @@ function update() {
         (BLOCKS[a][b][3].y + 1 == setBlocks[t].y && BLOCKS[a][b][3].x == setBlocks[t].x)
 
         ) {
-        //console.log("hit set block index...")
-        //console.log(t)
-        //console.log(`block was : ${setBlocks[t].x}, ${setBlocks[t].y}`)
         end = true // end the blocks updating
         }
     }
@@ -134,10 +121,6 @@ function update() {
         setBlocks.push({ x: BLOCKS[a][b][1].x, y: BLOCKS[a][b][1].y })
         setBlocks.push({ x: BLOCKS[a][b][2].x, y: BLOCKS[a][b][2].y })
         setBlocks.push({ x: BLOCKS[a][b][3].x, y: BLOCKS[a][b][3].y })
-
-        //  -- - - -- - - -  -  - -- - -- -- -  -- -- - clear a row section  - - -- -   - -- - - --- - -- -  - -- --    - - ---- - - - -- --- - -
-
-        let temp = []
 
         for (let s = 0; s <= 3; s++){
 
@@ -158,8 +141,6 @@ function update() {
             //temp.push(s)
             for (let q = 10; q <= setBlocks.length - 1; q++){
               if (setBlocks[q].y == BLOCKS[a][b][s].y){
-    
-                console.log("removed visual "+setBlocks[q].y)
 
                 cBlok[q].remove()
                 clears.push(q)
@@ -167,8 +148,6 @@ function update() {
             }
             clears.reverse()
             for (let q = 0; q <= 9; q++){
-              
-              //console.log("removed internal "+setBlocks[clears[q]])
 
               setBlocks.splice(clears[q], 1)
               
@@ -179,9 +158,6 @@ function update() {
               if (setBlocks[z].y != 17 && setBlocks[z].y < BLOCKS[a][b][s].y){
                 setBlocks[z].y += 1
               }}
-
-            //console.log("BLOCKS s.y : "+BLOCKS[a][b][s].y)
-            console.log("cBloks length: "+cBlok.length)
            
               for (let g = 10; g <= cBlok.length - 1; g++){
 
@@ -217,13 +193,6 @@ function update() {
           }
     }
     else{
-        /*
-        console.log("new y positions:")
-        console.log(BLOCKS[a][b][0].y + 1)
-        console.log(BLOCKS[a][b][1].y + 1)
-        console.log(BLOCKS[a][b][2].y + 1)
-        console.log(BLOCKS[a][b][3].y + 1)
-        */
         
         for (let e = 0; e <= 3; e++){
         for (let f = 0; f <= 3; f++){
@@ -278,7 +247,6 @@ function spawn() {
   next = Math.floor(Math.random() * 7)
   Blok = []
   b = 0
-  //console.log(`spawning ${names[a]}`)
 
   cnext = []
 
