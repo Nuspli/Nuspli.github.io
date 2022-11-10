@@ -172,7 +172,7 @@ function update() {
 
               setBlocks.splice(clears[q], 1)
               
-              cBlok.splice(q, 1)
+              cBlok.splice(clears[q], 1)
             }
 
             for (let z = 0; z <= setBlocks.length - 1; z++){
@@ -180,30 +180,20 @@ function update() {
                 setBlocks[z].y += 1
               }}
 
-            // todo fix this:
-
-            console.log("BLOCKS s.y : "+BLOCKS[a][b][s].y)
+            //console.log("BLOCKS s.y : "+BLOCKS[a][b][s].y)
+            console.log("cBloks length: "+cBlok.length)
            
-              for (let g = 0; g <= cBlok.length - 1; g++){
-                  if (cBlok[g] != 0 && Number(cBlok[g].style.gridRowStart) < BLOCKS[a][b][s].y){
+              for (let g = 10; g <= cBlok.length - 1; g++){
+
+
+                  if (Number(cBlok[g].style.gridRowStart) < BLOCKS[a][b][s].y){
                     cBlok[g].style.gridRowStart = Number(cBlok[g].style.gridRowStart) + 1
                   }
+
                 }
-            // todo
              score += 1000
           }
-
-          
-          
         }
-        
-
-
-       
-
-
-
-        
 
         if ( // it covers the area where the next block might spawn
         (BLOCKS[a][b][0].y == 0 && (BLOCKS[a][b][0].x == 4 || BLOCKS[a][b][0].x == 5 || BLOCKS[a][b][0].x == 6 || BLOCKS[a][b][0].x == 7)) ||
@@ -306,8 +296,9 @@ function spawn() {
 
   BLOCKS[a][b].forEach(segment => {
     const Block = document.createElement('div')
-    Block.style.gridRowStart = segment.y
+    
     Block.style.gridColumnStart = segment.x
+    Block.style.gridRowStart = segment.y
 
     Block.classList.add(styles[a])
     Blok.push(Block)
@@ -381,7 +372,7 @@ window.addEventListener('keydown', e => {
         sub()}
         break
       case 'ArrowDown':
-        speed = 3 * localStorage.difficulty
+        speed = 5 * localStorage.difficulty
         break
       case 'ArrowLeft':
         why = true
