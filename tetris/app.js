@@ -18,6 +18,6 @@ const play = document.querySelector('.play__button');
 
 play.addEventListener('click', function() {
     var selected = document.getElementById('diff__select').value
-    localStorage.difficulty = selected * 4
+    localStorage.difficulty = selected * 2
     window.location.replace("tetris.html");
 });
