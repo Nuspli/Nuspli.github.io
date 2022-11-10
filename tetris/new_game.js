@@ -1,4 +1,5 @@
 const gameBoard = document.getElementById('game-board')
+const previewBoard = document.getElementById('preview-board')
 
 const LBLOCK0 = [{ x: 5, y: 1 }, { x: 6, y: 1 }, { x: 7, y: 1 }, { x: 7, y: 0 }]
 const LBLOCK1 = [{ x: 6, y: 0 }, { x: 6, y: 1 }, { x: 6, y: 2 }, { x: 7, y: 2 }]
@@ -179,7 +180,7 @@ function update() {
                 setBlocks[z].y += 1
               }}
 
-            // todo fix:
+            // todo fix this:
 
             console.log("BLOCKS s.y : "+BLOCKS[a][b][s].y)
            
@@ -188,7 +189,7 @@ function update() {
                     cBlok[g].style.gridRowStart = Number(cBlok[g].style.gridRowStart) + 1
                   }
                 }
-
+            // todo
              score += 1000
           }
 
@@ -274,13 +275,34 @@ let b
 
 let Blok = []
 const cBlok = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+let next
+let cnext = []
 
 function spawn() {
-
+  if (a == -1) {a = Math.floor(Math.random() * 7)}else{
+    a = next
+    for (let i = 0; i <= 3; i++){
+      cnext[i].remove()
+    }
+  }
+  next = Math.floor(Math.random() * 7)
   Blok = []
-  a = Math.floor(Math.random() * 7)
   b = 0
   //console.log(`spawning ${names[a]}`)
+
+  cnext = []
+
+  BLOCKS[next][b].forEach(segment => {
+
+    const Block = document.createElement('div')
+    Block.style.gridRowStart = segment.y - 4
+    Block.style.gridColumnStart = segment.x - 4
+
+    Block.classList.add(styles[next])
+    cnext.push(Block)
+    
+    previewBoard.appendChild(Block)
+  })
 
   BLOCKS[a][b].forEach(segment => {
     const Block = document.createElement('div')

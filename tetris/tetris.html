@@ -60,7 +60,7 @@
       text-decoration: none;
     }
 
-    .preview__container {
+    #preview-board {
         background-color: rgb(70, 70, 70);
         width: 30vmin;
         height: 30vmin;
@@ -68,14 +68,21 @@
         grid-template-rows: repeat(3, 1fr);
         grid-template-columns: repeat(3, 1fr);
         position: absolute;
-        top: 35%;
         left: 76%;
     }
 
-    .preview__container h1 {
+    #preview__container{
+      width: 30vmin;
+      height: 30vmin;
+      position: absolute;
+      top: 35%;
+      left: 76%;
+    }
+
+    #preview__container h1 {
         color: #fff;
         position: relative;
-        top: -60px;
+        top: -75%;
     }
 
     .block1 {
@@ -118,10 +125,10 @@
     <div id="game-board"></div>
     <label id="score">Score: 0</label>
     <button id="back"><a href="/">BACK</a></button>
-    <div class="preview__container">
+    <div id="preview__container">
         <h1>NEXT:</h1>
-        <div id="preview-board"></div>
     </div>
+    <div id="preview-board"></div>
     <script src="new_game.js" defer type="module"></script>
 </body>
 </html>
