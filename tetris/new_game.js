@@ -102,13 +102,11 @@ const setBlocks = [{ x: 1, y: 17 }, { x: 2, y: 17 }, { x: 3, y: 17 }, { x: 4, y:
                    { x: 11, y: 12 }, { x: 11, y: 13 }, { x: 11, y: 14}, { x: 11, y: 15 }, { x: 11, y: 16 }, 
                    { x: 11, y: 17 }
                    */
-                   
 
 let gameOver = false
 let done = true
 
 var score = 0
-let rev = 0
 let end = false
 
 function update() {
@@ -136,6 +134,76 @@ function update() {
         setBlocks.push({ x: BLOCKS[a][b][2].x, y: BLOCKS[a][b][2].y })
         setBlocks.push({ x: BLOCKS[a][b][3].x, y: BLOCKS[a][b][3].y })
 
+        //  -- - - -- - - -  -  - -- - -- -- -  -- -- - clear a row section  - - -- -   - -- - - --- - -- -  - -- --    - - ---- - - - -- --- - -
+
+        let temp = []
+
+        for (let s = 0; s <= 3; s++){
+
+          let filled0 = 0
+          let filled1 = 0
+          let filled2 = 0
+          let filled3 = 0
+          let filleds = [filled0, filled1, filled2, filled3]
+          let clears = []
+
+          for (let q = 10; q <= setBlocks.length - 1; q++){
+            if (setBlocks[q].y == BLOCKS[a][b][s].y){
+              filleds[s] ++
+            }
+          }
+
+          if (filleds[s] == 10) {
+            //temp.push(s)
+            for (let q = 10; q <= setBlocks.length - 1; q++){
+              if (setBlocks[q].y == BLOCKS[a][b][s].y){
+    
+                console.log("removed visual "+setBlocks[q].y)
+
+                cBlok[q].remove()
+                clears.push(q)
+              }
+            }
+            clears.reverse()
+            for (let q = 0; q <= 9; q++){
+              
+              //console.log("removed internal "+setBlocks[clears[q]])
+
+              setBlocks.splice(clears[q], 1)
+              
+              cBlok.splice(q, 1)
+            }
+
+            for (let z = 0; z <= setBlocks.length - 1; z++){
+              if (setBlocks[z].y != 17 && setBlocks[z].y < BLOCKS[a][b][s].y){
+                setBlocks[z].y += 1
+              }}
+
+            // todo fix:
+
+            console.log("BLOCKS s.y : "+BLOCKS[a][b][s].y)
+           
+              for (let g = 0; g <= cBlok.length - 1; g++){
+                  if (cBlok[g] != 0 && Number(cBlok[g].style.gridRowStart) < BLOCKS[a][b][s].y){
+                    cBlok[g].style.gridRowStart = Number(cBlok[g].style.gridRowStart) + 1
+                  }
+                }
+
+             score += 1000
+          }
+
+          
+          
+        }
+        
+
+
+       
+
+
+
+        
+
         if ( // it covers the area where the next block might spawn
         (BLOCKS[a][b][0].y == 0 && (BLOCKS[a][b][0].x == 4 || BLOCKS[a][b][0].x == 5 || BLOCKS[a][b][0].x == 6 || BLOCKS[a][b][0].x == 7)) ||
         (BLOCKS[a][b][1].y == 0 && (BLOCKS[a][b][1].x == 4 || BLOCKS[a][b][1].x == 5 || BLOCKS[a][b][1].x == 6 || BLOCKS[a][b][1].x == 7)) ||
@@ -156,7 +224,6 @@ function update() {
     
             }
           }
-        Blok[0]
     }
     else{
         /*
@@ -173,27 +240,12 @@ function update() {
         BLOCKS[a][e][f].y = BLOCKS[a][e][f].y + 1
 
         }}
-
-        if (clearsLine()) {
-          drawDelete()
-        }
-        else {
+        
         draw(a, b)
 
         drawPoints()
-        }
+        
     }
-}
-
-function containsObject(obj, list) {
-  var i;
-  for (i = 0; i < list.length; i++) {
-      if (list[i] === obj) {
-          return true;
-      }
-  }
-
-  return false;
 }
 
 function drawPoints() {
@@ -217,26 +269,11 @@ function draw(a, b) {
   })
 }
 
-function clearsLine () {
-    if(
-      containsObject({x:1,y:16}, setBlocks) && containsObject({x:2,y:16}, setBlocks) && containsObject({x:3,y:16}, setBlocks) && containsObject({x:4,y:16}, setBlocks) && 
-      containsObject({x:5,y:16}, setBlocks) && containsObject({x:6,y:16}, setBlocks) && containsObject({x:7,y:16}, setBlocks) && containsObject({x:8,y:16}, setBlocks) && 
-      containsObject({x:9,y:16}, setBlocks) && containsObject({x:10,y:16}, setBlocks)
-      ){
-      return true
-    }else{
-  return false
-  }
-}
-
-function drawDelete () {
-  // think lol
-}
-
 let a = -1
 let b
 
 let Blok = []
+const cBlok = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 function spawn() {
 
@@ -252,6 +289,7 @@ function spawn() {
 
     Block.classList.add(styles[a])
     Blok.push(Block)
+    cBlok.push(Block)
     
     gameBoard.appendChild(Block)
   })
@@ -321,7 +359,7 @@ window.addEventListener('keydown', e => {
         sub()}
         break
       case 'ArrowDown':
-        speed = 2 * localStorage.difficulty
+        speed = 3 * localStorage.difficulty
         break
       case 'ArrowLeft':
         why = true
@@ -452,8 +490,14 @@ window.addEventListener('keydown', e => {
   window.addEventListener('keydown', e=> {
     switch (e.key) {
     case ' ':
-        speed = 1000 * localStorage.difficulty
+        speed = 10000 * localStorage.difficulty
     }    
+  })
+
+  window.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+      speed = 10000 * localStorage.difficulty
+    }
   })
 
   window.addEventListener('keyup', e => {
