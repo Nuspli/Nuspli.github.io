@@ -333,7 +333,7 @@ window.addEventListener('keydown', e => {
            BLOCKS[a][(b + 1) % 4][1].x == 0 ||
            BLOCKS[a][(b + 1) % 4][2].x == 0 ||
            BLOCKS[a][(b + 1) % 4][3].x == 0){break}
-        if(why){
+        if(why && !done){
         b = (b + 1) % 4
         sub()}
         break
@@ -351,7 +351,7 @@ window.addEventListener('keydown', e => {
         (BLOCKS[a][b][3].y == setBlocks[t].y && BLOCKS[a][b][3].x - 1 == setBlocks[t].x)
         ){why = false; break}}
 
-        if (why) {
+        if (why && !done) {
         if(BLOCKS[a][b][0].x - 1 != 0 &&
            BLOCKS[a][b][1].x - 1 != 0 &&
            BLOCKS[a][b][2].x - 1 != 0 &&
@@ -376,7 +376,7 @@ window.addEventListener('keydown', e => {
         (BLOCKS[a][b][3].y == setBlocks[t].y && BLOCKS[a][b][3].x + 1 == setBlocks[t].x)
         ){why = false; break}}
 
-        if (why) {
+        if (why && !done) {
         if(BLOCKS[a][b][0].x + 1 != 11 &&
           BLOCKS[a][b][1].x + 1 != 11 &&
           BLOCKS[a][b][2].x + 1 != 11 &&
@@ -392,26 +392,27 @@ window.addEventListener('keydown', e => {
         break
       case 'w':
         why = true
+
         for (let t = 0; t <= setBlocks.length - 1; t ++) {
 
-          if ( // the block would hit another block
-          (BLOCKS[a][(b + 1) % 4][0].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][0].x == setBlocks[t].x) ||
-          (BLOCKS[a][(b + 1) % 4][1].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][1].x == setBlocks[t].x) ||
-          (BLOCKS[a][(b + 1) % 4][2].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][2].x == setBlocks[t].x) ||
-          (BLOCKS[a][(b + 1) % 4][3].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][3].x == setBlocks[t].x)
-          ){why = false; break}}
-          if(BLOCKS[a][(b + 1) % 4][0].x == 12 ||
-             BLOCKS[a][(b + 1) % 4][1].x == 12 ||
-             BLOCKS[a][(b + 1) % 4][2].x == 12 ||
-             BLOCKS[a][(b + 1) % 4][3].x == 12 ||
-             BLOCKS[a][(b + 1) % 4][0].x == 1 ||
-             BLOCKS[a][(b + 1) % 4][1].x == 1 ||
-             BLOCKS[a][(b + 1) % 4][2].x == 1 ||
-             BLOCKS[a][(b + 1) % 4][3].x == 1){break}
-          if(why){
-          b = (b + 1) % 4
-          sub()}
-          break
+        if ( // the block would hit another block
+        (BLOCKS[a][(b + 1) % 4][0].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][0].x == setBlocks[t].x) ||
+        (BLOCKS[a][(b + 1) % 4][1].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][1].x == setBlocks[t].x) ||
+        (BLOCKS[a][(b + 1) % 4][2].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][2].x == setBlocks[t].x) ||
+        (BLOCKS[a][(b + 1) % 4][3].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][3].x == setBlocks[t].x)
+        ){why = false; break}}
+        if(BLOCKS[a][(b + 1) % 4][0].x == 11 ||
+           BLOCKS[a][(b + 1) % 4][1].x == 11 ||
+           BLOCKS[a][(b + 1) % 4][2].x == 11 ||
+           BLOCKS[a][(b + 1) % 4][3].x == 11 ||
+           BLOCKS[a][(b + 1) % 4][0].x == 0 ||
+           BLOCKS[a][(b + 1) % 4][1].x == 0 ||
+           BLOCKS[a][(b + 1) % 4][2].x == 0 ||
+           BLOCKS[a][(b + 1) % 4][3].x == 0){break}
+        if(why && !done){
+        b = (b + 1) % 4
+        sub()}
+        break
       case 's':
         speed = 2 * localStorage.difficulty
         break
@@ -426,7 +427,7 @@ window.addEventListener('keydown', e => {
         (BLOCKS[a][b][3].y == setBlocks[t].y && BLOCKS[a][b][3].x - 1 == setBlocks[t].x)
         ){why = false; break}}
 
-        if (why) {
+        if (why && !done) {
         if(BLOCKS[a][b][0].x - 1 != 0 &&
            BLOCKS[a][b][1].x - 1 != 0 &&
            BLOCKS[a][b][2].x - 1 != 0 &&
@@ -441,6 +442,7 @@ window.addEventListener('keydown', e => {
         sub()}
         break
       case 'd':
+        why = true
         //b = localStorage.b
         for (let t = 0; t <= setBlocks.length - 1; t ++) {
         if ( // the block would hit another block or the ground
@@ -448,25 +450,26 @@ window.addEventListener('keydown', e => {
         (BLOCKS[a][b][1].y == setBlocks[t].y && BLOCKS[a][b][1].x + 1 == setBlocks[t].x) ||
         (BLOCKS[a][b][2].y == setBlocks[t].y && BLOCKS[a][b][2].x + 1 == setBlocks[t].x) ||
         (BLOCKS[a][b][3].y == setBlocks[t].y && BLOCKS[a][b][3].x + 1 == setBlocks[t].x)
-        ){break}}
+        ){why = false; break}}
 
+        if (why && !done) {
         if(BLOCKS[a][b][0].x + 1 != 11 &&
-           BLOCKS[a][b][1].x + 1 != 11 &&
-           BLOCKS[a][b][2].x + 1 != 11 &&
-           BLOCKS[a][b][3].x + 1 != 11){
- 
+          BLOCKS[a][b][1].x + 1 != 11 &&
+          BLOCKS[a][b][2].x + 1 != 11 &&
+          BLOCKS[a][b][3].x + 1 != 11){
+          
             for (let e = 0; e <= 3; e++){
                 for (let f = 0; f <= 3; f++){
         
                 BLOCKS[a][e][f].x = BLOCKS[a][e][f].x + 1
         
                 }}}
-                sub()
+                sub()}
         break
     }
   })
 
-  window.addEventListener('keydown', e=> {
+  window.addEventListener('keypress', e=> {
     switch (e.key) {
     case ' ':
         speed = 10000 * localStorage.difficulty
