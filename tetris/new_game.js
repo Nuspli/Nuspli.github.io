@@ -91,8 +91,8 @@ const co = [cLBlocks, cSBlocks, cJBlocks, cIBlocks, cZBlocks, cOBlocks, cTBlocks
 
 const names = ["LBlock", "SBlock", "JBlock", "IBlock", "ZBlock", "OBlock", "TBlock"]
 
-const setBlocks = [{ x: 1, y: 17 }, { x: 2, y: 17 }, { x: 3, y: 17 }, { x: 4, y: 17 },{ x: 5, y: 17 }, 
-                   { x: 6, y: 17 }, { x: 7, y: 17 }, { x: 8, y: 17 }, { x: 9, y: 17 }, { x: 10, y: 17 }]
+const setBlocks = [{ x: 1, y: 21 }, { x: 2, y: 21 }, { x: 3, y: 21 }, { x: 4, y: 21 },{ x: 5, y: 21 }, 
+                   { x: 6, y: 21 }, { x: 7, y: 21 }, { x: 8, y: 21 }, { x: 9, y: 21 }, { x: 10, y: 21 }]
 
 let gameOver = false
 let done = true
@@ -155,7 +155,7 @@ function update() {
             }
 
             for (let z = 0; z <= setBlocks.length - 1; z++){
-              if (setBlocks[z].y != 17 && setBlocks[z].y < BLOCKS[a][b][s].y){
+              if (setBlocks[z].y != 21 && setBlocks[z].y < BLOCKS[a][b][s].y){
                 setBlocks[z].y += 1
               }}
            
@@ -238,6 +238,7 @@ let next
 let cnext = []
 
 function spawn() {
+
   if (a == -1) {a = Math.floor(Math.random() * 7)}else{
     a = next
     for (let i = 0; i <= 3; i++){
@@ -282,29 +283,26 @@ let lastRenderTime = 0
 let speed = localStorage.difficulty
 
 function main (currentTime) {
-    
+  
     if (gameOver) {
         if (confirm('You lost. Press ok to restart.')) {
         window.location.reload()
         }
         return
-      }
-    if (done) {
-      speed = localStorage.difficulty
-        
-      spawn()}
+    }
+
     window.requestAnimationFrame(main)
     const secondsSinceLastRender = (currentTime - lastRenderTime) / 1000
-    if (secondsSinceLastRender < 1 / speed) {return} // 1/speed
+    if (secondsSinceLastRender < 1 / speed) {return}
 
     lastRenderTime = currentTime
 
-    //console.log(`setBlocks: ${setBlocks}`) // debug
-    //console.log(`Blocks: ${BLOCKS}`)
+    if (done) {
+      speed = localStorage.difficulty
+      spawn()}
 
     update()
 
-    //console.log(`a in main: ${a}`)
     
 }
 
