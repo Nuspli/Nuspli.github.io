@@ -122,6 +122,12 @@ function update() {
         setBlocks.push({ x: BLOCKS[a][b][2].x, y: BLOCKS[a][b][2].y })
         setBlocks.push({ x: BLOCKS[a][b][3].x, y: BLOCKS[a][b][3].y })
 
+        shadow[0].remove()
+        shadow[1].remove()
+        shadow[2].remove()
+        shadow[3].remove()
+
+
         for (let s = 0; s <= 3; s++){
 
           let filled0 = 0
@@ -215,10 +221,7 @@ function drawPoints() {
 const styles = ['block1', 'block2', 'block3', 'block4', 'block5', 'block6', 'block7']
 
 function draw(a, b) {
-
-    //console.log(`Blocks but in draw: ${BLOCKS}`)    
-    //console.log(`a but in draw: ${a}`)    
-    //console.log(`b but in draw: ${b}`)
+    
     let g = 0
 
     BLOCKS[a][b].forEach(segment => {
@@ -226,13 +229,33 @@ function draw(a, b) {
         Block.style.gridRowStart = segment.y
         Block.style.gridColumnStart = segment.x
         g ++
+
   })
+    g = 0
+    let dis = []
+
+    for (let m = 0; m <= 3; m++){
+      for (let n = 0;n <= setBlocks.length - 1;n++) {
+        if (setBlocks[n].x == BLOCKS[a][b][m].x && setBlocks[n].y >= BLOCKS[a][b][m].y){
+          dis.push(setBlocks[n].y - BLOCKS[a][b][m].y)
+        }
+      }
+    }
+
+    BLOCKS[a][b].forEach(segment => {
+        const Block = shadow[g]
+        Block.style.gridRowStart = segment.y + Math.min.apply(Math, dis) - 1 
+        Block.style.gridColumnStart = segment.x
+        g ++
+  })
+
 }
 
 let a = -1
 let b
 
 let Blok = []
+let shadow = []
 const cBlok = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 let next
 let cnext = []
@@ -247,6 +270,7 @@ function spawn() {
   }
   next = Math.floor(Math.random() * 7)
   Blok = []
+  shadow = []
   b = 0
 
   cnext = []
@@ -263,6 +287,16 @@ function spawn() {
     previewBoard.appendChild(Block)
   })
 
+  for (let n = 0;n <= 3; n++){
+    const BlockShadow = document.createElement('div')
+
+    BlockShadow.classList.add('shadow')
+    shadow.push(BlockShadow)
+    
+    gameBoard.appendChild(BlockShadow)
+  }
+    
+
   BLOCKS[a][b].forEach(segment => {
     const Block = document.createElement('div')
     
@@ -277,6 +311,15 @@ function spawn() {
   })
 
   done = false
+}
+
+function disToSetBlock(){
+  let big = BLOCKS[a][b][0].y
+  let bigx = 0
+  if (big < BLOCKS[a][b][1].y){big = BLOCKS[a][b][1].y; bigx = 1}
+  if (big < BLOCKS[a][b][2].y){big = BLOCKS[a][b][2].y; bigx = 2}
+  if (big < BLOCKS[a][b][3].y){big = BLOCKS[a][b][3].y; bigx = 3}
+  console.log(BLOCKS[a][b][bigx].x)
 }
 
 let lastRenderTime = 0
@@ -306,10 +349,6 @@ function main (currentTime) {
     
 }
 
-function sub () {
-  draw(a, b)
-}
-
 let why = true
 
 window.addEventListener('keydown', e => {
@@ -335,7 +374,7 @@ window.addEventListener('keydown', e => {
            BLOCKS[a][(b + 1) % 4][3].x == 0){break}
         if(why && !done){
         b = (b + 1) % 4
-        sub()}
+        draw(a, b)}
         break
       case 'ArrowDown':
         speed = 5 * localStorage.difficulty
@@ -363,7 +402,7 @@ window.addEventListener('keydown', e => {
             BLOCKS[a][e][f].x = BLOCKS[a][e][f].x - 1
     
             }}}
-        sub()}
+            draw(a, b)}
         break
       case 'ArrowRight':
         why = true
@@ -388,7 +427,7 @@ window.addEventListener('keydown', e => {
                 BLOCKS[a][e][f].x = BLOCKS[a][e][f].x + 1
         
                 }}}
-                sub()}
+                draw(a, b)}
         break
       case 'w':
         why = true
@@ -411,7 +450,7 @@ window.addEventListener('keydown', e => {
            BLOCKS[a][(b + 1) % 4][3].x == 0){break}
         if(why && !done){
         b = (b + 1) % 4
-        sub()}
+        draw(a, b)}
         break
       case 's':
         speed = 2 * localStorage.difficulty
@@ -439,7 +478,7 @@ window.addEventListener('keydown', e => {
             BLOCKS[a][e][f].x = BLOCKS[a][e][f].x - 1
     
             }}}
-        sub()}
+            draw(a, b)}
         break
       case 'd':
         why = true
@@ -464,7 +503,7 @@ window.addEventListener('keydown', e => {
                 BLOCKS[a][e][f].x = BLOCKS[a][e][f].x + 1
         
                 }}}
-                sub()}
+                draw(a, b)}
         break
     }
   })
