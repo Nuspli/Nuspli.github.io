@@ -345,13 +345,12 @@ function main (currentTime) {
       spawn()}
 
     update()
-
-    
 }
 
 let why = true
 
 window.addEventListener('keydown', e => {
+  
     switch (e.key) {
       case 'ArrowUp':
         why = true
@@ -511,13 +510,23 @@ window.addEventListener('keydown', e => {
   window.addEventListener('keypress', e=> {
     switch (e.key) {
     case ' ':
-        speed = 10000 * localStorage.difficulty
+      speed = 10000
+        BLOCKS[a][b][0].y = shadow[0].style.gridRowStart - 1
+        BLOCKS[a][b][1].y = shadow[1].style.gridRowStart - 1
+        BLOCKS[a][b][2].y = shadow[2].style.gridRowStart - 1
+        BLOCKS[a][b][3].y = shadow[3].style.gridRowStart - 1
+
     }    
   })
 
   window.addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
-      speed = 10000 * localStorage.difficulty
+      speed = 10000
+      BLOCKS[a][b][0].y = shadow[0].style.gridRowStart - 1
+      BLOCKS[a][b][1].y = shadow[1].style.gridRowStart - 1
+      BLOCKS[a][b][2].y = shadow[2].style.gridRowStart - 1
+      BLOCKS[a][b][3].y = shadow[3].style.gridRowStart - 1
+
     }
   })
 
