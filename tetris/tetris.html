@@ -19,7 +19,20 @@
       justify-content: center;
       align-items: center;
       margin: 0;
-      background-color: black;
+      background-color: 
+      black;
+    }
+
+    #audio__button{
+      color: #fff;
+      background-image: linear-gradient(to top, #f77062 0%, #fe5196 100%);
+      position: absolute;
+      top: 90%;
+      left: 2%;
+      padding: 5px 24px;
+      border-radius: 4px;
+      font-size: 2rem;
+      cursor: pointer;
     }
 
     #score {
@@ -141,13 +154,17 @@
 
 </style>
 <body>
-    <div id="game-board"></div>
-    <label id="score">Score: 0</label>
-    <button id="back"><a href="/">BACK</a></button>
-    <div id="preview__container">
-        <h1>NEXT:</h1>
-    </div>
-    <div id="preview-board"></div>
-    <script src="new_game.js" defer type="module"></script>
+  <button id="audio__button">sound</button>
+  <audio loop id="audio">
+    <source src="tetris.mp3">
+  </audio>
+  <div id="game-board"></div>
+  <label id="score">Score: 0</label>
+  <button id="back"><a href="/">BACK</a></button>
+  <div id="preview__container">
+      <h1>NEXT:</h1>
+  </div>
+  <div id="preview-board"></div>
+  <script src="new_game.js" defer type="module"></script>
 </body>
 </html>
