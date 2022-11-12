@@ -8,7 +8,7 @@ const LBLOCK3 = [{ x: 5, y: 0 }, { x: 6, y: 0 }, { x: 6, y: 1 }, { x: 6, y: 2 }]
 const LBlocks = [LBLOCK0, LBLOCK1, LBLOCK2, LBLOCK3]
 
 const SBLOCK0 = [{ x: 5, y: 1 }, { x: 6, y: 1 }, { x: 6, y: 0 }, { x: 7, y: 0 }]
-const SBLOCK1 = [{ x: 5, y: 0 }, { x: 5, y: 1 }, { x: 6, y: 1 }, { x: 6, y: 2 }]
+const SBLOCK1 = [{ x: 6, y: 0 }, { x: 6, y: 1 }, { x: 7, y: 1 }, { x: 7, y: 2 }]
 const SBLOCK2 = [{ x: 5, y: 1 }, { x: 6, y: 1 }, { x: 6, y: 0 }, { x: 7, y: 0 }]
 const SBLOCK3 = [{ x: 5, y: 0 }, { x: 5, y: 1 }, { x: 6, y: 1 }, { x: 6, y: 2 }]
 const SBlocks = [SBLOCK0, SBLOCK1, SBLOCK2, SBLOCK3]
@@ -26,9 +26,9 @@ const IBLOCK3 = [{ x: 5, y: 0 }, { x: 5, y: 1 }, { x: 5, y: 2 }, { x: 5, y: 3 }]
 const IBlocks = [IBLOCK0, IBLOCK1, IBLOCK2, IBLOCK3]
 
 const ZBLOCK0 = [{ x: 5, y: 0 }, { x: 6, y: 0 }, { x: 6, y: 1 }, { x: 7, y: 1 }]
-const ZBLOCK1 = [{ x: 5, y: 2 }, { x: 5, y: 1 }, { x: 6, y: 1 }, { x: 6, y: 0 }]
+const ZBLOCK1 = [{ x: 7, y: 0 }, { x: 7, y: 1 }, { x: 6, y: 1 }, { x: 6, y: 2 }]
 const ZBLOCK2 = [{ x: 5, y: 0 }, { x: 6, y: 0 }, { x: 6, y: 1 }, { x: 7, y: 1 }]
-const ZBLOCK3 = [{ x: 5, y: 2 }, { x: 5, y: 1 }, { x: 6, y: 1 }, { x: 6, y: 0 }]
+const ZBLOCK3 = [{ x: 7, y: 0 }, { x: 7, y: 1 }, { x: 6, y: 1 }, { x: 6, y: 2 }]
 const ZBlocks = [ZBLOCK0, ZBLOCK1, ZBLOCK2, ZBLOCK3]
 
 const OBLOCK0 = [{ x: 5, y: 0 }, { x: 5, y: 1 }, { x: 6, y: 0 }, { x: 6, y: 1 }]
@@ -70,9 +70,9 @@ const cIBLOCK3 = [{ x: 5, y: 0 }, { x: 5, y: 1 }, { x: 5, y: 2 }, { x: 5, y: 3 }
 const cIBlocks = [cIBLOCK0, cIBLOCK1, cIBLOCK2, cIBLOCK3]
 
 const cZBLOCK0 = [{ x: 5, y: 0 }, { x: 6, y: 0 }, { x: 6, y: 1 }, { x: 7, y: 1 }]
-const cZBLOCK1 = [{ x: 5, y: 2 }, { x: 5, y: 1 }, { x: 6, y: 1 }, { x: 6, y: 0 }]
+const cZBLOCK1 = [{ x: 7, y: 0 }, { x: 7, y: 1 }, { x: 6, y: 1 }, { x: 6, y: 2 }]
 const cZBLOCK2 = [{ x: 5, y: 0 }, { x: 6, y: 0 }, { x: 6, y: 1 }, { x: 7, y: 1 }]
-const cZBLOCK3 = [{ x: 5, y: 2 }, { x: 5, y: 1 }, { x: 6, y: 1 }, { x: 6, y: 0 }]
+const cZBLOCK3 = [{ x: 7, y: 0 }, { x: 7, y: 1 }, { x: 6, y: 1 }, { x: 6, y: 2 }]
 const cZBlocks = [cZBLOCK0, cZBLOCK1, cZBLOCK2, cZBLOCK3]
 
 const cOBLOCK0 = [{ x: 5, y: 0 }, { x: 5, y: 1 }, { x: 6, y: 0 }, { x: 6, y: 1 }]
@@ -350,7 +350,7 @@ function main (currentTime) {
 let why = true
 
 window.addEventListener('keydown', e => {
-  
+
     switch (e.key) {
       case 'ArrowUp':
         why = true
