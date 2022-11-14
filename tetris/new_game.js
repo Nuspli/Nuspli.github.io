@@ -349,10 +349,34 @@ function main (currentTime) {
 
 let why = true
 
+let keys = {
+  a: false,
+  w: false,
+  d: false,
+
+  l: false,
+  u: false,
+  r: false
+};
+
 window.addEventListener('keydown', e => {
 
-    switch (e.key) {
-      case 'ArrowUp':
+    if (e.key === 'ArrowUp') {
+        keys.u = true}
+    if(e.key === 'ArrowDown'){speed = 5 * localStorage.difficulty}
+    if (e.key === 'ArrowLeft') {
+        keys.l = true}
+    if (e.key === 'ArrowRight') {
+        keys.r = true}
+    if (e.key === 'w') {
+        keys.w = true}
+    if(e.key === 's'){speed = 5 * localStorage.difficulty}
+    if (e.key === 'a') {
+        keys.a = true}
+    if (e.key === 'd') {
+        keys.d = true}
+
+    if (keys.u) {
         why = true
 
         for (let t = 0; t <= setBlocks.length - 1; t ++) {
@@ -362,7 +386,7 @@ window.addEventListener('keydown', e => {
         (BLOCKS[a][(b + 1) % 4][1].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][1].x == setBlocks[t].x) ||
         (BLOCKS[a][(b + 1) % 4][2].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][2].x == setBlocks[t].x) ||
         (BLOCKS[a][(b + 1) % 4][3].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][3].x == setBlocks[t].x)
-        ){why = false; break}}
+        ){why = false}}
         if(BLOCKS[a][(b + 1) % 4][0].x == 11 ||
            BLOCKS[a][(b + 1) % 4][1].x == 11 ||
            BLOCKS[a][(b + 1) % 4][2].x == 11 ||
@@ -370,15 +394,13 @@ window.addEventListener('keydown', e => {
            BLOCKS[a][(b + 1) % 4][0].x == 0 ||
            BLOCKS[a][(b + 1) % 4][1].x == 0 ||
            BLOCKS[a][(b + 1) % 4][2].x == 0 ||
-           BLOCKS[a][(b + 1) % 4][3].x == 0){break}
+           BLOCKS[a][(b + 1) % 4][3].x == 0){why = false}
         if(why && !done){
         b = (b + 1) % 4
         draw(a, b)}
-        break
-      case 'ArrowDown':
-        speed = 5 * localStorage.difficulty
-        break
-      case 'ArrowLeft':
+    }
+
+    if (keys.l) {
         why = true
         //b = localStorage.b
         for (let t = 0; t <= setBlocks.length - 1; t ++) {
@@ -402,8 +424,9 @@ window.addEventListener('keydown', e => {
     
             }}}
             draw(a, b)}
-        break
-      case 'ArrowRight':
+    }
+
+    if (keys.r) {
         why = true
         //b = localStorage.b
         for (let t = 0; t <= setBlocks.length - 1; t ++) {
@@ -427,8 +450,9 @@ window.addEventListener('keydown', e => {
         
                 }}}
                 draw(a, b)}
-        break
-      case 'w':
+    }
+
+    if (keys.w) {
         why = true
 
         for (let t = 0; t <= setBlocks.length - 1; t ++) {
@@ -438,7 +462,7 @@ window.addEventListener('keydown', e => {
         (BLOCKS[a][(b + 1) % 4][1].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][1].x == setBlocks[t].x) ||
         (BLOCKS[a][(b + 1) % 4][2].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][2].x == setBlocks[t].x) ||
         (BLOCKS[a][(b + 1) % 4][3].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][3].x == setBlocks[t].x)
-        ){why = false; break}}
+        ){why = false}}
         if(BLOCKS[a][(b + 1) % 4][0].x == 11 ||
            BLOCKS[a][(b + 1) % 4][1].x == 11 ||
            BLOCKS[a][(b + 1) % 4][2].x == 11 ||
@@ -446,15 +470,13 @@ window.addEventListener('keydown', e => {
            BLOCKS[a][(b + 1) % 4][0].x == 0 ||
            BLOCKS[a][(b + 1) % 4][1].x == 0 ||
            BLOCKS[a][(b + 1) % 4][2].x == 0 ||
-           BLOCKS[a][(b + 1) % 4][3].x == 0){break}
+           BLOCKS[a][(b + 1) % 4][3].x == 0){why = false}
         if(why && !done){
         b = (b + 1) % 4
         draw(a, b)}
-        break
-      case 's':
-        speed = 2 * localStorage.difficulty
-        break
-      case 'a':
+    }
+
+    if (keys.a) {
         why = true
         //b = localStorage.b
         for (let t = 0; t <= setBlocks.length - 1; t ++) {
@@ -478,8 +500,9 @@ window.addEventListener('keydown', e => {
     
             }}}
             draw(a, b)}
-        break
-      case 'd':
+    }
+
+    if (keys.d) {
         why = true
         //b = localStorage.b
         for (let t = 0; t <= setBlocks.length - 1; t ++) {
@@ -503,7 +526,27 @@ window.addEventListener('keydown', e => {
         
                 }}}
                 draw(a, b)}
-        break
+    }
+  })
+
+  addEventListener("keyup", (event) => {
+    if (event.key === "a") {
+      keys.a = false;
+    }
+    if (event.key === "w") {
+      keys.w = false;
+    }
+    if (event.key === "d") {
+        keys.d = false;
+      }
+    if (event.key === "ArrowUp") {
+    keys.u = false;
+    }
+    if (event.key === "ArrowLeft") {
+    keys.l = false;
+    }
+    if (event.key === "ArrowRight") {
+    keys.r = false;
     }
   })
 
