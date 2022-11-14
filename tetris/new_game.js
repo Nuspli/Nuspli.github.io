@@ -507,15 +507,17 @@ window.addEventListener('keydown', e => {
     }
   })
 
+  const pop = document.getElementById('pop')
+
   window.addEventListener('keypress', e=> {
     switch (e.key) {
     case ' ':
       speed = 10000
-        BLOCKS[a][b][0].y = shadow[0].style.gridRowStart - 1
-        BLOCKS[a][b][1].y = shadow[1].style.gridRowStart - 1
-        BLOCKS[a][b][2].y = shadow[2].style.gridRowStart - 1
-        BLOCKS[a][b][3].y = shadow[3].style.gridRowStart - 1
-
+      BLOCKS[a][b][0].y = shadow[0].style.gridRowStart - 1
+      BLOCKS[a][b][1].y = shadow[1].style.gridRowStart - 1
+      BLOCKS[a][b][2].y = shadow[2].style.gridRowStart - 1
+      BLOCKS[a][b][3].y = shadow[3].style.gridRowStart - 1
+      pop.play()
     }    
   })
 
@@ -526,7 +528,7 @@ window.addEventListener('keydown', e => {
       BLOCKS[a][b][1].y = shadow[1].style.gridRowStart - 1
       BLOCKS[a][b][2].y = shadow[2].style.gridRowStart - 1
       BLOCKS[a][b][3].y = shadow[3].style.gridRowStart - 1
-
+      pop.play()
     }
   })
 
@@ -543,6 +545,7 @@ window.addEventListener('keydown', e => {
 
 const audiobtn = document.getElementById('audio__button')
 const audio = document.getElementById('audio')
+audio.volume = 0.1
 
   audiobtn.addEventListener('click', function() {
     if (audiobtn.innerHTML == "pause"){
