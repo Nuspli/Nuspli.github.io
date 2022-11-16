@@ -1,5 +1,6 @@
 const gameBoard = document.getElementById('game-board')
 const previewBoard = document.getElementById('preview-board')
+const holdBoard = document.getElementById('hold-board')
 
 const LBLOCK0 = [{ x: 5, y: 1 }, { x: 6, y: 1 }, { x: 7, y: 1 }, { x: 7, y: 0 }]
 const LBLOCK1 = [{ x: 6, y: 0 }, { x: 6, y: 1 }, { x: 6, y: 2 }, { x: 7, y: 2 }]
@@ -99,9 +100,12 @@ let done = true
 
 var score = 0
 let end = false
+let tree = false
 
-function update() {
+function update() { //todo---------------------------------------------------------------------------------------------------
     end = false
+
+    if (!done) {
 
     for (let t = 0; t <= setBlocks.length - 1; t ++) {
         if ( // the block would hit another block or the ground
@@ -197,6 +201,7 @@ function update() {
     
             }
           }
+        hold = 0
     }
     else{
         
@@ -212,6 +217,7 @@ function update() {
         drawPoints()
         
     }
+  }
 }
 
 function drawPoints() {
@@ -259,8 +265,19 @@ let shadow = []
 const cBlok = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 let next
 let cnext = []
+let firsttree = false
 
-function spawn() {
+function spawn() { // todo-------------------------------------------------------------------------------------
+
+  Blok = []
+  shadow = []
+  b = 0
+
+  if (tree && !firsttree) {
+    tree = false
+    a = atree[atree.length - 2]
+
+  }else{
 
   if (a == -1) {a = Math.floor(Math.random() * 7)}else{
     a = next
@@ -269,9 +286,6 @@ function spawn() {
     }
   }
   next = Math.floor(Math.random() * 7)
-  Blok = []
-  shadow = []
-  b = 0
 
   cnext = []
 
@@ -286,6 +300,7 @@ function spawn() {
     
     previewBoard.appendChild(Block)
   })
+}
 
   for (let n = 0;n <= 3; n++){
     const BlockShadow = document.createElement('div')
@@ -311,15 +326,6 @@ function spawn() {
   })
 
   done = false
-}
-
-function disToSetBlock(){
-  let big = BLOCKS[a][b][0].y
-  let bigx = 0
-  if (big < BLOCKS[a][b][1].y){big = BLOCKS[a][b][1].y; bigx = 1}
-  if (big < BLOCKS[a][b][2].y){big = BLOCKS[a][b][2].y; bigx = 2}
-  if (big < BLOCKS[a][b][3].y){big = BLOCKS[a][b][3].y; bigx = 3}
-  console.log(BLOCKS[a][b][bigx].x)
 }
 
 let lastRenderTime = 0
@@ -353,11 +359,19 @@ let keys = {
   a: false,
   w: false,
   d: false,
+  h: false,
 
   l: false,
   u: false,
-  r: false
+  r: false,
+  s: false,
+
+  c: false
 };
+
+let tig = -1
+let hold = 0
+let holda = -1
 
 window.addEventListener('keydown', e => {
 
@@ -375,8 +389,14 @@ window.addEventListener('keydown', e => {
         keys.a = true}
     if (e.key === 'd') {
         keys.d = true}
+    if (e.key === 'z') {
+        keys.z = true}
+    if (e.key === '#') {
+        keys.h = true}
+    if (e.key === 'c') {
+        keys.c = true}
 
-    if (keys.u) {
+    if (keys.u || keys.w) {
         why = true
 
         for (let t = 0; t <= setBlocks.length - 1; t ++) {
@@ -400,7 +420,31 @@ window.addEventListener('keydown', e => {
         draw(a, b)}
     }
 
-    if (keys.l) {
+    if (keys.h || keys.z) {
+      if (b == 0) {b = 3} else {b = (b - 1) % 4}
+      why = true
+
+      for (let t = 0; t <= setBlocks.length - 1; t ++) {
+
+      if ( // the block would hit another block
+      (BLOCKS[a][(b - 1) % 4][0].y == setBlocks[t].y && BLOCKS[a][(b - 1) % 4][0].x == setBlocks[t].x) ||
+      (BLOCKS[a][(b - 1) % 4][1].y == setBlocks[t].y && BLOCKS[a][(b - 1) % 4][1].x == setBlocks[t].x) ||
+      (BLOCKS[a][(b - 1) % 4][2].y == setBlocks[t].y && BLOCKS[a][(b - 1) % 4][2].x == setBlocks[t].x) ||
+      (BLOCKS[a][(b - 1) % 4][3].y == setBlocks[t].y && BLOCKS[a][(b - 1) % 4][3].x == setBlocks[t].x)
+      ){why = false}}
+      if(BLOCKS[a][(b - 1) % 4][0].x == 11 ||
+         BLOCKS[a][(b - 1) % 4][1].x == 11 ||
+         BLOCKS[a][(b - 1) % 4][2].x == 11 ||
+         BLOCKS[a][(b - 1) % 4][3].x == 11 ||
+         BLOCKS[a][(b - 1) % 4][0].x == 0 ||
+         BLOCKS[a][(b - 1) % 4][1].x == 0 ||
+         BLOCKS[a][(b - 1) % 4][2].x == 0 ||
+         BLOCKS[a][(b - 1) % 4][3].x == 0){why = false}
+      if(why && !done){
+      draw(a, b)} else {b = (b + 1) % 4}
+  }
+
+    if (keys.l || keys.a) {
         why = true
         //b = localStorage.b
         for (let t = 0; t <= setBlocks.length - 1; t ++) {
@@ -426,7 +470,7 @@ window.addEventListener('keydown', e => {
             draw(a, b)}
     }
 
-    if (keys.r) {
+    if (keys.r || keys.d) {
         why = true
         //b = localStorage.b
         for (let t = 0; t <= setBlocks.length - 1; t ++) {
@@ -452,82 +496,66 @@ window.addEventListener('keydown', e => {
                 draw(a, b)}
     }
 
-    if (keys.w) {
-        why = true
+    if (keys.c) { // todo -----------------------------------------------------------------------------------------------------------------------------------
+      if (hold == 0){
+      if (tig == -1){
+        for (let n = 0;n <= 3; n++){
+          const BlockHold = document.createElement('div')
+          BlockHold.style.gridRowStart = co[a][b][n].y - 4
+          BlockHold.style.gridColumnStart = co[a][b][n].x - 4
+          BlockHold.classList.add(styles[a])
+          trees.push(BlockHold)
+          holdBoard.appendChild(BlockHold)
+          Blok[n].remove()
+          shadow[n].remove()
+        }
+        tig = 0
+        firsttree = true
 
-        for (let t = 0; t <= setBlocks.length - 1; t ++) {
+      } else {
+        firsttree = false
+        for (let n = 0;n <= 3; n++){
+          trees[n].remove()
+        }
+          trees.splice(0, 1)
+          trees.splice(0, 1)
+          trees.splice(0, 1)
+          trees.splice(0, 1)
 
-        if ( // the block would hit another block
-        (BLOCKS[a][(b + 1) % 4][0].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][0].x == setBlocks[t].x) ||
-        (BLOCKS[a][(b + 1) % 4][1].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][1].x == setBlocks[t].x) ||
-        (BLOCKS[a][(b + 1) % 4][2].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][2].x == setBlocks[t].x) ||
-        (BLOCKS[a][(b + 1) % 4][3].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][3].x == setBlocks[t].x)
-        ){why = false}}
-        if(BLOCKS[a][(b + 1) % 4][0].x == 11 ||
-           BLOCKS[a][(b + 1) % 4][1].x == 11 ||
-           BLOCKS[a][(b + 1) % 4][2].x == 11 ||
-           BLOCKS[a][(b + 1) % 4][3].x == 11 ||
-           BLOCKS[a][(b + 1) % 4][0].x == 0 ||
-           BLOCKS[a][(b + 1) % 4][1].x == 0 ||
-           BLOCKS[a][(b + 1) % 4][2].x == 0 ||
-           BLOCKS[a][(b + 1) % 4][3].x == 0){why = false}
-        if(why && !done){
-        b = (b + 1) % 4
-        draw(a, b)}
+        for (let n = 0;n <= 3; n++){
+          const BlockHold = document.createElement('div')
+          BlockHold.style.gridRowStart = co[a][b][n].y - 4
+          BlockHold.style.gridColumnStart = co[a][b][n].x - 4
+          BlockHold.classList.add(styles[a])
+          trees.push(BlockHold)
+          holdBoard.appendChild(BlockHold)
+          Blok[n].remove()
+          shadow[n].remove()
+        }
+      }
+
+      cBlok.pop()
+      cBlok.pop()
+      cBlok.pop()
+      cBlok.pop()
+
+      atree.push(a)
+
+      for (let e = 0; e <= 3; e++){
+        for (let f = 0; f <= 3; f++){
+        BLOCKS[a][e][f].x = co[a][e][f].x
+        BLOCKS[a][e][f].y = co[a][e][f].y
+        }
+      }
+      done = true
+      tree = true
+      hold = 1
     }
-
-    if (keys.a) {
-        why = true
-        //b = localStorage.b
-        for (let t = 0; t <= setBlocks.length - 1; t ++) {
-        if ( // the block would hit another block or the ground
-        (BLOCKS[a][b][0].y == setBlocks[t].y && BLOCKS[a][b][0].x - 1 == setBlocks[t].x) ||
-        (BLOCKS[a][b][1].y == setBlocks[t].y && BLOCKS[a][b][1].x - 1 == setBlocks[t].x) ||
-        (BLOCKS[a][b][2].y == setBlocks[t].y && BLOCKS[a][b][2].x - 1 == setBlocks[t].x) ||
-        (BLOCKS[a][b][3].y == setBlocks[t].y && BLOCKS[a][b][3].x - 1 == setBlocks[t].x)
-        ){why = false; break}}
-
-        if (why && !done) {
-        if(BLOCKS[a][b][0].x - 1 != 0 &&
-           BLOCKS[a][b][1].x - 1 != 0 &&
-           BLOCKS[a][b][2].x - 1 != 0 &&
-           BLOCKS[a][b][3].x - 1 != 0){
-
-        for (let e = 0; e <= 3; e++){
-            for (let f = 0; f <= 3; f++){
-    
-            BLOCKS[a][e][f].x = BLOCKS[a][e][f].x - 1
-    
-            }}}
-            draw(a, b)}
-    }
-
-    if (keys.d) {
-        why = true
-        //b = localStorage.b
-        for (let t = 0; t <= setBlocks.length - 1; t ++) {
-        if ( // the block would hit another block or the ground
-        (BLOCKS[a][b][0].y == setBlocks[t].y && BLOCKS[a][b][0].x + 1 == setBlocks[t].x) ||
-        (BLOCKS[a][b][1].y == setBlocks[t].y && BLOCKS[a][b][1].x + 1 == setBlocks[t].x) ||
-        (BLOCKS[a][b][2].y == setBlocks[t].y && BLOCKS[a][b][2].x + 1 == setBlocks[t].x) ||
-        (BLOCKS[a][b][3].y == setBlocks[t].y && BLOCKS[a][b][3].x + 1 == setBlocks[t].x)
-        ){why = false; break}}
-
-        if (why && !done) {
-        if(BLOCKS[a][b][0].x + 1 != 11 &&
-          BLOCKS[a][b][1].x + 1 != 11 &&
-          BLOCKS[a][b][2].x + 1 != 11 &&
-          BLOCKS[a][b][3].x + 1 != 11){
-          
-            for (let e = 0; e <= 3; e++){
-                for (let f = 0; f <= 3; f++){
-        
-                BLOCKS[a][e][f].x = BLOCKS[a][e][f].x + 1
-        
-                }}}
-                draw(a, b)}
-    }
+  }
   })
+
+  let atree = []
+  const trees = []
 
   addEventListener("keyup", (event) => {
     if (event.key === "a") {
@@ -547,6 +575,15 @@ window.addEventListener('keydown', e => {
     }
     if (event.key === "ArrowRight") {
     keys.r = false;
+    }
+    if (event.key === "z") {
+    keys.z = false;
+    }
+    if (event.key === "#") {
+    keys.h = false;
+    }
+    if (event.key === "c") {
+    keys.c = false;
     }
   })
 
