@@ -267,15 +267,29 @@ let next
 let cnext = []
 let firsttree = false
 
-function spawn() { // todo-------------------------------------------------------------------------------------
+let bag = []
+
+function randomBlock() { // 7-bag randomizer
+  
+  if (bag.length == 0) {
+    bag = [0, 1, 2, 3, 4, 5, 6]
+    bag = bag.sort(() => Math.random() - 0.5)
+  }
+  return bag[0]
+}
+
+function spawn() {
 
   Blok = []
   shadow = []
   b = 0
 
+  if (history.length > 100) {for (let i = 0; i <= 49; i ++){history.shift()}}
+
   if (tree && !firsttree) {
     tree = false
     a = atree[atree.length - 2]
+    atree.shift()
 
   }else{
 
@@ -285,7 +299,9 @@ function spawn() { // todo------------------------------------------------------
       cnext[i].remove()
     }
   }
-  next = Math.floor(Math.random() * 7)
+
+  next = randomBlock()
+  bag.shift()
 
   cnext = []
 
@@ -496,7 +512,7 @@ window.addEventListener('keydown', e => {
                 draw(a, b)}
     }
 
-    if (keys.c) { // todo -----------------------------------------------------------------------------------------------------------------------------------
+    if (keys.c) {
       if (hold == 0){
       if (tig == -1){
         for (let n = 0;n <= 3; n++){
@@ -593,6 +609,7 @@ window.addEventListener('keydown', e => {
     switch (e.key) {
     case ' ':
       speed = 10000
+      score += 30
       BLOCKS[a][b][0].y = shadow[0].style.gridRowStart - 1
       BLOCKS[a][b][1].y = shadow[1].style.gridRowStart - 1
       BLOCKS[a][b][2].y = shadow[2].style.gridRowStart - 1
@@ -604,6 +621,7 @@ window.addEventListener('keydown', e => {
   window.addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
       speed = 10000
+      score += 30
       BLOCKS[a][b][0].y = shadow[0].style.gridRowStart - 1
       BLOCKS[a][b][1].y = shadow[1].style.gridRowStart - 1
       BLOCKS[a][b][2].y = shadow[2].style.gridRowStart - 1
