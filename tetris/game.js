@@ -462,11 +462,11 @@ window.addEventListener('keydown', e => {
       if (actual_first_hold){
         for (let n = 0;n <= 3; n++){ // create the hold piece using the current blocks style and shape
           const BlockHold = document.createElement('div')
-          if (a == 5) { BlockHold.style.gridRowStart = co[a][b][n].y - 4 // displays the O block centered
-                        BlockHold.style.gridColumnStart = co[a][b][n].x - 3}
+          if (a == 5) { BlockHold.style.gridRowStart = co[a][0][n].y - 4 // displays the O block centered
+                        BlockHold.style.gridColumnStart = co[a][0][n].x - 3}
           else {
-            BlockHold.style.gridRowStart = co[a][b][n].y - 4
-            BlockHold.style.gridColumnStart = co[a][b][n].x - 4
+            BlockHold.style.gridRowStart = co[a][0][n].y - 4
+            BlockHold.style.gridColumnStart = co[a][0][n].x - 4
           }
           BlockHold.classList.add(styles[a])
           visHold.push(BlockHold)
@@ -488,11 +488,11 @@ window.addEventListener('keydown', e => {
 
         for (let n = 0;n <= 3; n++){
           const BlockHold = document.createElement('div')
-          if (a == 5) { BlockHold.style.gridRowStart = co[a][b][n].y - 4
-                        BlockHold.style.gridColumnStart = co[a][b][n].x - 3}
+          if (a == 5) { BlockHold.style.gridRowStart = co[a][0][n].y - 4
+                        BlockHold.style.gridColumnStart = co[a][0][n].x - 3}
           else {
-            BlockHold.style.gridRowStart = co[a][b][n].y - 4
-            BlockHold.style.gridColumnStart = co[a][b][n].x - 4
+            BlockHold.style.gridRowStart = co[a][0][n].y - 4
+            BlockHold.style.gridColumnStart = co[a][0][n].x - 4
           }
           BlockHold.classList.add(styles[a])
           visHold.push(BlockHold)
