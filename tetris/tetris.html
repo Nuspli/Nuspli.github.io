@@ -75,31 +75,31 @@
 
     #preview-board {
         background-color: rgb(70, 70, 70);
-        width: 30vmin;
-        height: 30vmin;
+        width: 200px;
+        height: 150px;
         display: grid;
         grid-template-rows: repeat(3, 1fr);
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         position: absolute;
-        top: 20%;
+        top: 25%;
         left: 76%;
     }
 
     #hold-board {
         background-color: rgb(70, 70, 70);
-        width: 30vmin;
-        height: 30vmin;
+        width: 200px;
+        height: 150px;
         display: grid;
         grid-template-rows: repeat(3, 1fr);
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         position: absolute;
         left: 2%;
-        top: 20%;
+        top: 25%;
     }
 
     #hold__container {
       width: 30vmin;
-      height: 30vmin;
+      height: 25vmin;
       position: absolute;
       left: 2%;
       top: 20%;
@@ -113,27 +113,13 @@
 
     @media screen and (max-width: 960px) {
       #preview-board {
-        background-color: rgb(70, 70, 70);
-        width: 20vmin;
-        height: 20vmin;
-        display: grid;
-        grid-template-rows: repeat(3, 1fr);
-        grid-template-columns: repeat(3, 1fr);
-        position: absolute;
-        left: 76%;
-        margin-left: 10px;
+        height: 75px;
+        width: 100px;
       }
 
       #hold-board {
-        background-color: rgb(70, 70, 70);
-        width: 20vmin;
-        height: 20vmin;
-        display: grid;
-        grid-template-rows: repeat(3, 1fr);
-        grid-template-columns: repeat(3, 1fr);
-        position: absolute;
-        left: 10%;
-        margin-right: 10px;
+        height: 75px;
+        width: 100px;
     }
     }
 
@@ -202,7 +188,7 @@
   </audio>
   <div id="game-board"></div>
   <label id="score">Score: 0</label>
-  <button id="back"><a href="/">BACK</a></button>
+  <button id="back"><a href="menu.html">BACK</a></button>
   <div id="preview__container">
       <h1>NEXT:</h1>
   </div>

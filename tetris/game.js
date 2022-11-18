@@ -224,12 +224,16 @@ function spawn() {
 
   visNext = []
 
-  BLOCKS[next][b].forEach(segment => { // create and draw next block // todo: expand the container, so that the I piece fits in too
+  BLOCKS[next][b].forEach(segment => { // create and draw next block
 
     const Block = document.createElement('div')
-    Block.style.gridRowStart = segment.y - 4
-    Block.style.gridColumnStart = segment.x - 4
-
+    if (next == 5) {Block.style.gridRowStart = segment.y - 4 // displays the O block centered
+                    Block.style.gridColumnStart = segment.x - 3}
+    else {
+        Block.style.gridRowStart = segment.y - 4
+        Block.style.gridColumnStart = segment.x - 4
+    }
+    
     Block.classList.add(styles[next])
     visNext.push(Block)
     
@@ -458,8 +462,12 @@ window.addEventListener('keydown', e => {
       if (actual_first_hold){
         for (let n = 0;n <= 3; n++){ // create the hold piece using the current blocks style and shape
           const BlockHold = document.createElement('div')
-          BlockHold.style.gridRowStart = co[a][b][n].y - 4
-          BlockHold.style.gridColumnStart = co[a][b][n].x - 4
+          if (a == 5) { BlockHold.style.gridRowStart = co[a][b][n].y - 4 // displays the O block centered
+                        BlockHold.style.gridColumnStart = co[a][b][n].x - 3}
+          else {
+            BlockHold.style.gridRowStart = co[a][b][n].y - 4
+            BlockHold.style.gridColumnStart = co[a][b][n].x - 4
+          }
           BlockHold.classList.add(styles[a])
           visHold.push(BlockHold)
           holdBoard.appendChild(BlockHold)
@@ -480,8 +488,12 @@ window.addEventListener('keydown', e => {
 
         for (let n = 0;n <= 3; n++){
           const BlockHold = document.createElement('div')
-          BlockHold.style.gridRowStart = co[a][b][n].y - 4
-          BlockHold.style.gridColumnStart = co[a][b][n].x - 4
+          if (a == 5) { BlockHold.style.gridRowStart = co[a][b][n].y - 4
+                        BlockHold.style.gridColumnStart = co[a][b][n].x - 3}
+          else {
+            BlockHold.style.gridRowStart = co[a][b][n].y - 4
+            BlockHold.style.gridColumnStart = co[a][b][n].x - 4
+          }
           BlockHold.classList.add(styles[a])
           visHold.push(BlockHold)
           holdBoard.appendChild(BlockHold)
