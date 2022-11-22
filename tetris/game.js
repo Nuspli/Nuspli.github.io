@@ -31,6 +31,7 @@ let actual_first_hold = true // getting back to that later
 let hold = 0
 
 let lastRenderTime = 0
+if (localStorage.difficulty === undefined) {localStorage.difficulty = 1.5} // default, in case of direct link instead of playing from the menu
 let speed = localStorage.difficulty // see app.js, speeds is based on the chosen difficulty
 
 function update() { // updating the blocks position or the rest of the board if it hits the ground / clears a line
