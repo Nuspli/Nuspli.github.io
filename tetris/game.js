@@ -81,6 +81,7 @@ function update() { // updating the blocks position or the rest of the board if 
             }
           }
         hold = 0
+        drawPoints()
     }
     else{
         // moving all rotations of the piece at once to have them in the same place when rotating
@@ -92,9 +93,6 @@ function update() { // updating the blocks position or the rest of the board if 
         }}
         
         draw(a, b)
-
-        drawPoints()
-        
     }
   }
 }
@@ -270,6 +268,7 @@ function spawn() {
 function main (currentTime) { // main function/ game loop to run the animations, always keeps running
   
     if (gameOver) {
+
         let message = 'You lost. Press ok to restart.'
 
         if (score > localStorage.highscore || localStorage.highscore === undefined) {
