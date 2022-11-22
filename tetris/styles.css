@@ -24,6 +24,8 @@ html{
     justify-content: center;
     align-items: center;
     margin: 0 auto;
+    position: relative;
+    top: 150px;
 }
 
 .play__button {
@@ -196,4 +198,18 @@ html{
 
 .diff__button:hover:after {
     width: 100%;
+}
+
+.highscore__container {
+    font-size: 1rem;
+    position: absolute;
+    top: 32px;
+    left: 75%;
+    background-color: #ff8177;
+    background-image: linear-gradient(to top, #1808ff 0%, #99ceff 100%);
+    background-size: 100%;
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -moz-text-fill-color: transparent;
 }

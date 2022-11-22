@@ -23,3 +23,7 @@ play.addEventListener('click', function() {
     else {localStorage.difficulty = 8}
     window.location.replace("tetris.html");
 });
+
+const high = document.querySelector('.highscore__container h1');
+
+high.innerHTML = "HIGHSCORE : " + localStorage.highscore

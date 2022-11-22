@@ -270,10 +270,18 @@ function spawn() {
 function main (currentTime) { // main function/ game loop to run the animations, always keeps running
   
     if (gameOver) {
-        if (confirm('You lost. Press ok to restart.')) {
-        window.location.reload()
+        let message = 'You lost. Press ok to restart.'
+
+        if (score > localStorage.highscore || localStorage.highscore === undefined) {
+            localStorage.highscore = score
+            message = 'Congrats. Your new highscore is : ' + score + '\nPress ok to restart.'
         }
+        if (confirm(message)) {
+        window.location.reload()
         return
+        }else{
+            window.location.replace('menu.html')
+        }
     }
 
     window.requestAnimationFrame(main)
@@ -515,6 +523,7 @@ window.addEventListener('keydown', e => {
       done = true // to spawn a new block
       pressed_hold = true
       hold = 1
+      speed = 10000 // setting speed to something high, so that the next frame gets rendered faster
     }
   }
   })
@@ -571,4 +580,14 @@ window.addEventListener('keydown', e => {
         speed = localStorage.difficulty
         break
     }
+  })
+
+  const back = document.getElementById('back');
+
+  back.addEventListener('click', function() {
+
+    if (score > localStorage.highscore || localStorage.highscore === undefined) {
+        localStorage.highscore = score
+    }
+    window.location.replace("menu.html");
   })
