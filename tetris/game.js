@@ -280,6 +280,7 @@ function main (currentTime) { // main function/ game loop to run the animations,
         return
         }else{
             window.location.replace('menu.html')
+            return
         }
     }
 
