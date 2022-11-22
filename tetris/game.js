@@ -380,19 +380,19 @@ window.addEventListener('keydown', e => {
       for (let t = 0; t <= setBlocks.length - 1; t ++) {
 
       if (
-      (BLOCKS[a][(b - 1) % 4][0].y == setBlocks[t].y && BLOCKS[a][(b - 1) % 4][0].x == setBlocks[t].x) ||
-      (BLOCKS[a][(b - 1) % 4][1].y == setBlocks[t].y && BLOCKS[a][(b - 1) % 4][1].x == setBlocks[t].x) ||
-      (BLOCKS[a][(b - 1) % 4][2].y == setBlocks[t].y && BLOCKS[a][(b - 1) % 4][2].x == setBlocks[t].x) ||
-      (BLOCKS[a][(b - 1) % 4][3].y == setBlocks[t].y && BLOCKS[a][(b - 1) % 4][3].x == setBlocks[t].x)
+      (BLOCKS[a][b][0].y == setBlocks[t].y && BLOCKS[a][b][0].x == setBlocks[t].x) ||
+      (BLOCKS[a][b][1].y == setBlocks[t].y && BLOCKS[a][b][1].x == setBlocks[t].x) ||
+      (BLOCKS[a][b][2].y == setBlocks[t].y && BLOCKS[a][b][2].x == setBlocks[t].x) ||
+      (BLOCKS[a][b][3].y == setBlocks[t].y && BLOCKS[a][b][3].x == setBlocks[t].x)
       ){valid_move = false}}
-      if(BLOCKS[a][(b - 1) % 4][0].x == 11 ||
-         BLOCKS[a][(b - 1) % 4][1].x == 11 ||
-         BLOCKS[a][(b - 1) % 4][2].x == 11 ||
-         BLOCKS[a][(b - 1) % 4][3].x == 11 ||
-         BLOCKS[a][(b - 1) % 4][0].x == 0 ||
-         BLOCKS[a][(b - 1) % 4][1].x == 0 ||
-         BLOCKS[a][(b - 1) % 4][2].x == 0 ||
-         BLOCKS[a][(b - 1) % 4][3].x == 0){valid_move = false}
+      if(BLOCKS[a][b][0].x == 11 ||
+         BLOCKS[a][b][1].x == 11 ||
+         BLOCKS[a][b][2].x == 11 ||
+         BLOCKS[a][b][3].x == 11 ||
+         BLOCKS[a][b][0].x == 0 ||
+         BLOCKS[a][b][1].x == 0 ||
+         BLOCKS[a][b][2].x == 0 ||
+         BLOCKS[a][b][3].x == 0){valid_move = false}
       if(valid_move && !done){
       draw()} else {b = (b + 1) % 4}
   }
