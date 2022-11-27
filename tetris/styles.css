@@ -229,17 +229,23 @@ html{
 
     .play__button {
         left: 40%;
-        padding: 5px 32px;
+        padding: 5px 16px;
     }
 
     .info__button {
-        left: 15%;
+        left: 2%;
         padding: 5px 32px;
     }
 
     .diff__button {
-        left: 65%;
+        position: absolute;
+        left: 72%;
         padding: 5px;
+    }
+
+    .diff__button p {
+        position: relative;
+        right: 2%;
     }
 
     .diff__container.active {
@@ -251,10 +257,10 @@ html{
     .info__container.active {
         position: absolute;
         top: 40%;
-        left: 5%;
+        left: 2%;
     }
 
     .info__container p {
-        font-size: 9px;
+        font-size: 8px;
     }
 }
