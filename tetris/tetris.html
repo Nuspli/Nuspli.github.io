@@ -33,6 +33,7 @@
       border-radius: 4px;
       font-size: 2rem;
       cursor: pointer;
+      outline: none;
     }
 
     #score {
@@ -112,6 +113,7 @@
     }
 
     @media screen and (max-width: 960px) {
+
       #preview-board {
         height: 75px;
         width: 100px;
@@ -120,7 +122,7 @@
       #hold-board {
         height: 75px;
         width: 100px;
-    }
+      }
     }
 
     #preview__container{
@@ -177,6 +179,52 @@
       border: .25vmin solid rgb(255, 255, 255);
     }
 
+    .buttons__container {
+      position: absolute;
+      top: -1000px;
+    }
+
+    @media screen and (max-width: 600px) {
+
+      #audio__button{
+        position: absolute;
+        top: 5px;
+        left: 40%;
+        padding: 5px 24px;
+        cursor: pointer;
+      }
+
+      #preview__container h1 {
+        position: absolute;
+        top: -95%;
+        left: 10%;
+      }
+
+      #preview__container {
+        width: 100px;
+      }
+
+      #preview-board {
+        left: 78%;
+      }
+
+      .buttons__container {
+        background-color: rgb(0, 0, 0);
+        position: absolute;
+        top: 90%;
+      }
+
+      .buttons__container button {
+        background-color: rgb(0, 0, 0);
+      }
+
+      #mobile {
+        background-color: rgb(0, 0, 0);
+        color: black;
+      }
+
+    }
+
 </style>
 <body>
   <button id="audio__button">sound</button>
@@ -195,6 +243,15 @@
   <div id="preview-board"></div>
   <div id="hold__container">
     <h1>HOLD:</h1>
+  </div>
+  <div class="buttons__container">
+    <button id="left"><img src="images_tetris/left.png" id="mobile"></button>
+    <button id="leftm"><img src="images_tetris/leftm.png" id="mobile"></button>
+    <button id="down"><img src="images_tetris/down.png" id="mobile"></button>
+    <button id="downh"><img src="images_tetris/downh.png" id="mobile"></button>
+    <button id="hold"><img src="images_tetris/hold.png" id="mobile"></button>
+    <button id="rightm"><img src="images_tetris/rightm.png" id="mobile"></button>
+    <button id="right"><img src="images_tetris/right.png" id="mobile"></button>
   </div>
   <div id="hold-board"></div>
   <script src="game.js" defer type="module"></script>

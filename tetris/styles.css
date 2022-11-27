@@ -213,3 +213,48 @@ html{
     -webkit-text-fill-color: transparent;
     -moz-text-fill-color: transparent;
 }
+
+@media screen and (max-width: 600px) {
+    
+    .highscore__container {
+        position: absolute;
+        top: 20%;
+        left: 25%;
+    }
+
+    .main__img--container img {
+        width: 75%;
+        height: 75%;
+    }
+
+    .play__button {
+        left: 40%;
+        padding: 5px 32px;
+    }
+
+    .info__button {
+        left: 15%;
+        padding: 5px 32px;
+    }
+
+    .diff__button {
+        left: 65%;
+        padding: 5px;
+    }
+
+    .diff__container.active {
+        position: absolute;
+        top: 40%;
+        left: 75%;
+    }
+
+    .info__container.active {
+        position: absolute;
+        top: 40%;
+        left: 5%;
+    }
+
+    .info__container p {
+        font-size: 9px;
+    }
+}

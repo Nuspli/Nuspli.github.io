@@ -303,6 +303,185 @@ window.requestAnimationFrame(main)
 
 /*============================================== controls ==============================================*/
 
+function rotate_right() {
+  valid_move = true
+
+        for (let t = 0; t <= setBlocks.length - 1; t ++) {
+
+        if ( // if the block would hit another block after rotating
+        (BLOCKS[a][(b + 1) % 4][0].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][0].x == setBlocks[t].x) ||
+        (BLOCKS[a][(b + 1) % 4][1].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][1].x == setBlocks[t].x) ||
+        (BLOCKS[a][(b + 1) % 4][2].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][2].x == setBlocks[t].x) ||
+        (BLOCKS[a][(b + 1) % 4][3].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][3].x == setBlocks[t].x)
+        ){valid_move = false}} // <--
+        if(BLOCKS[a][(b + 1) % 4][0].x == 11 || // or if it would hit one of the left or right walls
+           BLOCKS[a][(b + 1) % 4][1].x == 11 ||
+           BLOCKS[a][(b + 1) % 4][2].x == 11 ||
+           BLOCKS[a][(b + 1) % 4][3].x == 11 ||
+           BLOCKS[a][(b + 1) % 4][0].x == 0 ||
+           BLOCKS[a][(b + 1) % 4][1].x == 0 ||
+           BLOCKS[a][(b + 1) % 4][2].x == 0 ||
+           BLOCKS[a][(b + 1) % 4][3].x == 0){valid_move = false}
+        if(valid_move && !done && !end){
+        b = (b + 1) % 4 // update b
+        draw()}
+}
+
+function right_move() {
+  valid_move = true
+
+  for (let t = 0; t <= setBlocks.length - 1; t ++) {
+
+  if (
+  (BLOCKS[a][b][0].y == setBlocks[t].y && BLOCKS[a][b][0].x + 1 == setBlocks[t].x) ||
+  (BLOCKS[a][b][1].y == setBlocks[t].y && BLOCKS[a][b][1].x + 1 == setBlocks[t].x) ||
+  (BLOCKS[a][b][2].y == setBlocks[t].y && BLOCKS[a][b][2].x + 1 == setBlocks[t].x) ||
+  (BLOCKS[a][b][3].y == setBlocks[t].y && BLOCKS[a][b][3].x + 1 == setBlocks[t].x)
+  ){valid_move = false; break}}
+
+  if (valid_move && !done && !end) {
+      if(BLOCKS[a][b][0].x + 1 != 11 &&
+          BLOCKS[a][b][1].x + 1 != 11 &&
+          BLOCKS[a][b][2].x + 1 != 11 &&
+          BLOCKS[a][b][3].x + 1 != 11){
+      
+          for (let e = 0; e <= 3; e++){
+              for (let f = 0; f <= 3; f++){
+      
+              BLOCKS[a][e][f].x = BLOCKS[a][e][f].x + 1
+      
+              }
+          }
+      }
+  draw()
+  }
+}
+
+function rotate_left() {
+  if (b == 0) {b = 3} else {b = (b - 1) % 4}
+      valid_move = true
+
+      for (let t = 0; t <= setBlocks.length - 1; t ++) {
+
+      if (
+      (BLOCKS[a][b][0].y == setBlocks[t].y && BLOCKS[a][b][0].x == setBlocks[t].x) ||
+      (BLOCKS[a][b][1].y == setBlocks[t].y && BLOCKS[a][b][1].x == setBlocks[t].x) ||
+      (BLOCKS[a][b][2].y == setBlocks[t].y && BLOCKS[a][b][2].x == setBlocks[t].x) ||
+      (BLOCKS[a][b][3].y == setBlocks[t].y && BLOCKS[a][b][3].x == setBlocks[t].x)
+      ){valid_move = false}}
+      if(BLOCKS[a][b][0].x == 11 ||
+         BLOCKS[a][b][1].x == 11 ||
+         BLOCKS[a][b][2].x == 11 ||
+         BLOCKS[a][b][3].x == 11 ||
+         BLOCKS[a][b][0].x == 0 ||
+         BLOCKS[a][b][1].x == 0 ||
+         BLOCKS[a][b][2].x == 0 ||
+         BLOCKS[a][b][3].x == 0){valid_move = false}
+    if(valid_move && !done && !end){
+    draw()} else {b = (b + 1) % 4}
+}
+
+function left_move() {
+  valid_move = true
+
+  for (let t = 0; t <= setBlocks.length - 1; t ++) {
+
+  if (
+  (BLOCKS[a][b][0].y == setBlocks[t].y && BLOCKS[a][b][0].x - 1 == setBlocks[t].x) ||
+  (BLOCKS[a][b][1].y == setBlocks[t].y && BLOCKS[a][b][1].x - 1 == setBlocks[t].x) ||
+  (BLOCKS[a][b][2].y == setBlocks[t].y && BLOCKS[a][b][2].x - 1 == setBlocks[t].x) ||
+  (BLOCKS[a][b][3].y == setBlocks[t].y && BLOCKS[a][b][3].x - 1 == setBlocks[t].x)
+  ){valid_move = false; break}}
+
+  if (valid_move && !done && !end) {
+      if(BLOCKS[a][b][0].x - 1 != 0 &&
+          BLOCKS[a][b][1].x - 1 != 0 &&
+          BLOCKS[a][b][2].x - 1 != 0 &&
+          BLOCKS[a][b][3].x - 1 != 0){
+
+          for (let e = 0; e <= 3; e++){
+              for (let f = 0; f <= 3; f++){
+      
+              BLOCKS[a][e][f].x = BLOCKS[a][e][f].x - 1 // change x by -1 for all rotations
+      
+              }
+          }
+      }
+  draw()
+  }
+}
+
+function down_hard() {
+  speed = 10000
+  score += 30
+  for (let v = 0; v <= 3; v++) {
+    BLOCKS[a][b][v].y = shadow[v].style.gridRowStart - 1
+  }
+  pop.play() // play the pop sound
+}
+
+function hold_() {
+  if (hold == 0){ // is set to 1 if its already been pressed once, so that you can't keep switching the same 2 pieces
+    if (actual_first_hold){
+      for (let n = 0;n <= 3; n++){ // create the hold piece using the current blocks style and shape
+        const BlockHold = document.createElement('div')
+        if (a == 5) { BlockHold.style.gridRowStart = co[a][0][n].y - 4 // displays the O block centered
+                      BlockHold.style.gridColumnStart = co[a][0][n].x - 3}
+        else {
+          BlockHold.style.gridRowStart = co[a][0][n].y - 4
+          BlockHold.style.gridColumnStart = co[a][0][n].x - 4
+        }
+        BlockHold.classList.add(styles[a])
+        visHold.push(BlockHold)
+        holdBoard.appendChild(BlockHold)
+        visibleBlock[n].remove() // remove current block and its shadow
+        shadow[n].remove()
+      }
+      actual_first_hold = false
+      first_hold = true // this is for the spawn function (I couldn't find a better solution)
+
+    } else { // if its not the first piece to be held, remove the old one
+      first_hold = false
+      for (let n = 0;n <= 3; n++){
+          visHold[n].remove() // <--
+      }
+      for (let n = 0;n <= 3; n++){
+          visHold.splice(0, 1) // <--
+      }
+
+      for (let n = 0;n <= 3; n++){
+        const BlockHold = document.createElement('div')
+        if (a == 5) { BlockHold.style.gridRowStart = co[a][0][n].y - 4
+                      BlockHold.style.gridColumnStart = co[a][0][n].x - 3}
+        else {
+          BlockHold.style.gridRowStart = co[a][0][n].y - 4
+          BlockHold.style.gridColumnStart = co[a][0][n].x - 4
+        }
+        BlockHold.classList.add(styles[a])
+        visHold.push(BlockHold)
+        holdBoard.appendChild(BlockHold)
+        visibleBlock[n].remove()
+        shadow[n].remove()
+      }
+    }
+
+    held_a.push(a) // push the current a to use when re-spawning the held block
+
+    for (let e = 0; e <= 3; e++){ // reset BLOCKS
+      cBlok.pop()
+      for (let f = 0; f <= 3; f++){
+      BLOCKS[a][e][f].x = co[a][e][f].x
+      BLOCKS[a][e][f].y = co[a][e][f].y
+      }
+    }
+
+    done = true // to spawn a new block
+    pressed_hold = true
+    hold = 1
+    speed = 10000 // setting speed to something high, so that the next frame gets rendered faster
+  }
+}
+
 let valid_move = true // turns false when an input would hit a set block
 
 let keys = { // defining key states to be able to use multiple inputs at once
@@ -359,174 +538,24 @@ window.addEventListener('keydown', e => {
     }
 
     if (keys.u || keys.w) { // rotate right
-        valid_move = true
-
-        for (let t = 0; t <= setBlocks.length - 1; t ++) {
-
-        if ( // if the block would hit another block after rotating
-        (BLOCKS[a][(b + 1) % 4][0].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][0].x == setBlocks[t].x) ||
-        (BLOCKS[a][(b + 1) % 4][1].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][1].x == setBlocks[t].x) ||
-        (BLOCKS[a][(b + 1) % 4][2].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][2].x == setBlocks[t].x) ||
-        (BLOCKS[a][(b + 1) % 4][3].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][3].x == setBlocks[t].x)
-        ){valid_move = false}} // <--
-        if(BLOCKS[a][(b + 1) % 4][0].x == 11 || // or if it would hit one of the left or right walls
-           BLOCKS[a][(b + 1) % 4][1].x == 11 ||
-           BLOCKS[a][(b + 1) % 4][2].x == 11 ||
-           BLOCKS[a][(b + 1) % 4][3].x == 11 ||
-           BLOCKS[a][(b + 1) % 4][0].x == 0 ||
-           BLOCKS[a][(b + 1) % 4][1].x == 0 ||
-           BLOCKS[a][(b + 1) % 4][2].x == 0 ||
-           BLOCKS[a][(b + 1) % 4][3].x == 0){valid_move = false}
-        if(valid_move && !done && !end){
-        b = (b + 1) % 4 // update b
-        draw()}
+      rotate_right()
     }
 
     if (keys.h || keys.z) { // rotate left
-      if (b == 0) {b = 3} else {b = (b - 1) % 4}
-      valid_move = true
-
-      for (let t = 0; t <= setBlocks.length - 1; t ++) {
-
-      if (
-      (BLOCKS[a][b][0].y == setBlocks[t].y && BLOCKS[a][b][0].x == setBlocks[t].x) ||
-      (BLOCKS[a][b][1].y == setBlocks[t].y && BLOCKS[a][b][1].x == setBlocks[t].x) ||
-      (BLOCKS[a][b][2].y == setBlocks[t].y && BLOCKS[a][b][2].x == setBlocks[t].x) ||
-      (BLOCKS[a][b][3].y == setBlocks[t].y && BLOCKS[a][b][3].x == setBlocks[t].x)
-      ){valid_move = false}}
-      if(BLOCKS[a][b][0].x == 11 ||
-         BLOCKS[a][b][1].x == 11 ||
-         BLOCKS[a][b][2].x == 11 ||
-         BLOCKS[a][b][3].x == 11 ||
-         BLOCKS[a][b][0].x == 0 ||
-         BLOCKS[a][b][1].x == 0 ||
-         BLOCKS[a][b][2].x == 0 ||
-         BLOCKS[a][b][3].x == 0){valid_move = false}
-      if(valid_move && !done && !end){
-      draw()} else {b = (b + 1) % 4}
-  }
+      rotate_left()
+    }
 
     if (keys.l || keys.a) { // move piece left
-        valid_move = true
-
-        for (let t = 0; t <= setBlocks.length - 1; t ++) {
-
-        if (
-        (BLOCKS[a][b][0].y == setBlocks[t].y && BLOCKS[a][b][0].x - 1 == setBlocks[t].x) ||
-        (BLOCKS[a][b][1].y == setBlocks[t].y && BLOCKS[a][b][1].x - 1 == setBlocks[t].x) ||
-        (BLOCKS[a][b][2].y == setBlocks[t].y && BLOCKS[a][b][2].x - 1 == setBlocks[t].x) ||
-        (BLOCKS[a][b][3].y == setBlocks[t].y && BLOCKS[a][b][3].x - 1 == setBlocks[t].x)
-        ){valid_move = false; break}}
-
-        if (valid_move && !done && !end) {
-            if(BLOCKS[a][b][0].x - 1 != 0 &&
-               BLOCKS[a][b][1].x - 1 != 0 &&
-               BLOCKS[a][b][2].x - 1 != 0 &&
-               BLOCKS[a][b][3].x - 1 != 0){
-
-                for (let e = 0; e <= 3; e++){
-                    for (let f = 0; f <= 3; f++){
-            
-                    BLOCKS[a][e][f].x = BLOCKS[a][e][f].x - 1 // change x by -1 for all rotations
-            
-                    }
-                }
-            }
-        draw()
-        }
+      left_move()
     }
 
     if (keys.r || keys.d) { // move piece right
-        valid_move = true
-
-        for (let t = 0; t <= setBlocks.length - 1; t ++) {
-
-        if (
-        (BLOCKS[a][b][0].y == setBlocks[t].y && BLOCKS[a][b][0].x + 1 == setBlocks[t].x) ||
-        (BLOCKS[a][b][1].y == setBlocks[t].y && BLOCKS[a][b][1].x + 1 == setBlocks[t].x) ||
-        (BLOCKS[a][b][2].y == setBlocks[t].y && BLOCKS[a][b][2].x + 1 == setBlocks[t].x) ||
-        (BLOCKS[a][b][3].y == setBlocks[t].y && BLOCKS[a][b][3].x + 1 == setBlocks[t].x)
-        ){valid_move = false; break}}
-
-        if (valid_move && !done && !end) {
-            if(BLOCKS[a][b][0].x + 1 != 11 &&
-               BLOCKS[a][b][1].x + 1 != 11 &&
-               BLOCKS[a][b][2].x + 1 != 11 &&
-               BLOCKS[a][b][3].x + 1 != 11){
-            
-                for (let e = 0; e <= 3; e++){
-                    for (let f = 0; f <= 3; f++){
-            
-                    BLOCKS[a][e][f].x = BLOCKS[a][e][f].x + 1
-            
-                    }
-                }
-            }
-        draw()
-        }
+      right_move()
     }
 
     if (keys.c && !end) { // change/ hold current piece
-      if (hold == 0){ // is set to 1 if its already been pressed once, so that you can't keep switching the same 2 pieces
-      if (actual_first_hold){
-        for (let n = 0;n <= 3; n++){ // create the hold piece using the current blocks style and shape
-          const BlockHold = document.createElement('div')
-          if (a == 5) { BlockHold.style.gridRowStart = co[a][0][n].y - 4 // displays the O block centered
-                        BlockHold.style.gridColumnStart = co[a][0][n].x - 3}
-          else {
-            BlockHold.style.gridRowStart = co[a][0][n].y - 4
-            BlockHold.style.gridColumnStart = co[a][0][n].x - 4
-          }
-          BlockHold.classList.add(styles[a])
-          visHold.push(BlockHold)
-          holdBoard.appendChild(BlockHold)
-          visibleBlock[n].remove() // remove current block and its shadow
-          shadow[n].remove()
-        }
-        actual_first_hold = false
-        first_hold = true // this is for the spawn function (I couldn't find a better solution)
-
-      } else { // if its not the first piece to be held, remove the old one
-        first_hold = false
-        for (let n = 0;n <= 3; n++){
-            visHold[n].remove() // <--
-        }
-        for (let n = 0;n <= 3; n++){
-            visHold.splice(0, 1) // <--
-        }
-
-        for (let n = 0;n <= 3; n++){
-          const BlockHold = document.createElement('div')
-          if (a == 5) { BlockHold.style.gridRowStart = co[a][0][n].y - 4
-                        BlockHold.style.gridColumnStart = co[a][0][n].x - 3}
-          else {
-            BlockHold.style.gridRowStart = co[a][0][n].y - 4
-            BlockHold.style.gridColumnStart = co[a][0][n].x - 4
-          }
-          BlockHold.classList.add(styles[a])
-          visHold.push(BlockHold)
-          holdBoard.appendChild(BlockHold)
-          visibleBlock[n].remove()
-          shadow[n].remove()
-        }
-      }
-
-      held_a.push(a) // push the current a to use when re-spawning the held block
-
-      for (let e = 0; e <= 3; e++){ // reset BLOCKS
-        cBlok.pop()
-        for (let f = 0; f <= 3; f++){
-        BLOCKS[a][e][f].x = co[a][e][f].x
-        BLOCKS[a][e][f].y = co[a][e][f].y
-        }
-      }
-
-      done = true // to spawn a new block
-      pressed_hold = true
-      hold = 1
-      speed = 10000 // setting speed to something high, so that the next frame gets rendered faster
+      hold_()
     }
-  }
   })
 
   addEventListener("keyup", (event) => { // on release set the keystates to false again
@@ -563,12 +592,7 @@ window.addEventListener('keydown', e => {
 
   window.addEventListener('keypress', function (e) { // on hard drop, replace the blocks position with the shadow's
     if ((e.key === ' ' || e.key === 'Enter') && !end) {
-      speed = 10000
-      score += 30
-      for (let v = 0; v <= 3; v++) {
-        BLOCKS[a][b][v].y = shadow[v].style.gridRowStart - 1
-      }
-      pop.play() // play the pop sound
+      down_hard()
     }    
   })
 
@@ -581,6 +605,60 @@ window.addEventListener('keydown', e => {
         speed = localStorage.difficulty
         break
     }
+  })
+
+  const right = document.getElementById('right')
+
+  right.addEventListener('click', function() {
+    rotate_right()
+  })
+
+  const rightm = document.getElementById('rightm')
+
+  rightm.addEventListener('click', function() {
+    right_move()
+  })
+
+  const left = document.getElementById('left')
+
+  left.addEventListener('click', function() {
+    rotate_left()
+  })
+
+  const leftm = document.getElementById('leftm')
+
+  leftm.addEventListener('click', function() {
+    left_move()
+  })
+
+  const down = document.getElementById('down')
+
+  down.addEventListener('ontouch', function() {
+    speed = 5 * localStorage.difficulty
+  })
+
+  down.addEventListener('ontouchoff', function() {
+    speed = localStorage.difficulty
+  })
+
+  down.addEventListener('mousedown', function() {
+    speed = 5 * localStorage.difficulty
+  })
+
+  down.addEventListener('mouseup', function() {
+    speed = localStorage.difficulty
+  })
+
+  const downh = document.getElementById('downh')
+
+  downh.addEventListener('click', function() {
+    down_hard()
+  })
+
+  const holdd = document.getElementById('hold')
+
+  holdd.addEventListener('click', function() {
+    hold_()
   })
 
   const back = document.getElementById('back');
