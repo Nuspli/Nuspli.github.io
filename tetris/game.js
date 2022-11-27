@@ -377,7 +377,7 @@ window.addEventListener('keydown', e => {
            BLOCKS[a][(b + 1) % 4][1].x == 0 ||
            BLOCKS[a][(b + 1) % 4][2].x == 0 ||
            BLOCKS[a][(b + 1) % 4][3].x == 0){valid_move = false}
-        if(valid_move && !done){
+        if(valid_move && !done && !end){
         b = (b + 1) % 4 // update b
         draw()}
     }
@@ -402,7 +402,7 @@ window.addEventListener('keydown', e => {
          BLOCKS[a][b][1].x == 0 ||
          BLOCKS[a][b][2].x == 0 ||
          BLOCKS[a][b][3].x == 0){valid_move = false}
-      if(valid_move && !done){
+      if(valid_move && !done && !end){
       draw()} else {b = (b + 1) % 4}
   }
 
@@ -418,7 +418,7 @@ window.addEventListener('keydown', e => {
         (BLOCKS[a][b][3].y == setBlocks[t].y && BLOCKS[a][b][3].x - 1 == setBlocks[t].x)
         ){valid_move = false; break}}
 
-        if (valid_move && !done) {
+        if (valid_move && !done && !end) {
             if(BLOCKS[a][b][0].x - 1 != 0 &&
                BLOCKS[a][b][1].x - 1 != 0 &&
                BLOCKS[a][b][2].x - 1 != 0 &&
@@ -448,7 +448,7 @@ window.addEventListener('keydown', e => {
         (BLOCKS[a][b][3].y == setBlocks[t].y && BLOCKS[a][b][3].x + 1 == setBlocks[t].x)
         ){valid_move = false; break}}
 
-        if (valid_move && !done) {
+        if (valid_move && !done && !end) {
             if(BLOCKS[a][b][0].x + 1 != 11 &&
                BLOCKS[a][b][1].x + 1 != 11 &&
                BLOCKS[a][b][2].x + 1 != 11 &&
@@ -466,7 +466,7 @@ window.addEventListener('keydown', e => {
         }
     }
 
-    if (keys.c) { // change/ hold current piece
+    if (keys.c && !end) { // change/ hold current piece
       if (hold == 0){ // is set to 1 if its already been pressed once, so that you can't keep switching the same 2 pieces
       if (actual_first_hold){
         for (let n = 0;n <= 3; n++){ // create the hold piece using the current blocks style and shape
@@ -562,7 +562,7 @@ window.addEventListener('keydown', e => {
   const pop = document.getElementById('pop') // see tetris.html (audio.js for the main theme)
 
   window.addEventListener('keypress', function (e) { // on hard drop, replace the blocks position with the shadow's
-    if (e.key === ' ' || e.key === 'Enter') {
+    if ((e.key === ' ' || e.key === 'Enter') && !end) {
       speed = 10000
       score += 30
       for (let v = 0; v <= 3; v++) {
