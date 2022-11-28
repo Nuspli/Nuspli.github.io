@@ -285,5 +285,12 @@
   <div id="hold-board"></div>
   <script src="game.js" defer type="module"></script>
   <script src="audio.js" defer type="module"></script>
+  <script>
+    window.oncontextmenu = function(event) {
+     event.preventDefault();
+     event.stopPropagation();
+     return false;
+    };
+  </script>
 </body>
 </html>
