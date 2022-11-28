@@ -717,6 +717,14 @@
     .video p {
         padding: 1rem;
     }
+
+    .footer__link--wrapper {
+        margin-left: 5rem;
+    }
+
+    .footer__link--wrapper:nth-child(2){
+        margin-left: 0rem;
+    }
 }
 
 .footer__container_ {
