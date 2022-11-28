@@ -219,7 +219,7 @@ html{
     .highscore__container {
         position: absolute;
         top: 20%;
-        left: 25%;
+        left: 20%;
     }
 
     .main__img--container img {
@@ -239,7 +239,7 @@ html{
 
     .diff__button {
         position: absolute;
-        left: 72%;
+        left: 69%;
         padding: 5px;
     }
 
