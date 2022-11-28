@@ -633,11 +633,11 @@ window.addEventListener('keydown', e => {
 
   const down = document.getElementById('down')
 
-  down.addEventListener('ontouch', function() {
+  down.addEventListener('touchstart', function() {
     speed = 5 * localStorage.difficulty
   })
 
-  down.addEventListener('ontouchoff', function() {
+  down.addEventListener('touchend', function() {
     speed = localStorage.difficulty
   })
 
