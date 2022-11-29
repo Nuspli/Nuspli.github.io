@@ -18,8 +18,8 @@ const play = document.querySelector('.play__button');
 
 play.addEventListener('click', function() {
     var selected = document.getElementById('diff__select').value
-    if (selected == 1){localStorage.difficulty = 1.5}
-    else if (selected == 2){localStorage.difficulty = 4}
+    if (selected == 1){localStorage.difficulty = 1}
+    else if (selected == 2){localStorage.difficulty = 3}
     else {localStorage.difficulty = 8}
     window.location.replace("tetris.html");
 });

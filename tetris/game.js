@@ -31,7 +31,7 @@ let actual_first_hold = true // getting back to that later
 let hold = 0
 
 let lastRenderTime = 0
-if (localStorage.difficulty === undefined) {localStorage.difficulty = 1.5} // default, in case of direct link instead of playing from the menu
+if (localStorage.difficulty === undefined) {localStorage.difficulty = 1} // default, in case of direct link instead of playing from the menu
 let speed = localStorage.difficulty // see app.js, speeds is based on the chosen difficulty
 
 function update() { // updating the blocks position or the rest of the board if it hits the ground / clears a line
@@ -303,31 +303,47 @@ window.requestAnimationFrame(main)
 
 /*============================================== controls ==============================================*/
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 function rotate_right() {
   valid_move = true
 
-        for (let t = 0; t <= setBlocks.length - 1; t ++) {
+  for (let t = 0; t <= setBlocks.length - 1; t ++) {
 
-        if ( // if the block would hit another block after rotating
-        (BLOCKS[a][(b + 1) % 4][0].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][0].x == setBlocks[t].x) ||
-        (BLOCKS[a][(b + 1) % 4][1].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][1].x == setBlocks[t].x) ||
-        (BLOCKS[a][(b + 1) % 4][2].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][2].x == setBlocks[t].x) ||
-        (BLOCKS[a][(b + 1) % 4][3].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][3].x == setBlocks[t].x)
-        ){valid_move = false}} // <--
-        if(BLOCKS[a][(b + 1) % 4][0].x == 11 || // or if it would hit one of the left or right walls
-           BLOCKS[a][(b + 1) % 4][1].x == 11 ||
-           BLOCKS[a][(b + 1) % 4][2].x == 11 ||
-           BLOCKS[a][(b + 1) % 4][3].x == 11 ||
-           BLOCKS[a][(b + 1) % 4][0].x == 0 ||
-           BLOCKS[a][(b + 1) % 4][1].x == 0 ||
-           BLOCKS[a][(b + 1) % 4][2].x == 0 ||
-           BLOCKS[a][(b + 1) % 4][3].x == 0){valid_move = false}
-        if(valid_move && !done && !end){
-        b = (b + 1) % 4 // update b
-        draw()}
+  if ( // if the block would hit another block after rotating
+  (BLOCKS[a][(b + 1) % 4][0].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][0].x == setBlocks[t].x) ||
+  (BLOCKS[a][(b + 1) % 4][1].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][1].x == setBlocks[t].x) ||
+  (BLOCKS[a][(b + 1) % 4][2].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][2].x == setBlocks[t].x) ||
+  (BLOCKS[a][(b + 1) % 4][3].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][3].x == setBlocks[t].x)
+  ){valid_move = false}} // <--
+  if(BLOCKS[a][(b + 1) % 4][0].x == 11 || // or if it would hit one of the left or right walls
+     BLOCKS[a][(b + 1) % 4][1].x == 11 ||
+     BLOCKS[a][(b + 1) % 4][2].x == 11 ||
+     BLOCKS[a][(b + 1) % 4][3].x == 11
+  )
+    {
+      // move the block off the wall
+      if (a == 3 && b == 3) {left_move()} // since the I block is longer
+      left_move()
+    }
+  if(BLOCKS[a][(b + 1) % 4][0].x == 0 ||
+     BLOCKS[a][(b + 1) % 4][1].x == 0 ||
+     BLOCKS[a][(b + 1) % 4][2].x == 0 ||
+     BLOCKS[a][(b + 1) % 4][3].x == 0
+  )
+    {
+      if (a == 3 && b == 1) {right_move()}
+      right_move()
+    }
+
+  if(valid_move && !done && !end){
+  b = (b + 1) % 4 // update b
+  draw()}
 }
 
-function right_move() {
+async function right_move() {
   valid_move = true
 
   for (let t = 0; t <= setBlocks.length - 1; t ++) {
@@ -341,9 +357,9 @@ function right_move() {
 
   if (valid_move && !done && !end) {
       if(BLOCKS[a][b][0].x + 1 != 11 &&
-          BLOCKS[a][b][1].x + 1 != 11 &&
-          BLOCKS[a][b][2].x + 1 != 11 &&
-          BLOCKS[a][b][3].x + 1 != 11){
+         BLOCKS[a][b][1].x + 1 != 11 &&
+         BLOCKS[a][b][2].x + 1 != 11 &&
+         BLOCKS[a][b][3].x + 1 != 11){
       
           for (let e = 0; e <= 3; e++){
               for (let f = 0; f <= 3; f++){
@@ -355,33 +371,46 @@ function right_move() {
       }
   draw()
   }
+  await sleep(150)
+  if (keys.d || keys.r) {right_move()}
 }
 
 function rotate_left() {
   if (b == 0) {b = 3} else {b = (b - 1) % 4}
-      valid_move = true
+    valid_move = true
 
-      for (let t = 0; t <= setBlocks.length - 1; t ++) {
+    for (let t = 0; t <= setBlocks.length - 1; t ++) {
 
-      if (
-      (BLOCKS[a][b][0].y == setBlocks[t].y && BLOCKS[a][b][0].x == setBlocks[t].x) ||
-      (BLOCKS[a][b][1].y == setBlocks[t].y && BLOCKS[a][b][1].x == setBlocks[t].x) ||
-      (BLOCKS[a][b][2].y == setBlocks[t].y && BLOCKS[a][b][2].x == setBlocks[t].x) ||
-      (BLOCKS[a][b][3].y == setBlocks[t].y && BLOCKS[a][b][3].x == setBlocks[t].x)
-      ){valid_move = false}}
-      if(BLOCKS[a][b][0].x == 11 ||
-         BLOCKS[a][b][1].x == 11 ||
-         BLOCKS[a][b][2].x == 11 ||
-         BLOCKS[a][b][3].x == 11 ||
-         BLOCKS[a][b][0].x == 0 ||
-         BLOCKS[a][b][1].x == 0 ||
-         BLOCKS[a][b][2].x == 0 ||
-         BLOCKS[a][b][3].x == 0){valid_move = false}
-    if(valid_move && !done && !end){
-    draw()} else {b = (b + 1) % 4}
+    if (
+    (BLOCKS[a][b][0].y == setBlocks[t].y && BLOCKS[a][b][0].x == setBlocks[t].x) ||
+    (BLOCKS[a][b][1].y == setBlocks[t].y && BLOCKS[a][b][1].x == setBlocks[t].x) ||
+    (BLOCKS[a][b][2].y == setBlocks[t].y && BLOCKS[a][b][2].x == setBlocks[t].x) ||
+    (BLOCKS[a][b][3].y == setBlocks[t].y && BLOCKS[a][b][3].x == setBlocks[t].x)
+    ){valid_move = false}}
+    if(BLOCKS[a][b][0].x == 11 || // or if it would hit one of the left or right walls
+       BLOCKS[a][b][1].x == 11 ||
+       BLOCKS[a][b][2].x == 11 ||
+       BLOCKS[a][b][3].x == 11
+     )
+       {
+         // move the block off the wall
+         if (a == 3 && b == 0) {left_move()}
+         left_move()
+       }
+     if(BLOCKS[a][b][0].x == 0 ||
+        BLOCKS[a][b][1].x == 0 ||
+        BLOCKS[a][b][2].x == 0 ||
+        BLOCKS[a][b][3].x == 0
+     )
+       {
+         if (a == 3 && b == 2) {right_move()}
+         right_move()
+       }
+  if(valid_move && !done && !end){
+  draw()} else {b = (b + 1) % 4}
 }
 
-function left_move() {
+async function left_move() {
   valid_move = true
 
   for (let t = 0; t <= setBlocks.length - 1; t ++) {
@@ -395,9 +424,9 @@ function left_move() {
 
   if (valid_move && !done && !end) {
       if(BLOCKS[a][b][0].x - 1 != 0 &&
-          BLOCKS[a][b][1].x - 1 != 0 &&
-          BLOCKS[a][b][2].x - 1 != 0 &&
-          BLOCKS[a][b][3].x - 1 != 0){
+         BLOCKS[a][b][1].x - 1 != 0 &&
+         BLOCKS[a][b][2].x - 1 != 0 &&
+         BLOCKS[a][b][3].x - 1 != 0){
 
           for (let e = 0; e <= 3; e++){
               for (let f = 0; f <= 3; f++){
@@ -409,18 +438,20 @@ function left_move() {
       }
   draw()
   }
+  await sleep(150)
+  if (keys.l || keys.a) {left_move()}
 }
 
 function down_hard() {
-  speed = 10000
-  score += 30
   for (let v = 0; v <= 3; v++) {
     BLOCKS[a][b][v].y = shadow[v].style.gridRowStart - 1
   }
   pop.play() // play the pop sound
+  speed = 10000
+  score += 30
 }
 
-function hold_() {
+async function hold_() {
   if (hold == 0){ // is set to 1 if its already been pressed once, so that you can't keep switching the same 2 pieces
     if (actual_first_hold){
       for (let n = 0;n <= 3; n++){ // create the hold piece using the current blocks style and shape
