@@ -322,7 +322,7 @@ function rotate_right() {
   (BLOCKS[a][(b + 1) % 4][1].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][1].x == setBlocks[t].x) ||
   (BLOCKS[a][(b + 1) % 4][2].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][2].x == setBlocks[t].x) ||
   (BLOCKS[a][(b + 1) % 4][3].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][3].x == setBlocks[t].x)
-  ){valid_move = false}} // <--
+  ){valid_move = false; break}} // <--
   
   if(BLOCKS[a][(b + 1) % 4][0].x == 11 || // or if it would hit one of the left or right walls
      BLOCKS[a][(b + 1) % 4][1].x == 11 ||
@@ -336,17 +336,17 @@ function rotate_right() {
            (BLOCKS[a][(b + 1) % 4][1].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][1].x - 1 == setBlocks[t].x) ||
            (BLOCKS[a][(b + 1) % 4][2].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][2].x - 1 == setBlocks[t].x) ||
            (BLOCKS[a][(b + 1) % 4][3].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][3].x - 1 == setBlocks[t].x)
-           ){validmove = false}
+           ){valid_move = false; break}
         if (a == 3 && b == 3 && (
            (BLOCKS[a][(b + 1) % 4][0].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][0].x - 2 == setBlocks[t].x) ||
            (BLOCKS[a][(b + 1) % 4][1].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][1].x - 2 == setBlocks[t].x) ||
            (BLOCKS[a][(b + 1) % 4][2].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][2].x - 2 == setBlocks[t].x) ||
            (BLOCKS[a][(b + 1) % 4][3].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][3].x - 2 == setBlocks[t].x)
-           )){validmove2 = false}
+           )){validmove2 = false; valid_move = false; break}
       }
       // move the block off the wall
-      if (validmove) {left_move()} else {valid_move = false}
-      if (a == 3 && b == 3 && validmove2) {left_move()} // since the I block is longer
+      if (valid_move) {left_move()}
+      if (a == 3 && b == 3 && validmove2 && valid_move) {left_move()} // since the I block is longer
     }
   if(BLOCKS[a][(b + 1) % 4][0].x == 0 ||
      BLOCKS[a][(b + 1) % 4][1].x == 0 ||
@@ -360,16 +360,16 @@ function rotate_right() {
            (BLOCKS[a][(b + 1) % 4][1].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][1].x + 1 == setBlocks[t].x) ||
            (BLOCKS[a][(b + 1) % 4][2].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][2].x + 1 == setBlocks[t].x) ||
            (BLOCKS[a][(b + 1) % 4][3].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][3].x + 1 == setBlocks[t].x)
-           ){validmove = false}
+           ){valid_move = false; break}
         if (a == 3 && b == 1 && (
            (BLOCKS[a][(b + 1) % 4][0].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][0].x + 2 == setBlocks[t].x) ||
            (BLOCKS[a][(b + 1) % 4][1].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][1].x + 2 == setBlocks[t].x) ||
            (BLOCKS[a][(b + 1) % 4][2].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][2].x + 2 == setBlocks[t].x) ||
            (BLOCKS[a][(b + 1) % 4][3].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][3].x + 2 == setBlocks[t].x)
-           )){validmove2 = false; valid_move = false}
+           )){validmove2 = false; valid_move = false; break}
       }
-      if (validmove && valid_move) {right_move()} else {valid_move = false}
-      if (a == 3 && b == 1 && validmove2) {right_move()}
+      if (valid_move) {right_move()} else {valid_move = false}
+      if (a == 3 && b == 1 && validmove2 && valid_move) {right_move()}
     }
 
   if(valid_move && !done && !end){
@@ -423,7 +423,7 @@ function rotate_left() { // like rotating right but
   (BLOCKS[a][b - 1][1].y == setBlocks[t].y && BLOCKS[a][b - 1][1].x == setBlocks[t].x) ||
   (BLOCKS[a][b - 1][2].y == setBlocks[t].y && BLOCKS[a][b - 1][2].x == setBlocks[t].x) ||
   (BLOCKS[a][b - 1][3].y == setBlocks[t].y && BLOCKS[a][b - 1][3].x == setBlocks[t].x)
-  ){valid_move = false}}
+  ){valid_move = false; break}}
 
   if(BLOCKS[a][b - 1][0].x == 11 ||
      BLOCKS[a][b - 1][1].x == 11 ||
@@ -437,16 +437,16 @@ function rotate_left() { // like rotating right but
           (BLOCKS[a][b - 1][1].y == setBlocks[t].y && BLOCKS[a][b - 1][1].x - 1 == setBlocks[t].x) ||
           (BLOCKS[a][b - 1][2].y == setBlocks[t].y && BLOCKS[a][b - 1][2].x - 1 == setBlocks[t].x) ||
           (BLOCKS[a][b - 1][3].y == setBlocks[t].y && BLOCKS[a][b - 1][3].x - 1 == setBlocks[t].x)
-          ){validmove = false}
+          ){valid_move = false; break}
         if (a == 3 && b == 3 && (
           (BLOCKS[a][b - 1][0].y == setBlocks[t].y && BLOCKS[a][b - 1][0].x - 2 == setBlocks[t].x) ||
           (BLOCKS[a][b - 1][1].y == setBlocks[t].y && BLOCKS[a][b - 1][1].x - 2 == setBlocks[t].x) ||
           (BLOCKS[a][b - 1][2].y == setBlocks[t].y && BLOCKS[a][b - 1][2].x - 2 == setBlocks[t].x) ||
           (BLOCKS[a][b - 1][3].y == setBlocks[t].y && BLOCKS[a][b - 1][3].x - 2 == setBlocks[t].x)
-          )){validmove2 = false}
+          )){validmove2 = false; valid_move = false; break}
       }
-      if (validmove) {left_move()} else {valid_move = false}
-      if (a == 3 && b == 3 && validmove2) {left_move()}
+      if (valid_move) {left_move()}
+      if (a == 3 && b == 3 && validmove2 && valid_move) {left_move()}
     }
   if(BLOCKS[a][b - 1][0].x == 0 ||
      BLOCKS[a][b - 1][1].x == 0 ||
@@ -460,16 +460,16 @@ function rotate_left() { // like rotating right but
           (BLOCKS[a][b - 1][1].y == setBlocks[t].y && BLOCKS[a][b - 1][1].x + 1 == setBlocks[t].x) ||
           (BLOCKS[a][b - 1][2].y == setBlocks[t].y && BLOCKS[a][b - 1][2].x + 1 == setBlocks[t].x) ||
           (BLOCKS[a][b - 1][3].y == setBlocks[t].y && BLOCKS[a][b - 1][3].x + 1 == setBlocks[t].x)
-          ){validmove = false}
+          ){valid_move = false; break}
         if (a == 3 && b == 1 && (
           (BLOCKS[a][b - 1][0].y == setBlocks[t].y && BLOCKS[a][b - 1][0].x + 2 == setBlocks[t].x) ||
           (BLOCKS[a][b - 1][1].y == setBlocks[t].y && BLOCKS[a][b - 1][1].x + 2 == setBlocks[t].x) ||
           (BLOCKS[a][b - 1][2].y == setBlocks[t].y && BLOCKS[a][b - 1][2].x + 2 == setBlocks[t].x) ||
           (BLOCKS[a][b - 1][3].y == setBlocks[t].y && BLOCKS[a][b - 1][3].x + 2 == setBlocks[t].x)
-          )){validmove2 = false; valid_move = false}
+          )){validmove2 = false; valid_move = false; break}
       }
-      if (validmove && valid_move) {right_move()} else {valid_move = false}
-      if (a == 3 && b == 1 && validmove2) {right_move()}
+      if (valid_move) {right_move()}
+      if (a == 3 && b == 1 && validmove2 && valid_move) {right_move()}
     }
 
   if(valid_move && !done && !end){
