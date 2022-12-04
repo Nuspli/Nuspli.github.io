@@ -1,9 +1,9 @@
 /*  each block is defined on its future spawn position
     BLOCKS consists of 7 block types (L, S, J, I, Z, O, T)
-    each block type has 4 different rotations   ...1
+    each block type has 4 different rotations   ...0
+                                                ...1
                                                 ...2
                                                 ...3
-                                                ...4
     each rotation is made of 4 squares with defined x | y coordinates on the game boards grid
     there is a copy - co[] which is used to reset the movements done in BLOCKS[] every time
     a Block hits the ground -> more on that in game.js
