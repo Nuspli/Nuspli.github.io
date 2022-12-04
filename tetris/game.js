@@ -307,12 +307,11 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-let validmove // for wall bounce 
+// for wall bounce 
 let validmove2
 
 function rotate_right() {
   valid_move = true
-  validmove = true
   validmove2 = true
 
   for (let t = 0; t <= setBlocks.length - 1; t ++) {
@@ -411,7 +410,6 @@ async function right_move() {
 
 function rotate_left() { // like rotating right but 
   valid_move = true
-  validmove = true
   validmove2 = true
 
   if (b == 0) {b = 4} // this serves as modulo
