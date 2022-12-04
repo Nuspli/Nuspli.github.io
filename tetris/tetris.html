@@ -185,6 +185,17 @@
 
     @media screen and (max-width: 600px) {
 
+      body {
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -o-user-select: none;
+        user-select: none;
+        -ms-touch-select: none;
+        touch-action: none;
+        -ms-touch-action: none;
+      }
+
       #audio__button{
         position: absolute;
         top: 1%;
@@ -225,7 +236,7 @@
 
       .buttons__container button {
         background-color: rgb(0, 0, 0);
-        outline: none;
+        border: .5vmin solid #fff;
         border-radius: 5px;
         -webkit-user-select: none;
         -khtml-user-select: none;
@@ -243,15 +254,15 @@
       }
 
       #left {
-        position: relative;
-        top: -49px;
-        left: 104px;
+        position: absolute;
+        top: -110%;
+        left: 20%;
       }
 
       #right {
-        position: relative;
-        top: -49px;
-        left: -104px;
+        position: absolute;
+        top: -110%;
+        left: 61%;
       }
 
       #hold__container h1 {
@@ -263,8 +274,12 @@
       }
 
       #preview__container {
-        left: 78%;
+        left: 76%;
         width: 0;
+      }
+
+      #preview-board {
+        left: 76%;
       }
 
       #game-board {
@@ -273,9 +288,29 @@
         position: absolute;
         top: 20%;
       }
-      
+
       #score {
         font-size: 20px;
+      }
+
+      @media screen and (max-width: 380px) {
+        #preview__container {
+          left: 72%;
+          width: 0;
+        }
+
+        #preview-board {
+          left: 72%;
+        }
+
+        #audio__button{
+
+          font-size: 1.5rem;
+        }
+
+        #back{
+          font-size: 1.5rem;
+        }
       }
     }
 </style>
