@@ -238,14 +238,6 @@
         background-color: rgb(0, 0, 0);
         border: .5vmin solid #fff;
         border-radius: 5px;
-        -webkit-user-select: none;
-        -khtml-user-select: none;
-        -moz-user-select: none;
-        -o-user-select: none;
-        user-select: none;
-        -ms-touch-select: none;
-        touch-action: none;
-        -ms-touch-action: none;
       }
 
       #mobile {
@@ -346,6 +338,7 @@
   <script src="audio.js" defer type="module"></script>
   <script>
     if (window.innerWidth <= 600) {
+      document.body.style.webkitTouchCallout='none';
       window.oncontextmenu = function(event) {
       event.preventDefault();
       event.stopPropagation();
