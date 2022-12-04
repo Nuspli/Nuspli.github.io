@@ -307,8 +307,13 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+let validmove // for wall bounce 
+let validmove2
+
 function rotate_right() {
   valid_move = true
+  validmove = true
+  validmove2 = true
 
   for (let t = 0; t <= setBlocks.length - 1; t ++) {
 
@@ -318,15 +323,30 @@ function rotate_right() {
   (BLOCKS[a][(b + 1) % 4][2].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][2].x == setBlocks[t].x) ||
   (BLOCKS[a][(b + 1) % 4][3].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][3].x == setBlocks[t].x)
   ){valid_move = false}} // <--
+  
   if(BLOCKS[a][(b + 1) % 4][0].x == 11 || // or if it would hit one of the left or right walls
      BLOCKS[a][(b + 1) % 4][1].x == 11 ||
      BLOCKS[a][(b + 1) % 4][2].x == 11 ||
      BLOCKS[a][(b + 1) % 4][3].x == 11
   )
     {
+      for (let t = 0; t <= setBlocks.length - 1; t ++) {
+        if ( // if the block would hit another block after pushing off the wall
+           (BLOCKS[a][(b + 1) % 4][0].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][0].x - 1 == setBlocks[t].x) ||
+           (BLOCKS[a][(b + 1) % 4][1].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][1].x - 1 == setBlocks[t].x) ||
+           (BLOCKS[a][(b + 1) % 4][2].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][2].x - 1 == setBlocks[t].x) ||
+           (BLOCKS[a][(b + 1) % 4][3].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][3].x - 1 == setBlocks[t].x)
+           ){validmove = false}
+        if (a == 3 && b == 3 && (
+           (BLOCKS[a][(b + 1) % 4][0].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][0].x - 2 == setBlocks[t].x) ||
+           (BLOCKS[a][(b + 1) % 4][1].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][1].x - 2 == setBlocks[t].x) ||
+           (BLOCKS[a][(b + 1) % 4][2].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][2].x - 2 == setBlocks[t].x) ||
+           (BLOCKS[a][(b + 1) % 4][3].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][3].x - 2 == setBlocks[t].x)
+           )){validmove2 = false}
+      }
       // move the block off the wall
-      if (a == 3 && b == 3) {left_move()} // since the I block is longer
-      left_move()
+      if (validmove) {left_move()} else {valid_move = false}
+      if (a == 3 && b == 3 && validmove2) {left_move()} // since the I block is longer
     }
   if(BLOCKS[a][(b + 1) % 4][0].x == 0 ||
      BLOCKS[a][(b + 1) % 4][1].x == 0 ||
@@ -334,8 +354,22 @@ function rotate_right() {
      BLOCKS[a][(b + 1) % 4][3].x == 0
   )
     {
-      if (a == 3 && b == 1) {right_move()}
-      right_move()
+      for (let t = 0; t <= setBlocks.length - 1; t ++) {
+        if (
+           (BLOCKS[a][(b + 1) % 4][0].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][0].x + 1 == setBlocks[t].x) ||
+           (BLOCKS[a][(b + 1) % 4][1].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][1].x + 1 == setBlocks[t].x) ||
+           (BLOCKS[a][(b + 1) % 4][2].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][2].x + 1 == setBlocks[t].x) ||
+           (BLOCKS[a][(b + 1) % 4][3].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][3].x + 1 == setBlocks[t].x)
+           ){validmove = false}
+        if (a == 3 && b == 1 && (
+           (BLOCKS[a][(b + 1) % 4][0].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][0].x + 2 == setBlocks[t].x) ||
+           (BLOCKS[a][(b + 1) % 4][1].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][1].x + 2 == setBlocks[t].x) ||
+           (BLOCKS[a][(b + 1) % 4][2].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][2].x + 2 == setBlocks[t].x) ||
+           (BLOCKS[a][(b + 1) % 4][3].y == setBlocks[t].y && BLOCKS[a][(b + 1) % 4][3].x + 2 == setBlocks[t].x)
+           )){validmove2 = false; valid_move = false}
+      }
+      if (validmove && valid_move) {right_move()} else {valid_move = false}
+      if (a == 3 && b == 1 && validmove2) {right_move()}
     }
 
   if(valid_move && !done && !end){
@@ -375,39 +409,72 @@ async function right_move() {
   if (keys.d || keys.r) {right_move()}
 }
 
-function rotate_left() {
-  if (b == 0) {b = 3} else {b = (b - 1) % 4}
-    valid_move = true
+function rotate_left() { // like rotating right but 
+  valid_move = true
+  validmove = true
+  validmove2 = true
 
-    for (let t = 0; t <= setBlocks.length - 1; t ++) {
+  if (b == 0) {b = 4} // this serves as modulo
 
-    if (
-    (BLOCKS[a][b][0].y == setBlocks[t].y && BLOCKS[a][b][0].x == setBlocks[t].x) ||
-    (BLOCKS[a][b][1].y == setBlocks[t].y && BLOCKS[a][b][1].x == setBlocks[t].x) ||
-    (BLOCKS[a][b][2].y == setBlocks[t].y && BLOCKS[a][b][2].x == setBlocks[t].x) ||
-    (BLOCKS[a][b][3].y == setBlocks[t].y && BLOCKS[a][b][3].x == setBlocks[t].x)
-    ){valid_move = false}}
-    if(BLOCKS[a][b][0].x == 11 || // or if it would hit one of the left or right walls
-       BLOCKS[a][b][1].x == 11 ||
-       BLOCKS[a][b][2].x == 11 ||
-       BLOCKS[a][b][3].x == 11
-     )
-       {
-         // move the block off the wall
-         if (a == 3 && b == 0) {left_move()}
-         left_move()
-       }
-     if(BLOCKS[a][b][0].x == 0 ||
-        BLOCKS[a][b][1].x == 0 ||
-        BLOCKS[a][b][2].x == 0 ||
-        BLOCKS[a][b][3].x == 0
-     )
-       {
-         if (a == 3 && b == 2) {right_move()}
-         right_move()
-       }
+  for (let t = 0; t <= setBlocks.length - 1; t ++) {
+
+  if (
+  (BLOCKS[a][b - 1][0].y == setBlocks[t].y && BLOCKS[a][b - 1][0].x == setBlocks[t].x) ||
+  (BLOCKS[a][b - 1][1].y == setBlocks[t].y && BLOCKS[a][b - 1][1].x == setBlocks[t].x) ||
+  (BLOCKS[a][b - 1][2].y == setBlocks[t].y && BLOCKS[a][b - 1][2].x == setBlocks[t].x) ||
+  (BLOCKS[a][b - 1][3].y == setBlocks[t].y && BLOCKS[a][b - 1][3].x == setBlocks[t].x)
+  ){valid_move = false}}
+
+  if(BLOCKS[a][b - 1][0].x == 11 ||
+     BLOCKS[a][b - 1][1].x == 11 ||
+     BLOCKS[a][b - 1][2].x == 11 ||
+     BLOCKS[a][b - 1][3].x == 11
+  )
+    {
+      for (let t = 0; t <= setBlocks.length - 1; t ++) {
+        if (
+          (BLOCKS[a][b - 1][0].y == setBlocks[t].y && BLOCKS[a][b - 1][0].x - 1 == setBlocks[t].x) ||
+          (BLOCKS[a][b - 1][1].y == setBlocks[t].y && BLOCKS[a][b - 1][1].x - 1 == setBlocks[t].x) ||
+          (BLOCKS[a][b - 1][2].y == setBlocks[t].y && BLOCKS[a][b - 1][2].x - 1 == setBlocks[t].x) ||
+          (BLOCKS[a][b - 1][3].y == setBlocks[t].y && BLOCKS[a][b - 1][3].x - 1 == setBlocks[t].x)
+          ){validmove = false}
+        if (a == 3 && b == 3 && (
+          (BLOCKS[a][b - 1][0].y == setBlocks[t].y && BLOCKS[a][b - 1][0].x - 2 == setBlocks[t].x) ||
+          (BLOCKS[a][b - 1][1].y == setBlocks[t].y && BLOCKS[a][b - 1][1].x - 2 == setBlocks[t].x) ||
+          (BLOCKS[a][b - 1][2].y == setBlocks[t].y && BLOCKS[a][b - 1][2].x - 2 == setBlocks[t].x) ||
+          (BLOCKS[a][b - 1][3].y == setBlocks[t].y && BLOCKS[a][b - 1][3].x - 2 == setBlocks[t].x)
+          )){validmove2 = false}
+      }
+      if (validmove) {left_move()} else {valid_move = false}
+      if (a == 3 && b == 3 && validmove2) {left_move()}
+    }
+  if(BLOCKS[a][b - 1][0].x == 0 ||
+     BLOCKS[a][b - 1][1].x == 0 ||
+     BLOCKS[a][b - 1][2].x == 0 ||
+     BLOCKS[a][b - 1][3].x == 0
+  )
+    {
+      for (let t = 0; t <= setBlocks.length - 1; t ++) {
+        if (
+          (BLOCKS[a][b - 1][0].y == setBlocks[t].y && BLOCKS[a][b - 1][0].x + 1 == setBlocks[t].x) ||
+          (BLOCKS[a][b - 1][1].y == setBlocks[t].y && BLOCKS[a][b - 1][1].x + 1 == setBlocks[t].x) ||
+          (BLOCKS[a][b - 1][2].y == setBlocks[t].y && BLOCKS[a][b - 1][2].x + 1 == setBlocks[t].x) ||
+          (BLOCKS[a][b - 1][3].y == setBlocks[t].y && BLOCKS[a][b - 1][3].x + 1 == setBlocks[t].x)
+          ){validmove = false}
+        if (a == 3 && b == 1 && (
+          (BLOCKS[a][b - 1][0].y == setBlocks[t].y && BLOCKS[a][b - 1][0].x + 2 == setBlocks[t].x) ||
+          (BLOCKS[a][b - 1][1].y == setBlocks[t].y && BLOCKS[a][b - 1][1].x + 2 == setBlocks[t].x) ||
+          (BLOCKS[a][b - 1][2].y == setBlocks[t].y && BLOCKS[a][b - 1][2].x + 2 == setBlocks[t].x) ||
+          (BLOCKS[a][b - 1][3].y == setBlocks[t].y && BLOCKS[a][b - 1][3].x + 2 == setBlocks[t].x)
+          )){validmove2 = false; valid_move = false}
+      }
+      if (validmove && valid_move) {right_move()} else {valid_move = false}
+      if (a == 3 && b == 1 && validmove2) {right_move()}
+    }
+
   if(valid_move && !done && !end){
-  draw()} else {b = (b + 1) % 4}
+    b = b - 1
+    draw()}
 }
 
 async function left_move() {
