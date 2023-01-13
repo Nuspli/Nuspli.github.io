@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="logo.ico">
+    <script src="https://kit.fontawesome.com/5a94cd9bd0.js" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chess</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta&display=swap" rel="stylesheet">
+</head>
+<style>
+    body {
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      background-color: black;
+    }
+
+    .board_container {
+        background-color: rgb(100, 80, 80);
+        width: 85vmin;
+        height: 85vmin;
+        display: flex;
+        justify-content: center;
+    }
+
+    #board {
+        margin-top: 5vmin;
+        margin-right: 2%;
+        width: 75vmin;
+        height: 75vmin;
+        display: grid;
+        grid-template-rows: repeat(8, 1fr);
+        grid-template-columns: repeat(8, 1fr);
+    }
+
+    .square {
+        background-color: rgb(255, 168, 168);
+        content: "";
+        display: block;
+        width: 100%;
+        padding-top: 100%;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+
+    .square:nth-child(9n), .square:nth-child(25n), .square:nth-child(2), .square:nth-child(4),
+    .square:nth-child(6), .square:nth-child(8), .square:nth-child(11), .square:nth-child(13),
+    .square:nth-child(15), .square:nth-child(20), .square:nth-child(22), .square:nth-child(24),
+    .square:nth-child(29), .square:nth-child(31), .square:nth-child(34), .square:nth-child(38),
+    .square:nth-child(40), .square:nth-child(41), .square:nth-child(43), .square:nth-child(47),
+    .square:nth-child(52), .square:nth-child(56), .square:nth-child(57), .square:nth-child(59),
+    .square:nth-child(61){
+        background-color: rgb(42, 0, 0);
+    }
+
+    .rows {
+        color: #fff;
+        font-size: 3vmin;
+        position: relative;
+        left: -2%;
+    }
+
+    .row1 {
+        position: relative;
+        top: 9%;
+    }
+
+    .row2 {
+        position: relative;
+        top: 16.25%;
+    }
+
+    .row3 {
+        position: relative;
+        top: 23%;
+    }
+
+    .row4 {
+        position: relative;
+        top: 29.5%;
+    }
+
+    .row5 {
+        position: relative;
+        top: 36.5%;
+    }
+
+    .row6 {
+        position: relative;
+        top: 43%;
+    }
+
+    .row7 {
+        position: relative;
+        top: 50%;
+    }
+
+    .row8 {
+        position: relative;
+        top: 57%;
+    }
+
+    .columns {
+        color: #fff;
+        font-size: 3vmin;
+        position: relative;
+        top: 95%;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        width: 0;
+        height: 0;
+    }
+
+    .column1 {
+        position: relative;
+        left: 3.5vmin;
+    }
+
+    .column2 {
+        position: relative;
+        left: 11vmin;
+    }
+
+    .column3 {
+        position: relative;
+        left: 18vmin;
+    }
+
+    .column4 {
+        position: relative;
+        left: 25.8vmin;
+    }
+
+    .column5 {
+        position: relative;
+        left: 33vmin;
+    }
+
+    .column6 {
+        position: relative;
+        left: 41vmin;
+    }
+
+    .column7 {
+        position: relative;
+        left: 48vmin;
+    }
+
+    .column8 {
+        position: relative;
+        left: 55.4vmin;
+    }
+
+    .square:nth-child(9), .square:nth-child(10), .square:nth-child(11), .square:nth-child(12),
+    .square:nth-child(13), .square:nth-child(14), .square:nth-child(15), .square:nth-child(16) {
+        background-image: url('images_chess/PB.png');
+    }
+
+    .square:nth-child(1), .square:nth-child(8) {
+        background-image: url('images_chess/RB.png');
+    }
+
+    .square:nth-child(2), .square:nth-child(7) {
+        background-image: url('images_chess/HB.png');
+    }
+
+    .square:nth-child(3), .square:nth-child(6) {
+        background-image: url('images_chess/BB.png');
+    }
+
+    .square:nth-child(4){
+        background-image: url('images_chess/QB.png');
+    }
+
+    .square:nth-child(5){
+        background-image: url('images_chess/KB.png');
+    }
+
+    .square:nth-child(49), .square:nth-child(50), .square:nth-child(51), .square:nth-child(52),
+    .square:nth-child(53), .square:nth-child(54), .square:nth-child(55), .square:nth-child(56) {
+        background-image: url('images_chess/PW.png');
+    }
+
+    .square:nth-child(57), .square:nth-child(64) {
+        background-image: url('images_chess/RW.png');
+    }
+
+    .square:nth-child(58), .square:nth-child(63) {
+        background-image: url('images_chess/HW.png');
+    }
+
+    .square:nth-child(59), .square:nth-child(62) {
+        background-image: url('images_chess/BW.png');
+    }
+
+    .square:nth-child(60){
+        background-image: url('images_chess/QW.png');
+    }
+
+    .square:nth-child(61){
+        background-image: url('images_chess/KW.png');
+    }
+
+    .retry {
+        position: relative;
+        left: -10%;
+        top: -7.2vmin;
+    }
+
+    .retry_button {
+        cursor: pointer;
+        border-radius: 10%;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        content: "";
+        display: block;
+        width: 8%;
+        padding: 4%;
+        background-image: url('images_chess/retry.png');
+        background-color: black;
+    }
+
+    .retry_button:hover::after {
+        content: "click to retry";
+        position: absolute;
+        top: -60%;
+        left: 2.25%;
+        transform: translateX(-19%);
+        background-color: #f5f5f5;
+        padding: 1vmin;
+        border-radius: 0.5vmin;
+        font-size: 1.5vmin;
+        display: block;
+    }
+
+
+</style>
+<body>
+    <div class="main">
+        <div class="board_container">
+            <div class="rows">
+                <div class="row1">1</div>
+                <div class="row2">2</div>
+                <div class="row3">3</div>
+                <div class="row4">4</div>
+                <div class="row5">5</div>
+                <div class="row6">6</div>
+                <div class="row7">7</div>
+                <div class="row8">8</div>
+            </div>
+            <div class="columns">
+                <div class="column1">A</div>
+                <div class="column2">B</div>
+                <div class="column3">C</div>
+                <div class="column4">D</div>
+                <div class="column5">E</div>
+                <div class="column6">F</div>
+                <div class="column7">G</div>
+                <div class="column8">H</div>
+            </div>
+            <div id="board">
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+            </div>
+            
+        </div>
+        <div class="retry">
+            <button class="retry_button"></button>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

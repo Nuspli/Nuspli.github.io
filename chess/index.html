@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="logo.ico">
+    <script src="https://kit.fontawesome.com/5a94cd9bd0.js" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chess</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="main">
+        <div class="main__container">
+            <div class="main__content">
+                <h1>CHESS</h1>
+            </div>
+            <button class="play__button"><a>Play</a></button>
+        </div>
+        <div class="main__img--container">
+            <img src="images_chess/title_screen.jpg" alt="pic" id="main__img">
+        </div>
+        <div class="menu__container">
+            <button class="info__button"><p>Info</p></button>
+            <div class="info__container">
+                <h2>play against my chess engine</h2>
+                <p>
+                    adding info later
+                </p>
+            </div>   
+            <button class="diff__button"><p>Difficulty</p></button>
+            <div class="diff__container">
+                <h2>choose a difficulty</h2>
+                <select name="diff__select" id="diff__select">
+                    <option value="1">Easy</option>
+                    <option value="2">Medium</option>
+                    <option value="3">Hard</option>
+                </select>
+            </div>   
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
