@@ -139,16 +139,44 @@ function validate(f, t, piece) {
                     if (i == f - t) {valid = true;}
                     break;
                 }
-            } 
+            }
         }
     }
 
     else if (piece == 'knight') {
-
+        if (f < t) {let a = f; f = t; t = a;}
+        if ((f - t == 17) ||
+            (f - t == 15) ||
+            (f - t == 13) ||
+            (f - t == 10) ||
+            (f - t == 6) ||
+            (f - t == 4)) {
+                valid = true;
+            }
     }
 
     else if (piece == 'bishop') {
-
+        if (f < t) {let a = f; f = t; t = a; a = 1} else {a = -1}
+        if ((f % 9 == t % 9)) {
+            valid = true;
+            for (let i = 1; i <= (f - t) / 9; i++) {
+                if (hasPiece(a * 9 * i + f)) {
+                    valid = false;
+                    if (i == (f - t) / 9) {valid = true;}
+                    break;
+                }
+            }
+        }
+        else if ((f % 7 == t % 7)) {
+            valid = true;
+            for (let i = 1; i <= (f - t) / 7; i++) {
+                if (hasPiece(a * 7 * i + f)) {
+                    valid = false;
+                    if (i == (f - t) / 7) {valid = true;}
+                    break;
+                }
+            }
+        }
     }
 
     else if (piece == 'queen') {
@@ -156,8 +184,7 @@ function validate(f, t, piece) {
     }
 
     else if (piece == 'king') {
-        if (f < t) {let a = f; f = t; t = a; a = 1}
-        console.log(f-t)
+        if (f < t) {let a = f; f = t; t = a;}
         if (f - t == 8 || f - t == 1 || f - t == 7 || f - t == 9) {
             valid = true;
         }
