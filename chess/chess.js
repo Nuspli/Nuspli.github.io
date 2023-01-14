@@ -156,7 +156,7 @@ function validate(f, t, piece) {
     }
 
     else if (piece == 'bishop') {
-        if (f < t) {let a = f; f = t; t = a; a = 1} else {a = -1}
+        if (f < t) {let a = f; f = t; t = a; a = 1} else {a = -1} // going to the right
         if ((f % 9 == t % 9)) {
             valid = true;
             for (let i = 1; i <= (f - t) / 9; i++) {
@@ -167,7 +167,7 @@ function validate(f, t, piece) {
                 }
             }
         }
-        else if ((f % 7 == t % 7)) {
+        else if ((f % 7 == t % 7)) { // going to the left
             valid = true;
             for (let i = 1; i <= (f - t) / 7; i++) {
                 if (hasPiece(a * 7 * i + f)) {
@@ -179,8 +179,57 @@ function validate(f, t, piece) {
         }
     }
 
-    else if (piece == 'queen') {
+    else if (piece == 'queen') { // queen is rook and bishop combined
+        if (f < t) {let a = f; f = t; t = a; a = 1} else {a = -1}
 
+        if ((f - t) % 8 == 0) { // vertical
+            valid = true;
+            for (let i = 1; i <= (f - t) / 8; i++) {
+                if (hasPiece(f - 8 * i)) {
+                    valid = false; 
+                    if (i == (f - t) / 8) {valid = true;}
+                    break;
+                }
+            }
+        }
+        else if (f - (f % 8) == (t - (t % 8)) || f % 8 == 0) { // horizontal
+            valid = true;
+            for (let i = 1; i <= f - t; i++) {
+                if (hasPiece(a * i + f)) {
+                    valid = false;
+                    if (i == f - t) {valid = true;}
+                    break;
+                }
+            }
+        }
+
+        let validrook = valid;
+
+        if (f < t) {let a = f; f = t; t = a; a = 1} else {a = -1} // going to the right
+        if ((f % 9 == t % 9)) {
+            valid = true;
+            for (let i = 1; i <= (f - t) / 9; i++) {
+                if (hasPiece(a * 9 * i + f)) {
+                    valid = false;
+                    if (i == (f - t) / 9) {valid = true;}
+                    break;
+                }
+            }
+        }
+        else if ((f % 7 == t % 7)) { // going to the left
+            valid = true;
+            for (let i = 1; i <= (f - t) / 7; i++) {
+                if (hasPiece(a * 7 * i + f)) {
+                    valid = false;
+                    if (i == (f - t) / 7) {valid = true;}
+                    break;
+                }
+            }
+        }
+
+        let validbishop = valid;
+        
+        valid = validrook || validbishop
     }
 
     else if (piece == 'king') {
