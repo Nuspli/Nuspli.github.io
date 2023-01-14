@@ -42,13 +42,6 @@
 
     .square {
         background-color: rgb(255, 168, 168);
-        content: "";
-        display: block;
-        width: 100%;
-        padding-top: 100%;
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
     }
 
     .square:nth-child(9n), .square:nth-child(25n), .square:nth-child(2), .square:nth-child(4),
@@ -159,53 +152,61 @@
         left: 55.4vmin;
     }
 
-    .square:nth-child(9), .square:nth-child(10), .square:nth-child(11), .square:nth-child(12),
-    .square:nth-child(13), .square:nth-child(14), .square:nth-child(15), .square:nth-child(16) {
+    .piece * * {
+        content: "";
+        display: block;
+        width: 100%;
+        padding-top: 100%;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+
+    .pawn .black{
         background-image: url('images_chess/PB.png');
     }
 
-    .square:nth-child(1), .square:nth-child(8) {
+    .rook .black {
         background-image: url('images_chess/RB.png');
     }
 
-    .square:nth-child(2), .square:nth-child(7) {
+    .knight .black {
         background-image: url('images_chess/HB.png');
     }
 
-    .square:nth-child(3), .square:nth-child(6) {
+    .bishop .black {
         background-image: url('images_chess/BB.png');
     }
 
-    .square:nth-child(4){
+    .queen .black {
         background-image: url('images_chess/QB.png');
     }
 
-    .square:nth-child(5){
+    .king .black {
         background-image: url('images_chess/KB.png');
     }
 
-    .square:nth-child(49), .square:nth-child(50), .square:nth-child(51), .square:nth-child(52),
-    .square:nth-child(53), .square:nth-child(54), .square:nth-child(55), .square:nth-child(56) {
+    .pawn .white {
         background-image: url('images_chess/PW.png');
     }
 
-    .square:nth-child(57), .square:nth-child(64) {
+    .rook .white {
         background-image: url('images_chess/RW.png');
     }
 
-    .square:nth-child(58), .square:nth-child(63) {
+    .knight .white {
         background-image: url('images_chess/HW.png');
     }
 
-    .square:nth-child(59), .square:nth-child(62) {
+    .bishop .white {
         background-image: url('images_chess/BW.png');
     }
 
-    .square:nth-child(60){
+    .queen .white {
         background-image: url('images_chess/QW.png');
     }
 
-    .square:nth-child(61){
+    .king .white {
         background-image: url('images_chess/KW.png');
     }
 
@@ -268,6 +269,22 @@
                 <div class="column8">H</div>
             </div>
             <div id="board">
+                <div class="square"><div class="piece"><div class="rook"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="knight"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="bishop"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="queen"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="king"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="bishop"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="knight"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="rook"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="black"></div></div></div></div>
                 <div class="square"></div>
                 <div class="square"></div>
                 <div class="square"></div>
@@ -300,38 +317,22 @@
                 <div class="square"></div>
                 <div class="square"></div>
                 <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="rook"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="knight"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="bishop"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="queen"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="king"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="bishop"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="knight"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="rook"><div class="white"></div></div></div></div>
             </div>
             
         </div>
