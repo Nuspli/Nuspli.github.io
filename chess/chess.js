@@ -1,12 +1,12 @@
 let selectedPiece;
 let startSquare;
 let endSquare;
-let black = false; //todo:  remove false
+let black;
 
 // Function to handle the selection of a piece
 function dragStart(event) {
     selectedPiece = event.target;
-    //todo uncomment:   if (selectedPiece.lastElementChild.lastElementChild.className != 'white') {black = true;}
+    if (selectedPiece.lastElementChild.lastElementChild.className != 'white') {black = true;}
     event.dataTransfer.setDragImage(event.target, event.target.offsetWidth / 2, event.target.offsetHeight / 2);
     let x = event.clientX, y = event.clientY;
     startSquare = getSquare(x, y)
@@ -131,7 +131,7 @@ function validate(f, t, piece) {
                 }
             }
         }
-        else if (f - (f % 8) == (t - (t % 8)) || f % 8 == 0) {
+        else if (f - (f % 8) == (t - (t % 8)) || f % 8 == 0) { // horizontal
             valid = true;
             for (let i = 1; i <= f - t; i++) {
                 if (hasPiece(a * i + f)) {
@@ -141,8 +141,6 @@ function validate(f, t, piece) {
                 }
             } 
         }
-
-        
     }
 
     else if (piece == 'knight') {
@@ -158,7 +156,11 @@ function validate(f, t, piece) {
     }
 
     else if (piece == 'king') {
-
+        if (f < t) {let a = f; f = t; t = a; a = 1}
+        console.log(f-t)
+        if (f - t == 8 || f - t == 1 || f - t == 7 || f - t == 9) {
+            valid = true;
+        }
     }
 
 }
