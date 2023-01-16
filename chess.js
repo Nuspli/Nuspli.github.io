@@ -357,7 +357,7 @@ function possiblemoves(board) {
                 }}
             }
 
-            else if (board[y][x] == "knightblack") {
+            if (board[y][x] == "knightblack") {
                 if (x != 0 && x != 1 && y != 0) {if (!board[y - 1][x - 2].endsWith("black")) {
                     possible.push({fromY: y, fromX: x, toY: y - 1, toX: x - 2})
                 }}
@@ -382,36 +382,6 @@ function possiblemoves(board) {
                 if (x != 6 && x != 7 && y != 7) {if (!board[y + 1][x + 2].endsWith("black")) {
                     possible.push({fromY: y, fromX: x, toY: y + 1, toX: x + 2})
                 }}
-            }
-
-            else if (board[y][x] == "bishopblack") {
-                let v = 1;
-                let t = - 1;
-                let p = - 1;
-                for (let i = 0; i < 4; i++) {
-                    while (true) {
-                        if (((t == -1 && p == -1) && ( x == 0 || y == 0)) ||
-                            ((t == -1 && p == 1) && ( x == 7 || y == 0)) ||
-                            ((t == 1 && p == 1) && ( x == 7 || y == 7)) ||
-                            ((t == 1 && p == -1) && ( x == 0 || y == 7)) ||
-                            (y + t*v == 0 || y + t*v == 7 || x + p*v == 0 || x + p*v == 7)) {break;}
-
-                        if (board[y + t*v][x + p*v] == "0") {
-                            possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v});
-                        }
-                        else if (board[y + t*v][x + p*v].endsWith("white")) {
-                            possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v});
-                            break;
-                        }
-                        else {
-                            break;
-                        }
-                        v++;
-                    }
-                    if (i == 0) {v = 1; t = - 1; p = 1;}
-                    else if (i == 1) {v = 1; t = 1; p = 1;}
-                    else {v = 1; t = 1; p = - 1;}
-                }
             }
         }
     }
