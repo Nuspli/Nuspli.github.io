@@ -69,12 +69,12 @@ squares.forEach(square => {
                     square.removeChild(square.firstChild);
                 }
                 square.appendChild(selectedPiece);
-                black = false;
                 blacksturn = true;
                 moves ++;
                 firetheengineup();
             }
         }
+        else {black = false;}
     });
 });
 
@@ -124,7 +124,6 @@ function getPieceColor(square) {
 let valid;
 
 function validate(f, t, piece, lastfrom, lastto) {
-    console.log(piece + " from " + f + " to " + t)
 
     valid = false;
 
@@ -268,6 +267,8 @@ function validate(f, t, piece, lastfrom, lastto) {
         }
     }
 
+    if (valid) {console.log("you: " + piece + " from " + f + " to " + t)}
+
 }
 
 /*---------------------------------MY ENGINE STUFF---------------------------------*/
@@ -357,7 +358,7 @@ function possiblemoves(board) {
                 }}
             }
 
-            if (board[y][x] == "knightblack") {
+            else if (board[y][x] == "knightblack") {
                 if (x != 0 && x != 1 && y != 0) {if (!board[y - 1][x - 2].endsWith("black")) {
                     possible.push({fromY: y, fromX: x, toY: y - 1, toX: x - 2})
                 }}
@@ -381,6 +382,151 @@ function possiblemoves(board) {
                 }}
                 if (x != 6 && x != 7 && y != 7) {if (!board[y + 1][x + 2].endsWith("black")) {
                     possible.push({fromY: y, fromX: x, toY: y + 1, toX: x + 2})
+                }}
+            }
+
+            else if (board[y][x] == "bishopblack") {
+                let v = 1;
+                let t = - 1;
+                let p = - 1;
+                for (let i = 0; i < 4; i++) {
+                    while (true) {
+                        if (((t == -1 && p == -1) && ( x == 0 || y == 0)) ||
+                            ((t == -1 && p == 1) && ( x == 7 || y == 0)) ||
+                            ((t == 1 && p == 1) && ( x == 7 || y == 7)) ||
+                            ((t == 1 && p == -1) && ( x == 0 || y == 7)) ||
+                            (y + t*v == 0 || y + t*v == 7 || x + p*v == 0 || x + p*v == 7)) {break;}
+
+                        if (board[y + t*v][x + p*v] == "0") {
+                            possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v});
+                        }
+                        else if (board[y + t*v][x + p*v].endsWith("white")) {
+                            possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v});
+                            break;
+                        }
+                        else {
+                            break;
+                        }
+                        v++;
+                    }
+                    if (i == 0) {v = 1; t = - 1; p = 1;}
+                    else if (i == 1) {v = 1; t = 1; p = 1;}
+                    else {v = 1; t = 1; p = - 1;}
+                }
+            }
+
+            else if (board[y][x] == "rookblack") {
+                let v = 1;
+                let t = 0;
+                let p = - 1;
+                for (let i = 0; i < 4; i++) {
+                    while (true) {
+                        if (((t == 0 && p == -1) && x == 0) ||
+                            ((t == -1 && p == 0) && y == 0) ||
+                            ((t == 0 && p == 1) && x == 7) ||
+                            ((t == 1 && p == 0) && y == 7) ||
+                            (y + t*v == -1 || y + t*v == 8 || x + p*v == -1 || x + p*v == 8)) {break;}
+
+                        if (board[y + t*v][x + p*v] == "0") {
+                            possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v});
+                        }
+                        else if (board[y + t*v][x + p*v].endsWith("white")) {
+                            possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v});
+                            break;
+                        }
+                        else {
+                            break;
+                        }
+                        v++;
+                    }
+                    if (i == 0) {v = 1; t = - 1; p = 0;}
+                    else if (i == 1) {v = 1; t = 0; p = 1;}
+                    else {v = 1; t = 1; p = 0;}
+                }
+            }
+
+            else if (board[y][x] == "queenblack") {
+                let v = 1;
+                let t = 0;
+                let p = - 1;
+                for (let i = 0; i < 4; i++) {
+                    while (true) {
+                        if (((t == 0 && p == -1) && x == 0) ||
+                            ((t == -1 && p == 0) && y == 0) ||
+                            ((t == 0 && p == 1) && x == 7) ||
+                            ((t == 1 && p == 0) && y == 7) ||
+                            (y + t*v == -1 || y + t*v == 8 || x + p*v == -1 || x + p*v == 8)) {break;}
+
+                        if (board[y + t*v][x + p*v] == "0") {
+                            possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v});
+                        }
+                        else if (board[y + t*v][x + p*v].endsWith("white")) {
+                            possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v});
+                            break;
+                        }
+                        else {
+                            break;
+                        }
+                        v++;
+                    }
+                    if (i == 0) {v = 1; t = - 1; p = 0;}
+                    else if (i == 1) {v = 1; t = 0; p = 1;}
+                    else {v = 1; t = 1; p = 0;}
+                }
+
+                v = 1;
+                t = - 1;
+                p = - 1;
+                for (let i = 0; i < 4; i++) {
+                    while (true) {
+                        if (((t == -1 && p == -1) && ( x == 0 || y == 0)) ||
+                            ((t == -1 && p == 1) && ( x == 7 || y == 0)) ||
+                            ((t == 1 && p == 1) && ( x == 7 || y == 7)) ||
+                            ((t == 1 && p == -1) && ( x == 0 || y == 7)) ||
+                            (y + t*v == 0 || y + t*v == 7 || x + p*v == 0 || x + p*v == 7)) {break;}
+
+                        if (board[y + t*v][x + p*v] == "0") {
+                            possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v});
+                        }
+                        else if (board[y + t*v][x + p*v].endsWith("white")) {
+                            possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v});
+                            break;
+                        }
+                        else {
+                            break;
+                        }
+                        v++;
+                    }
+                    if (i == 0) {v = 1; t = - 1; p = 1;}
+                    else if (i == 1) {v = 1; t = 1; p = 1;}
+                    else {v = 1; t = 1; p = - 1;}
+                }
+            }
+
+            else if (board[y][x] == "kingblack") {
+                if (x != 0 && y != 0) {if (!board[y - 1][x - 1].endsWith("black")) {
+                    possible.push({fromY: y, fromX: x, toY: y - 1, toX: x - 1})
+                }}
+                if (y != 0) {if (!board[y - 1][x].endsWith("black")) {
+                    possible.push({fromY: y, fromX: x, toY: y - 1, toX: x})
+                }}
+                if (x != 7 && y != 0) {if (!board[y - 1][x + 1].endsWith("black")) {
+                    possible.push({fromY: y, fromX: x, toY: y - 1, toX: x + 1})
+                }}
+                if ( x != 7) {if (!board[y][x + 1].endsWith("black")) {
+                    possible.push({fromY: y, fromX: x, toY: y, toX: x + 1})
+                }}
+                if (x != 7 && y != 7) {if (!board[y + 1][x + 1].endsWith("black")) {
+                    possible.push({fromY: y, fromX: x, toY: y + 1, toX: x + 1})
+                }}
+                if (y != 7) {if (!board[y + 1][x].endsWith("black")) {
+                    possible.push({fromY: y, fromX: x, toY: y + 1, toX: x})
+                }}
+                if (x != 0 && y != 7) {if (!board[y + 1][x - 1].endsWith("black")) {
+                    possible.push({fromY: y, fromX: x, toY: y + 1, toX: x - 1})
+                }}
+                if (x != 0) {if (!board[y][x - 1].endsWith("black")) {
+                    possible.push({fromY: y, fromX: x, toY: y, toX: x - 1})
                 }}
             }
         }
@@ -411,13 +557,12 @@ function firetheengineup() {
     let fromSquare = squares[best.fromY * 8 + best.fromX]
     let toSquare = squares[best.toY * 8 + best.toX]
 
+    console.log("cpu: " + fromSquare.firstChild.firstChild.className + " from " + (best.fromY * 8 + best.fromX) + " to " + (best.toY * 8 + best.toX))
 
     if (toSquare.hasChildNodes()) {
         toSquare.removeChild(toSquare.firstChild);
     }
     toSquare.appendChild(fromSquare.firstChild)
-
-
 
     blacksturn = false;
 }
