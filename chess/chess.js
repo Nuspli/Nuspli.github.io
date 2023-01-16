@@ -341,7 +341,8 @@ function possiblemoves(board) {
 
     for (let y = 0; y < 8; y++) { // for every black piece check its possible moves
         for (let x = 0; x < 8; x++) {
-            if (board[y][x] == "pawnblack") { // check all pawn moves
+
+            if (board[y][x] == "pawnblack") { // pawn moves
                 if (y != 7) {if (board[y + 1][x] == "0") {
                     possible.push({fromY: y, fromX: x, toY: y + 1, toX: x})
                 }}
@@ -353,6 +354,33 @@ function possiblemoves(board) {
                 }}
                 if (x != 0 && y != 7) {if (board[y + 1][x - 1] != "0" && !board[y + 1][x - 1].endsWith("black")) {
                     possible.push({fromY: y, fromX: x, toY: y + 1, toX: x - 1})
+                }}
+            }
+
+            if (board[y][x] == "knightblack") {
+                if (x != 0 && x != 1 && y != 0) {if (!board[y - 1][x - 2].endsWith("black")) {
+                    possible.push({fromY: y, fromX: x, toY: y - 1, toX: x - 2})
+                }}
+                if (x != 0 && y != 0 && y != 1) {if (!board[y - 2][x - 1].endsWith("black")) {
+                    possible.push({fromY: y, fromX: x, toY: y - 2, toX: x - 1})
+                }}
+                if (x != 7 && y != 0 && y != 1) {if (!board[y - 2][x + 1].endsWith("black")) {
+                    possible.push({fromY: y, fromX: x, toY: y - 2, toX: x + 1})
+                }}
+                if (x != 6 && x != 7 && y != 0) {if (!board[y - 1][x + 2].endsWith("black")) {
+                    possible.push({fromY: y, fromX: x, toY: y - 1, toX: x + 2})
+                }}
+                if (x != 0 && x != 1 && y != 7) {if (!board[y + 1][x - 2].endsWith("black")) {
+                    possible.push({fromY: y, fromX: x, toY: y + 1, toX: x - 2})
+                }}
+                if (x != 0 && y != 6 && y != 7) {if (!board[y + 2][x - 1].endsWith("black")) {
+                    possible.push({fromY: y, fromX: x, toY: y + 2, toX: x - 1})
+                }}
+                if (x != 7 && y != 6 && y != 7) {if (!board[y + 2][x + 1].endsWith("black")) {
+                    possible.push({fromY: y, fromX: x, toY: y + 2, toX: x + 1})
+                }}
+                if (x != 6 && x != 7 && y != 7) {if (!board[y + 1][x + 2].endsWith("black")) {
+                    possible.push({fromY: y, fromX: x, toY: y + 1, toX: x + 2})
                 }}
             }
         }

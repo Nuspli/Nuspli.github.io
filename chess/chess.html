@@ -24,6 +24,7 @@
         align-items: center;
         margin: 0;
         background-color: black;
+        pointer-events: none;
     }
 
     .board_container {
@@ -32,6 +33,14 @@
         height: 85vmin;
         display: flex;
         justify-content: center;
+    }
+
+    .background {
+        position: absolute;
+        display: flex;
+        margin-top: 5vmin;
+        height: 75vmin;
+        width: 75vmin;
     }
 
     #board {
@@ -45,17 +54,7 @@
     }
 
     .square {
-        background-color: rgb(255, 168, 168);
-    }
-
-    .square:nth-child(9n), .square:nth-child(25n), .square:nth-child(2), .square:nth-child(4),
-    .square:nth-child(6), .square:nth-child(8), .square:nth-child(11), .square:nth-child(13),
-    .square:nth-child(15), .square:nth-child(20), .square:nth-child(22), .square:nth-child(24),
-    .square:nth-child(29), .square:nth-child(31), .square:nth-child(34), .square:nth-child(38),
-    .square:nth-child(40), .square:nth-child(41), .square:nth-child(43), .square:nth-child(47),
-    .square:nth-child(52), .square:nth-child(56), .square:nth-child(57), .square:nth-child(59),
-    .square:nth-child(61){
-        background-color: rgb(42, 0, 0);
+        pointer-events: all;
     }
 
     .rows {
@@ -164,6 +163,8 @@
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
+        position: relative;
+        pointer-events: all;
     }
 
     .pawn .black{
@@ -252,6 +253,7 @@
 <body>
     <div class="main">
         <div class="board_container">
+            <div class="background"><img src="images_chess/checkerboard.jpg"></div>
             <div class="rows">
                 <div class="row1">1</div>
                 <div class="row2">2</div>
