@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="images_chess/HW.png">
+    <script src="https://kit.fontawesome.com/5a94cd9bd0.js" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chess</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta&display=swap" rel="stylesheet">
+</head>
+<style>
+    body {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        background-color: black;
+        pointer-events: none;
+    }
+
+    .board_container {
+        background-color: rgb(100, 80, 80);
+        width: 85vmin;
+        height: 85vmin;
+        display: flex;
+        justify-content: center;
+    }
+
+    .background {
+        position: absolute;
+        display: flex;
+        margin-top: 5vmin;
+        height: 75vmin;
+        width: 75vmin;
+    }
+
+    #board {
+        margin-top: 5vmin;
+        margin-right: 2%;
+        width: 75vmin;
+        height: 75vmin;
+        display: grid;
+        grid-template-rows: repeat(8, 1fr);
+        grid-template-columns: repeat(8, 1fr);
+    }
+
+    .square {
+        pointer-events: all;
+    }
+
+    .rows {
+        color: #fff;
+        font-size: 3vmin;
+        position: relative;
+        left: -2%;
+    }
+
+    .row1 {
+        position: relative;
+        top: 9%;
+    }
+
+    .row2 {
+        position: relative;
+        top: 16.25%;
+    }
+
+    .row3 {
+        position: relative;
+        top: 23%;
+    }
+
+    .row4 {
+        position: relative;
+        top: 29.5%;
+    }
+
+    .row5 {
+        position: relative;
+        top: 36.5%;
+    }
+
+    .row6 {
+        position: relative;
+        top: 43%;
+    }
+
+    .row7 {
+        position: relative;
+        top: 50%;
+    }
+
+    .row8 {
+        position: relative;
+        top: 57%;
+    }
+
+    .columns {
+        color: #fff;
+        font-size: 3vmin;
+        position: relative;
+        top: 95%;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        width: 0;
+        height: 0;
+    }
+
+    .column1 {
+        position: relative;
+        left: 3.5vmin;
+    }
+
+    .column2 {
+        position: relative;
+        left: 11vmin;
+    }
+
+    .column3 {
+        position: relative;
+        left: 18vmin;
+    }
+
+    .column4 {
+        position: relative;
+        left: 25.8vmin;
+    }
+
+    .column5 {
+        position: relative;
+        left: 33vmin;
+    }
+
+    .column6 {
+        position: relative;
+        left: 41vmin;
+    }
+
+    .column7 {
+        position: relative;
+        left: 48vmin;
+    }
+
+    .column8 {
+        position: relative;
+        left: 55.4vmin;
+    }
+
+    .piece * * {
+        content: "";
+        display: block;
+        width: 100%;
+        padding-top: 100%;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        position: relative;
+        pointer-events: all;
+    }
+
+    .pawn .black{
+        background-image: url('images_chess/PB.png');
+    }
+
+    .rook .black {
+        background-image: url('images_chess/RB.png');
+    }
+
+    .knight .black {
+        background-image: url('images_chess/HB.png');
+    }
+
+    .bishop .black {
+        background-image: url('images_chess/BB.png');
+    }
+
+    .queen .black {
+        background-image: url('images_chess/QB.png');
+    }
+
+    .king .black {
+        background-image: url('images_chess/KB.png');
+    }
+
+    .pawn .white {
+        background-image: url('images_chess/PW.png');
+    }
+
+    .rook .white {
+        background-image: url('images_chess/RW.png');
+    }
+
+    .knight .white {
+        background-image: url('images_chess/HW.png');
+    }
+
+    .bishop .white {
+        background-image: url('images_chess/BW.png');
+    }
+
+    .queen .white {
+        background-image: url('images_chess/QW.png');
+    }
+
+    .king .white {
+        background-image: url('images_chess/KW.png');
+    }
+
+    .retry {
+        position: relative;
+        left: -10%;
+        top: -7.2vmin;
+    }
+
+    .retry_button {
+        cursor: pointer;
+        border-radius: 10%;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        content: "";
+        display: block;
+        width: 8%;
+        padding: 4%;
+        background-image: url('images_chess/retry.png');
+        background-color: black;
+    }
+
+    .retry_button:hover::after {
+        content: "click to retry";
+        position: absolute;
+        top: -60%;
+        left: 2.25%;
+        transform: translateX(-19%);
+        background-color: #f5f5f5;
+        padding: 1vmin;
+        border-radius: 0.5vmin;
+        font-size: 1.5vmin;
+        display: block;
+    }
+
+
+</style>
+<body>
+    <div class="main">
+        <div class="board_container">
+            <div class="background"><img src="images_chess/checkerboard.jpg"></div>
+            <div class="rows">
+                <div class="row1">1</div>
+                <div class="row2">2</div>
+                <div class="row3">3</div>
+                <div class="row4">4</div>
+                <div class="row5">5</div>
+                <div class="row6">6</div>
+                <div class="row7">7</div>
+                <div class="row8">8</div>
+            </div>
+            <div class="columns">
+                <div class="column1">A</div>
+                <div class="column2">B</div>
+                <div class="column3">C</div>
+                <div class="column4">D</div>
+                <div class="column5">E</div>
+                <div class="column6">F</div>
+                <div class="column7">G</div>
+                <div class="column8">H</div>
+            </div>
+            <div id="board">
+                <div class="square"><div class="piece"><div class="rook"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="knight"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="bishop"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="queen"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="king"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="bishop"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="knight"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="rook"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="black"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="black"></div></div></div></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="pawn"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="rook"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="knight"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="bishop"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="queen"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="king"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="bishop"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="knight"><div class="white"></div></div></div></div>
+                <div class="square"><div class="piece"><div class="rook"><div class="white"></div></div></div></div>
+            </div>
+            
+        </div>
+        <div class="retry">
+            <button class="retry_button"></button>
+        </div>
+    </div>
+    <script src="chess.js"></script>
+</body>
+</html>
