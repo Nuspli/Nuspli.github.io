@@ -110,7 +110,7 @@
         position: relative;
         top: 95%;
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        grid-template-columns: repeat(8, 1fr);
         width: 0;
         height: 0;
     }
@@ -222,6 +222,7 @@
     }
 
     .retry_button {
+        pointer-events: all;
         cursor: pointer;
         border-radius: 10%;
         background-size: contain;
@@ -253,7 +254,7 @@
 <body>
     <div class="main">
         <div class="board_container">
-            <div class="background"><img src="images_chess/checkerboard.jpg"></div>
+            <div class="background" draggable="false"><img src="images_chess/checkerboard.jpg"></div>
             <div class="rows">
                 <div class="row1">1</div>
                 <div class="row2">2</div>

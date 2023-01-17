@@ -50,7 +50,7 @@ squares.forEach(square => {
     square.addEventListener('dragover', function(event) {
         event.preventDefault();
     });
-    square.addEventListener('drop', function(event) {
+    square.addEventListener('drop', function(event) { // main loop (kind of)
         event.preventDefault();
 
         if (square.lastElementChild) {
@@ -69,9 +69,23 @@ squares.forEach(square => {
                     square.removeChild(square.firstChild);
                 }
                 square.appendChild(selectedPiece);
+                if (checkCheckmateBlack()){
+                    setTimeout(() => {
+                        if (confirm("yay, you won! now go get a real opponent ...\npress ok to restart the game")) {
+                            window.location.reload()
+                        }
+                    }, 0)
+                }
                 blacksturn = true;
                 moves ++;
                 firetheengineup();
+                if (checkCheckmateWhite()){
+                    setTimeout(() => {
+                        if (confirm("Imagine losing to this crappy engine xD\nget a life or press ok to restart the game")) {
+                            window.location.reload()
+                        }
+                    }, 0)
+                }
             }
         }
         else {black = false;}
@@ -269,6 +283,32 @@ function validate(f, t, piece, lastfrom, lastto) {
 
     if (valid) {console.log("you: " + piece + " from " + f + " to " + t)}
 
+}
+
+function checkCheckmateBlack() {
+    let blackIsMate = true;
+    for (let i = 0; i < squares.length; i++) {
+        if (squares[i].lastElementChild) {
+            if (squares[i].lastElementChild.lastElementChild.className == "king" &&
+                squares[i].lastElementChild.lastElementChild.lastElementChild.className == "black") {
+                    blackIsMate = false
+            }
+        }
+    }
+    return blackIsMate
+}
+
+function checkCheckmateWhite() {
+    let whiteIsMate = true;
+    for (let i = 0; i < squares.length; i++) {
+        if (squares[i].lastElementChild) {
+            if (squares[i].lastElementChild.lastElementChild.className == "king" &&
+                squares[i].lastElementChild.lastElementChild.lastElementChild.className == "white") {
+                whiteIsMate = false
+            }
+        }
+    }
+    return whiteIsMate
 }
 
 /*---------------------------------MY ENGINE STUFF---------------------------------*/
@@ -537,8 +577,36 @@ function possiblemoves(board) {
     
 }
 
-function bestMove(possible) {
-    let best = possible[Math.floor(Math.random() * possible.length)]
+function bestMove(possible, black, white) { //todo...lol
+
+    let best;
+    let max = 0;
+    let maxIndex;
+
+    for (let i = 0; i < possible.length; i++) {
+
+        let temp = board[possible[i].toY][possible[i].toX]
+
+        board[possible[i].toY][possible[i].toX] = board[possible[i].fromY][possible[i].fromX]
+        board[possible[i].fromY][possible[i].fromX] = "0"
+
+        difference = (blackMaterial(board) - black) + (white - whiteMaterial(board))
+
+        if (difference > max) {maxIndex = i; max = difference}
+
+        board[possible[i].fromY][possible[i].fromX] = board[possible[i].toY][possible[i].toX]
+        board[possible[i].toY][possible[i].toX] = temp
+    }
+
+    console.log(max)
+
+    if (max == 0) {
+        best = possible[Math.floor(Math.random() * possible.length)]
+    }
+    else {
+        best = possible[maxIndex]
+    }
+    
     //console.log(best)
     return best
 }
@@ -550,9 +618,12 @@ function firetheengineup() {
     //console.log("white material: " + whiteMaterial(currentBoard))
     //console.log("black material: " + blackMaterial(currentBoard))
 
+    let scoreWhite = whiteMaterial(currentBoard)
+    let scoreBlack = blackMaterial(currentBoard)
+
     let possible = possiblemoves(currentBoard);
 
-    let best = bestMove(possible)
+    let best = bestMove(possible, scoreBlack, scoreWhite)
 
     let fromSquare = squares[best.fromY * 8 + best.fromX]
     let toSquare = squares[best.toY * 8 + best.toX]
