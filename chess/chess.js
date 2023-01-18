@@ -598,11 +598,23 @@ function possiblemoves(board, end) {
     
 }
 
+function maxi(arr) {
+    let t = arr[0]
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] > t) {
+            t = arr[i]
+        }
+    }
+    return t
+}
+
 function bestMove(possible, black, white) { //todo...lol
 
     let best;
     let max = 0;
     let maxIndex;
+    let q = [];
+    let p = [];
 
     for (let i = 0; i < possible.length; i++) {
 
@@ -619,7 +631,6 @@ function bestMove(possible, black, white) { //todo...lol
 
         let possible2 = possiblemoves(board, "white")
         let max2 = 0;
-        let maxIndex2;
 
         let black2 = blackMaterial(board)
         let white2 = whiteMaterial(board)
@@ -633,27 +644,33 @@ function bestMove(possible, black, white) { //todo...lol
 
             let difference2 = (whiteMaterial(board) - white2) + (black2 - blackMaterial(board))
 
-            if (difference2 > max2) {maxIndex2 = i; max2 = difference2}
+            if (difference2 > max2) {max2 = difference2}
 
             board[possible2[i].fromY][possible2[i].fromX] = board[possible2[i].toY][possible2[i].toX]
             board[possible2[i].toY][possible2[i].toX] = temp2
         }
         /*----------------------------------------------------------------------------*/
 
-        if (difference > max && difference >= max2) {maxIndex = i; max = difference}
+        difference -= max2
+
+        p.push(difference)
 
         board[possible[i].fromY][possible[i].fromX] = board[possible[i].toY][possible[i].toX]
         board[possible[i].toY][possible[i].toX] = temp
     }
 
-    if (max == 0) {
-        best = possible[Math.floor(Math.random() * possible.length)]
+    for (let i = 0; i < p.length; i++) {
+        if (p[i] == maxi(p)) {
+            q.push(i)
+        }
     }
-    else {
-        best = possible[maxIndex]
-    }
-    
-    //console.log(best)
+
+    console.log(p, q)
+
+    best = possible[q[Math.floor(Math.random() * q.length)]]
+    console.log(maxi(p))
+    console.log(p.indexOf(maxi(p)))
+
     return best
 }
 
