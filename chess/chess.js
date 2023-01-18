@@ -375,57 +375,79 @@ function getBoard() {
     return board
 }
 
-function possiblemoves(board) {
+function possiblemoves(board, end) {
 
-    let possible = []
+    let possible = [];
+    let otherend;
 
+    if (end == "white") {
+        otherend = "black"
+    }
+    else {
+        otherend = "white"
+    }
 
     for (let y = 0; y < 8; y++) { // for every black piece check its possible moves
         for (let x = 0; x < 8; x++) {
 
-            if (board[y][x] == "pawnblack") { // pawn moves
+            if (board[y][x] == "pawn" + end && end == "black") { // pawn moves if black
                 if (y != 7) {if (board[y + 1][x] == "0") {
                     possible.push({fromY: y, fromX: x, toY: y + 1, toX: x})
                 }}
                 if (y == 1) {if (board[y + 1][x] == "0" && board[y + 2][x] == "0") {
                     possible.push({fromY: y, fromX: x, toY: y + 2, toX: x})
                 }}
-                if (x != 7 && y != 7) {if (board[y + 1][x + 1] != "0" && !board[y + 1][x + 1].endsWith("black")) {
+                if (x != 7 && y != 7) {if (board[y + 1][x + 1] != "0" && !board[y + 1][x + 1].endsWith(end)) {
                     possible.push({fromY: y, fromX: x, toY: y + 1, toX: x + 1})
                 }}
-                if (x != 0 && y != 7) {if (board[y + 1][x - 1] != "0" && !board[y + 1][x - 1].endsWith("black")) {
+                if (x != 0 && y != 7) {if (board[y + 1][x - 1] != "0" && !board[y + 1][x - 1].endsWith(end)) {
                     possible.push({fromY: y, fromX: x, toY: y + 1, toX: x - 1})
                 }}
             }
 
-            else if (board[y][x] == "knightblack") {
-                if (x != 0 && x != 1 && y != 0) {if (!board[y - 1][x - 2].endsWith("black")) {
+            else if (board[y][x] == "pawn" + end && end == "white") { // pawn moves if white
+                if (y != 0) {if (board[y - 1][x] == "0") {
+                    possible.push({fromY: y, fromX: x, toY: y - 1, toX: x})
+                }}
+                if (y == 6) {if (board[y - 1][x] == "0" && board[y - 2][x] == "0") {
+                    possible.push({fromY: y, fromX: x, toY: y - 2, toX: x})
+                }}
+                if (x != 7 && y != 0) {if (board[y - 1][x + 1] != "0" && !board[y + 1][x + 1].endsWith(end)) {
+                    possible.push({fromY: y, fromX: x, toY: y - 1, toX: x + 1})
+                }}
+                if (x != 0 && y != 0) {if (board[y - 1][x - 1] != "0" && !board[y + 1][x - 1].endsWith(end)) {
+                    possible.push({fromY: y, fromX: x, toY: y - 1, toX: x - 1})
+                }}
+            }
+
+            else if (board[y][x] == "knight" + end) {
+                if (x != 0 && x != 1 && y != 0) {if (!board[y - 1][x - 2].endsWith(end)) {
                     possible.push({fromY: y, fromX: x, toY: y - 1, toX: x - 2})
                 }}
-                if (x != 0 && y != 0 && y != 1) {if (!board[y - 2][x - 1].endsWith("black")) {
+                if (x != 0 && y != 0 && y != 1) {if (!board[y - 2][x - 1].endsWith(end)) {
                     possible.push({fromY: y, fromX: x, toY: y - 2, toX: x - 1})
                 }}
-                if (x != 7 && y != 0 && y != 1) {if (!board[y - 2][x + 1].endsWith("black")) {
+                if (x != 7 && y != 0 && y != 1) {if (!board[y - 2][x + 1].endsWith(end)) {
                     possible.push({fromY: y, fromX: x, toY: y - 2, toX: x + 1})
                 }}
-                if (x != 6 && x != 7 && y != 0) {if (!board[y - 1][x + 2].endsWith("black")) {
+                if (x != 6 && x != 7 && y != 0) {if (!board[y - 1][x + 2].endsWith(end)) {
                     possible.push({fromY: y, fromX: x, toY: y - 1, toX: x + 2})
                 }}
-                if (x != 0 && x != 1 && y != 7) {if (!board[y + 1][x - 2].endsWith("black")) {
+                if (x != 0 && x != 1 && y != 7) {if (!board[y + 1][x - 2].endsWith(end)) {
                     possible.push({fromY: y, fromX: x, toY: y + 1, toX: x - 2})
                 }}
-                if (x != 0 && y != 6 && y != 7) {if (!board[y + 2][x - 1].endsWith("black")) {
+                if (x != 0 && y != 6 && y != 7) {if (!board[y + 2][x - 1].endsWith(end)) {
                     possible.push({fromY: y, fromX: x, toY: y + 2, toX: x - 1})
                 }}
-                if (x != 7 && y != 6 && y != 7) {if (!board[y + 2][x + 1].endsWith("black")) {
+                if (x != 7 && y != 6 && y != 7) {if (!board[y + 2][x + 1].endsWith(end)) {
                     possible.push({fromY: y, fromX: x, toY: y + 2, toX: x + 1})
                 }}
-                if (x != 6 && x != 7 && y != 7) {if (!board[y + 1][x + 2].endsWith("black")) {
+                if (x != 6 && x != 7 && y != 7) {if (!board[y + 1][x + 2].endsWith(end)) {
                     possible.push({fromY: y, fromX: x, toY: y + 1, toX: x + 2})
                 }}
             }
 
-            else if (board[y][x] == "bishopblack") {
+            else if (board[y][x] == "bishop" + end) {
                 let v = 1;
                 let t = - 1;
                 let p = - 1;
@@ -440,7 +462,7 @@ function possiblemoves(board) {
                         if (board[y + t*v][x + p*v] == "0") {
                             possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v});
                         }
-                        else if (board[y + t*v][x + p*v].endsWith("white")) {
+                        else if (board[y + t*v][x + p*v].endsWith(otherend)) {
                             possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v});
                             break;
                         }
@@ -455,7 +477,7 @@ function possiblemoves(board) {
                 }
             }
 
-            else if (board[y][x] == "rookblack") {
+            else if (board[y][x] == "rook" + end) {
                 let v = 1;
                 let t = 0;
                 let p = - 1;
@@ -470,7 +492,7 @@ function possiblemoves(board) {
                         if (board[y + t*v][x + p*v] == "0") {
                             possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v});
                         }
-                        else if (board[y + t*v][x + p*v].endsWith("white")) {
+                        else if (board[y + t*v][x + p*v].endsWith(otherend)) {
                             possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v});
                             break;
                         }
@@ -485,7 +507,7 @@ function possiblemoves(board) {
                 }
             }
 
-            else if (board[y][x] == "queenblack") {
+            else if (board[y][x] == "queen" + end) {
                 let v = 1;
                 let t = 0;
                 let p = - 1;
@@ -500,7 +522,7 @@ function possiblemoves(board) {
                         if (board[y + t*v][x + p*v] == "0") {
                             possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v});
                         }
-                        else if (board[y + t*v][x + p*v].endsWith("white")) {
+                        else if (board[y + t*v][x + p*v].endsWith(otherend)) {
                             possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v});
                             break;
                         }
@@ -528,7 +550,7 @@ function possiblemoves(board) {
                         if (board[y + t*v][x + p*v] == "0") {
                             possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v});
                         }
-                        else if (board[y + t*v][x + p*v].endsWith("white")) {
+                        else if (board[y + t*v][x + p*v].endsWith(otherend)) {
                             possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v});
                             break;
                         }
@@ -543,36 +565,35 @@ function possiblemoves(board) {
                 }
             }
 
-            else if (board[y][x] == "kingblack") {
-                if (x != 0 && y != 0) {if (!board[y - 1][x - 1].endsWith("black")) {
+            else if (board[y][x] == "king" + end) {
+                if (x != 0 && y != 0) {if (!board[y - 1][x - 1].endsWith(end)) {
                     possible.push({fromY: y, fromX: x, toY: y - 1, toX: x - 1})
                 }}
-                if (y != 0) {if (!board[y - 1][x].endsWith("black")) {
+                if (y != 0) {if (!board[y - 1][x].endsWith(end)) {
                     possible.push({fromY: y, fromX: x, toY: y - 1, toX: x})
                 }}
-                if (x != 7 && y != 0) {if (!board[y - 1][x + 1].endsWith("black")) {
+                if (x != 7 && y != 0) {if (!board[y - 1][x + 1].endsWith(end)) {
                     possible.push({fromY: y, fromX: x, toY: y - 1, toX: x + 1})
                 }}
-                if ( x != 7) {if (!board[y][x + 1].endsWith("black")) {
+                if ( x != 7) {if (!board[y][x + 1].endsWith(end)) {
                     possible.push({fromY: y, fromX: x, toY: y, toX: x + 1})
                 }}
-                if (x != 7 && y != 7) {if (!board[y + 1][x + 1].endsWith("black")) {
+                if (x != 7 && y != 7) {if (!board[y + 1][x + 1].endsWith(end)) {
                     possible.push({fromY: y, fromX: x, toY: y + 1, toX: x + 1})
                 }}
-                if (y != 7) {if (!board[y + 1][x].endsWith("black")) {
+                if (y != 7) {if (!board[y + 1][x].endsWith(end)) {
                     possible.push({fromY: y, fromX: x, toY: y + 1, toX: x})
                 }}
-                if (x != 0 && y != 7) {if (!board[y + 1][x - 1].endsWith("black")) {
+                if (x != 0 && y != 7) {if (!board[y + 1][x - 1].endsWith(end)) {
                     possible.push({fromY: y, fromX: x, toY: y + 1, toX: x - 1})
                 }}
-                if (x != 0) {if (!board[y][x - 1].endsWith("black")) {
+                if (x != 0) {if (!board[y][x - 1].endsWith(end)) {
                     possible.push({fromY: y, fromX: x, toY: y, toX: x - 1})
                 }}
             }
         }
     }
 
-    //console.log(possible)
     return possible
     
 }
@@ -585,20 +606,45 @@ function bestMove(possible, black, white) { //todo...lol
 
     for (let i = 0; i < possible.length; i++) {
 
+        /*----------------------update position after blacks move----------------------*/
+
         let temp = board[possible[i].toY][possible[i].toX]
 
         board[possible[i].toY][possible[i].toX] = board[possible[i].fromY][possible[i].fromX]
         board[possible[i].fromY][possible[i].fromX] = "0"
 
-        difference = (blackMaterial(board) - black) + (white - whiteMaterial(board))
+        let difference = (blackMaterial(board) - black) + (white - whiteMaterial(board))
 
-        if (difference > max) {maxIndex = i; max = difference}
+        /*-----------------------check for whites best response-----------------------*/
+
+        let possible2 = possiblemoves(board, "white")
+        let max2 = 0;
+        let maxIndex2;
+
+        let black2 = blackMaterial(board)
+        let white2 = whiteMaterial(board)
+
+        for (let i = 0; i < possible2.length; i++) {
+
+            let temp2 = board[possible2[i].toY][possible2[i].toX]
+
+            board[possible2[i].toY][possible2[i].toX] = board[possible2[i].fromY][possible2[i].fromX]
+            board[possible2[i].fromY][possible2[i].fromX] = "0"
+
+            let difference2 = (whiteMaterial(board) - white2) + (black2 - blackMaterial(board))
+
+            if (difference2 > max2) {maxIndex2 = i; max2 = difference2}
+
+            board[possible2[i].fromY][possible2[i].fromX] = board[possible2[i].toY][possible2[i].toX]
+            board[possible2[i].toY][possible2[i].toX] = temp2
+        }
+        /*----------------------------------------------------------------------------*/
+
+        if (difference > max && difference >= max2) {maxIndex = i; max = difference}
 
         board[possible[i].fromY][possible[i].fromX] = board[possible[i].toY][possible[i].toX]
         board[possible[i].toY][possible[i].toX] = temp
     }
-
-    console.log(max)
 
     if (max == 0) {
         best = possible[Math.floor(Math.random() * possible.length)]
@@ -621,7 +667,7 @@ function firetheengineup() {
     let scoreWhite = whiteMaterial(currentBoard)
     let scoreBlack = blackMaterial(currentBoard)
 
-    let possible = possiblemoves(currentBoard);
+    let possible = possiblemoves(currentBoard, "black");
 
     let best = bestMove(possible, scoreBlack, scoreWhite)
 
