@@ -78,14 +78,10 @@ squares.forEach(square => {
                 }
                 blacksturn = true;
                 moves ++;
-                firetheengineup();
-                if (checkCheckmateWhite()){
-                    setTimeout(() => {
-                        if (confirm("Imagine losing to this crappy engine xD\nget a life or press ok to restart the game")) {
-                            window.location.reload()
-                        }
-                    }, 0)
-                }
+                
+                setTimeout(() => {
+                    firetheengineup();
+                }, 0)
             }
         }
         else {black = false;}
@@ -154,7 +150,7 @@ function validate(f, t, piece, lastfrom, lastto) {
                                         valid = true;
                                      }}
         if ((f - t == 8 && !hasPiece(t)) || // 1 step
-            (f - t == 16 && !hasPiece(t) && !hasPiece(t - 8) && f >= 49) || // 2 step first move
+            (f - t == 16 && !hasPiece(t) && !hasPiece(f - 8) && f >= 49) || // 2 step first move
             (f - t == 7 && hasPiece(t)) || // take right
             (f - t == 9 && hasPiece(t)) // take left
             ) {valid = true;}
@@ -611,14 +607,13 @@ function maxi(arr) {
 function bestMove(possible, black, white, board) { //todo...lol
 
     let best;
-    let max = 0;
-    let maxIndex;
     let q = [];
     let p = [];
 
     for (let i = 0; i < possible.length; i++) {
 
         /*----------------------update position after blacks move----------------------*/
+        //1 move black
 
         let temp = board[possible[i].toY][possible[i].toX]
 
@@ -628,6 +623,7 @@ function bestMove(possible, black, white, board) { //todo...lol
         let difference = (blackMaterial(board) - black) + (white - whiteMaterial(board))
 
         /*-----------------------check for whites best response-----------------------*/
+        //1 move white
 
         let possible2 = possiblemoves(board, "white")
         let r = [];
@@ -643,20 +639,47 @@ function bestMove(possible, black, white, board) { //todo...lol
             board[possible2[i].toY][possible2[i].toX] = board[possible2[i].fromY][possible2[i].fromX]
             board[possible2[i].fromY][possible2[i].fromX] = "0"
 
-            //console.log(blackMaterial(board))
-
             difference2 = (whiteMaterial(board) - white2) + (black2 - blackMaterial(board))
+
+            //#########################################################################
+            //2 moves lookahead black
+
+            let possible3 = possiblemoves(board, "black")
+            let m = [];
+
+            let black3 = blackMaterial(board)
+            let white3 = whiteMaterial(board)
+            let difference3;
+
+            for (let i = 0; i < possible3.length; i++) {
+
+                let temp3 = board[possible3[i].toY][possible3[i].toX]
+    
+                board[possible3[i].toY][possible3[i].toX] = board[possible3[i].fromY][possible3[i].fromX]
+                board[possible3[i].fromY][possible3[i].fromX] = "0"
+    
+                difference3 = (blackMaterial(board) - black3) + (white3 - whiteMaterial(board))
+
+                
+
+                m.push(difference3)
+
+                board[possible3[i].fromY][possible3[i].fromX] = board[possible3[i].toY][possible3[i].toX]
+                board[possible3[i].toY][possible3[i].toX] = temp3
+            }
+
+            difference2 -= maxi(m)
+            //#########################################################################
 
             r.push(difference2)
 
             board[possible2[i].fromY][possible2[i].fromX] = board[possible2[i].toY][possible2[i].toX]
             board[possible2[i].toY][possible2[i].toX] = temp2
         }
+        difference -= maxi(r)
         /*----------------------------------------------------------------------------*/
 
         //console.log("r", r)
-
-        difference -= maxi(r)
 
         //console.log("max", maxi(r), "after", possible[i])
 
@@ -672,7 +695,7 @@ function bestMove(possible, black, white, board) { //todo...lol
         }
     }
 
-    //console.log(p, q)
+    console.log(p, q)
 
     best = possible[q[Math.floor(Math.random() * q.length)]]
     //console.log(maxi(p))
@@ -705,4 +728,12 @@ function firetheengineup() {
     toSquare.appendChild(fromSquare.firstChild)
 
     blacksturn = false;
+
+    if (checkCheckmateWhite()){
+        setTimeout(() => {
+            if (confirm("Imagine losing to this crappy engine xD\nget a life or press ok to restart the game")) {
+                window.location.reload()
+            }
+        }, 0)
+    }
 }
