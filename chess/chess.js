@@ -457,7 +457,7 @@ function possiblemoves(board, end) {
                             ((t == -1 && p == 1) && ( x == 7 || y == 0)) ||
                             ((t == 1 && p == 1) && ( x == 7 || y == 7)) ||
                             ((t == 1 && p == -1) && ( x == 0 || y == 7)) ||
-                            (y + t*v == 0 || y + t*v == 7 || x + p*v == 0 || x + p*v == 7)) {break;}
+                            (y + t*v == -1 || y + t*v == 8 || x + p*v == -1 || x + p*v == 8)) {break;}
 
                         if (board[y + t*v][x + p*v] == "0") {
                             possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v});
@@ -545,7 +545,7 @@ function possiblemoves(board, end) {
                             ((t == -1 && p == 1) && ( x == 7 || y == 0)) ||
                             ((t == 1 && p == 1) && ( x == 7 || y == 7)) ||
                             ((t == 1 && p == -1) && ( x == 0 || y == 7)) ||
-                            (y + t*v == 0 || y + t*v == 7 || x + p*v == 0 || x + p*v == 7)) {break;}
+                            (y + t*v == -1 || y + t*v == 8 || x + p*v == -1 || x + p*v == 8)) {break;}
 
                         if (board[y + t*v][x + p*v] == "0") {
                             possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v});
@@ -608,7 +608,7 @@ function maxi(arr) {
     return t
 }
 
-function bestMove(possible, black, white) { //todo...lol
+function bestMove(possible, black, white, board) { //todo...lol
 
     let best;
     let max = 0;
@@ -630,10 +630,11 @@ function bestMove(possible, black, white) { //todo...lol
         /*-----------------------check for whites best response-----------------------*/
 
         let possible2 = possiblemoves(board, "white")
-        let max2 = 0;
+        let r = [];
 
         let black2 = blackMaterial(board)
         let white2 = whiteMaterial(board)
+        let difference2;
 
         for (let i = 0; i < possible2.length; i++) {
 
@@ -642,16 +643,22 @@ function bestMove(possible, black, white) { //todo...lol
             board[possible2[i].toY][possible2[i].toX] = board[possible2[i].fromY][possible2[i].fromX]
             board[possible2[i].fromY][possible2[i].fromX] = "0"
 
-            let difference2 = (whiteMaterial(board) - white2) + (black2 - blackMaterial(board))
+            //console.log(blackMaterial(board))
 
-            if (difference2 > max2) {max2 = difference2}
+            difference2 = (whiteMaterial(board) - white2) + (black2 - blackMaterial(board))
+
+            r.push(difference2)
 
             board[possible2[i].fromY][possible2[i].fromX] = board[possible2[i].toY][possible2[i].toX]
             board[possible2[i].toY][possible2[i].toX] = temp2
         }
         /*----------------------------------------------------------------------------*/
 
-        difference -= max2
+        //console.log("r", r)
+
+        difference -= maxi(r)
+
+        //console.log("max", maxi(r), "after", possible[i])
 
         p.push(difference)
 
@@ -665,11 +672,10 @@ function bestMove(possible, black, white) { //todo...lol
         }
     }
 
-    console.log(p, q)
+    //console.log(p, q)
 
     best = possible[q[Math.floor(Math.random() * q.length)]]
-    console.log(maxi(p))
-    console.log(p.indexOf(maxi(p)))
+    //console.log(maxi(p))
 
     return best
 }
@@ -686,7 +692,7 @@ function firetheengineup() {
 
     let possible = possiblemoves(currentBoard, "black");
 
-    let best = bestMove(possible, scoreBlack, scoreWhite)
+    let best = bestMove(possible, scoreBlack, scoreWhite, currentBoard)
 
     let fromSquare = squares[best.fromY * 8 + best.fromX]
     let toSquare = squares[best.toY * 8 + best.toX]
