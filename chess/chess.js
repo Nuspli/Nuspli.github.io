@@ -626,59 +626,60 @@ function bestMove(possible, black, white, board) { //todo...lol
 
         /*-----------------------check for whites best response-----------------------*/
         //1 move white
+        if (!checkCheckmateBlack() && !checkCheckmateWhite()) {
+            let possible2 = possiblemoves(board, "white")
+            let r = [];
 
-        let possible2 = possiblemoves(board, "white")
-        let r = [];
+            let black2 = blackMaterial(board)
+            let white2 = whiteMaterial(board)
+            let difference2;
 
-        let black2 = blackMaterial(board)
-        let white2 = whiteMaterial(board)
-        let difference2;
+            for (let i = 0; i < possible2.length; i++) {
 
-        for (let i = 0; i < possible2.length; i++) {
+                let temp2 = board[possible2[i].toY][possible2[i].toX]
 
-            let temp2 = board[possible2[i].toY][possible2[i].toX]
+                board[possible2[i].toY][possible2[i].toX] = board[possible2[i].fromY][possible2[i].fromX]
+                board[possible2[i].fromY][possible2[i].fromX] = "0"
 
-            board[possible2[i].toY][possible2[i].toX] = board[possible2[i].fromY][possible2[i].fromX]
-            board[possible2[i].fromY][possible2[i].fromX] = "0"
+                difference2 = (whiteMaterial(board) - white2) + (black2 - blackMaterial(board))
 
-            difference2 = (whiteMaterial(board) - white2) + (black2 - blackMaterial(board))
+                //#########################################################################
+                //2 moves lookahead black
 
-            //#########################################################################
-            //2 moves lookahead black
+                let possible3 = possiblemoves(board, "black")
+                let m = [];
 
-            let possible3 = possiblemoves(board, "black")
-            let m = [];
+                let black3 = blackMaterial(board)
+                let white3 = whiteMaterial(board)
+                let difference3;
 
-            let black3 = blackMaterial(board)
-            let white3 = whiteMaterial(board)
-            let difference3;
+                for (let i = 0; i < possible3.length; i++) {
 
-            for (let i = 0; i < possible3.length; i++) {
-
-                let temp3 = board[possible3[i].toY][possible3[i].toX]
-    
-                board[possible3[i].toY][possible3[i].toX] = board[possible3[i].fromY][possible3[i].fromX]
-                board[possible3[i].fromY][possible3[i].fromX] = "0"
-    
-                difference3 = (blackMaterial(board) - black3) + (white3 - whiteMaterial(board))
+                    let temp3 = board[possible3[i].toY][possible3[i].toX]
+        
+                    board[possible3[i].toY][possible3[i].toX] = board[possible3[i].fromY][possible3[i].fromX]
+                    board[possible3[i].fromY][possible3[i].fromX] = "0"
+        
+                    difference3 = (blackMaterial(board) - black3) + (white3 - whiteMaterial(board))
 
 
 
-                m.push(difference3)
+                    m.push(difference3)
 
-                board[possible3[i].fromY][possible3[i].fromX] = board[possible3[i].toY][possible3[i].toX]
-                board[possible3[i].toY][possible3[i].toX] = temp3
+                    board[possible3[i].fromY][possible3[i].fromX] = board[possible3[i].toY][possible3[i].toX]
+                    board[possible3[i].toY][possible3[i].toX] = temp3
+                }
+
+                difference2 -= maxi(m)
+                //#########################################################################
+
+                r.push(difference2)
+
+                board[possible2[i].fromY][possible2[i].fromX] = board[possible2[i].toY][possible2[i].toX]
+                board[possible2[i].toY][possible2[i].toX] = temp2
             }
-
-            difference2 -= maxi(m)
-            //#########################################################################
-
-            r.push(difference2)
-
-            board[possible2[i].fromY][possible2[i].fromX] = board[possible2[i].toY][possible2[i].toX]
-            board[possible2[i].toY][possible2[i].toX] = temp2
+            difference -= maxi(r)
         }
-        difference -= maxi(r)
         /*----------------------------------------------------------------------------*/
 
         //console.log("r", r)
