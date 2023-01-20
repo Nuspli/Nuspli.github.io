@@ -71,7 +71,7 @@ squares.forEach(square => {
                 square.appendChild(selectedPiece);
                 if (checkCheckmateBlack()){
                     setTimeout(() => {
-                        if (confirm("yay, you won! now go get a real opponent ...\npress ok to restart the game")) {
+                        if (confirm("yay, you won! press ok to restart the game")) {
                             window.location.reload()
                         }
                     }, 0)
@@ -731,9 +731,9 @@ function firetheengineup() {
 
     blacksturn = false;
 
-    if (checkCheckmateWhite()){
+    if (checkCheckmateWhite() && !checkCheckmateBlack()){
         setTimeout(() => {
-            if (confirm("Imagine losing to this crappy engine xD\nget a life or press ok to restart the game")) {
+            if (confirm("you lost, press ok to try again")) {
                 window.location.reload()
             }
         }, 0)
