@@ -1,3 +1,5 @@
+// functions > OOP
+
 let selectedPiece;
 let startSquare;
 let endSquare;
@@ -132,10 +134,17 @@ function getPieceColor(square) {
 /*---------------------------------MOVE VALIDATION---------------------------------*/
 
 let valid;
+let castle1;
+let castle2;
+let whitekinghasmoved = false;
+let whiterook1hasmoved = false;
+let whiterook2hasmoved = false;
 
 function validate(f, t, piece, lastfrom, lastto) {
 
     valid = false;
+    castle1 = false;
+    castle2 = false;
 
     if (piece == 'pawn') {
 
@@ -179,6 +188,7 @@ function validate(f, t, piece, lastfrom, lastto) {
                 }
             }
         }
+        if(valid){if(f == 64 || t == 64){whiterook2hasmoved = true} else if(f == 57 || t == 57){whiterook1hasmoved = true}}
     }
 
     else if (piece == 'knight') {
@@ -271,14 +281,30 @@ function validate(f, t, piece, lastfrom, lastto) {
     }
 
     else if (piece == 'king') {
+        if (f == 61 && t == 63 && !hasPiece(62) && !whitekinghasmoved && !whiterook2hasmoved) {
+            castle2 = true
+        }
+        if (f == 61 && t == 59 && !hasPiece(60) && !whitekinghasmoved && !whiterook1hasmoved) {
+            castle1 = true
+        }
         if (f < t) {let a = f; f = t; t = a;}
         if (f - t == 8 || f - t == 1 || f - t == 7 || f - t == 9) {
             valid = true;
+            whitekinghasmoved = true
         }
     }
 
     if (valid) {console.log("you: " + piece + " from " + f + " to " + t)}
-
+    else if (castle2) { // todo cant castle when through or under check
+        console.log("you: O-O");
+        valid = true;
+        squares[61].appendChild(squares[63].lastElementChild)  
+    }
+    else if (castle1) {
+        console.log("you: O-O-O")
+        valid = true;
+        squares[59].appendChild(squares[56].lastElementChild) 
+    }
 }
 
 function checkCheckmateBlack() {
@@ -371,6 +397,10 @@ function getBoard() {
     return board
 }
 
+let kinghasmoved = false;
+let rook1hasmoved = false;
+let rook2hasmoved = false;
+
 function possiblemoves(board, end) {
 
     let possible = [];
@@ -409,11 +439,9 @@ function possiblemoves(board, end) {
                     possible.push({fromY: y, fromX: x, toY: y - 2, toX: x})
                 }}
                 if (x != 7 && y != 0) {if (board[y - 1][x + 1].endsWith(otherend)) {
-                    console.log("hi")
                     possible.push({fromY: y, fromX: x, toY: y - 1, toX: x + 1})
                 }}
                 if (x != 0 && y != 0) {if (board[y - 1][x - 1].endsWith(otherend)) {
-                    console.log("hi")
                     possible.push({fromY: y, fromX: x, toY: y - 1, toX: x - 1})
                 }}
             }
@@ -588,6 +616,14 @@ function possiblemoves(board, end) {
                 if (x != 0) {if (!board[y][x - 1].endsWith(end)) {
                     possible.push({fromY: y, fromX: x, toY: y, toX: x - 1})
                 }}
+                //todo castle
+                if (!kinghasmoved && !rook2hasmoved) {if (board[y][x + 1] == "0" && board[y][ x + 2] == "0" && board[y][ x + 3] == "rookblack"){
+                    possible.push({fromY: y, fromX: x, toY: y, toX: x + 2, fromY2: y, fromX2: x + 3, toY2: y, toX2: x + 1})
+                }}
+
+                if (!kinghasmoved && !rook1hasmoved) {if (board[y][x - 1] == "0" && board[y][ x - 2] == "0" && board[y][ x - 3] == "0" && board[y][x - 4] == "rookblack"){
+                    possible.push({fromY: y, fromX: x, toY: y, toX: x - 2, fromY2: y, fromX2: x - 4, toY2: y, toX2: x - 1})
+                }}
             }
         }
     }
@@ -616,11 +652,17 @@ function bestMove(possible, black, white, board) { //todo...lol
 
         /*----------------------update position after blacks move----------------------*/
         //1 move black
-
+        let ttemp
         let temp = board[possible[i].toY][possible[i].toX]
 
         board[possible[i].toY][possible[i].toX] = board[possible[i].fromY][possible[i].fromX]
         board[possible[i].fromY][possible[i].fromX] = "0"
+
+        if (possible[i].toY2) { // is defined
+            ttemp = board[possible[i].toY2][possible[i].toX2]
+            board[possible[i].toY2][possible[i].toX2] = board[possible[i].fromY2][possible[i].fromX2]
+            board[possible[i].fromY2][possible[i].fromX2] = "0"
+        }
 
         let difference = (blackMaterial(board) - black) + (white - whiteMaterial(board))
 
@@ -643,6 +685,8 @@ function bestMove(possible, black, white, board) { //todo...lol
 
                 difference2 = (whiteMaterial(board) - white2) + (black2 - blackMaterial(board))
 
+                if (difference2 == 42) {difference -= 1000}
+
                 //#########################################################################
                 //2 moves lookahead black
 
@@ -662,7 +706,7 @@ function bestMove(possible, black, white, board) { //todo...lol
         
                     difference3 = (blackMaterial(board) - black3) + (white3 - whiteMaterial(board))
 
-
+                    //todo insert here + append fixes (castle)
 
                     m.push(difference3)
 
@@ -688,6 +732,11 @@ function bestMove(possible, black, white, board) { //todo...lol
 
         p.push(difference)
 
+        if (possible[i].toY2) {
+            board[possible[i].fromY2][possible[i].fromX2] = board[possible[i].toY2][possible[i].toX2]
+            board[possible[i].toY2][possible[i].toX2] = ttemp
+        }
+
         board[possible[i].fromY][possible[i].fromX] = board[possible[i].toY][possible[i].toX]
         board[possible[i].toY][possible[i].toX] = temp
     }
@@ -700,11 +749,24 @@ function bestMove(possible, black, white, board) { //todo...lol
 
     console.log(p, q)
 
-    best = possible[q[Math.floor(Math.random() * q.length)]]
-    //console.log(maxi(p))
-
+    if (q.length > 1) { // dont do uneccesarry king moves
+        for (let i = 0; i < q.length; i++) {
+            if (possible[q[i]].fromY2 !== undefined) {
+                castlee = true
+                console.log("hi")
+                best = possible[q[i]]
+            } else if (board[possible[q[i]].fromY][possible[q[i]].fromX] == "kingblack") {
+                console.log("ooof")
+                q.slice(i, 1)
+            }
+        }
+    }
+    if (!castlee) {best = possible[q[Math.floor(Math.random() * q.length)]]}
+    
     return best
 }
+
+let castlee = false;
 
 function firetheengineup() {
 
@@ -723,12 +785,28 @@ function firetheengineup() {
     let fromSquare = squares[best.fromY * 8 + best.fromX]
     let toSquare = squares[best.toY * 8 + best.toX]
 
-    console.log("cpu: " + fromSquare.firstChild.firstChild.className + " from " + (best.fromY * 8 + best.fromX) + " to " + (best.toY * 8 + best.toX))
+    if (castlee) { // castle
+        kinghasmoved = true
+        let fromSquare2 = squares[best.fromY2 * 8 + best.fromX2]
+        let toSquare2 = squares[best.toY2 * 8 + best.toX2]
+        if (toSquare == 2) {console.log("cpu: O-O")}
+        else {console.log("cpu: O-O-O")}
+        toSquare.appendChild(fromSquare.firstChild)
+        toSquare2.appendChild(fromSquare2.firstChild)
+        castlee = false
+    } else {
+    
+        if (fromSquare.firstChild.firstChild.className == "king") {kinghasmoved = true}
+        else if (fromSquare.firstChild.firstChild.className == "rook" && best.fromX == 0) {rook1hasmoved = true}
+        else if (fromSquare.firstChild.firstChild.className == "rook" && best.fromX == 7) {rook2hasmoved = true}
 
-    if (toSquare.hasChildNodes()) {
-        toSquare.removeChild(toSquare.firstChild);
+        console.log("cpu: " + fromSquare.firstChild.firstChild.className + " from " + (best.fromY * 8 + best.fromX + 1) + " to " + (best.toY * 8 + best.toX + 1))
+
+        if (toSquare.hasChildNodes()) {
+            toSquare.removeChild(toSquare.firstChild);
+        }
+        toSquare.appendChild(fromSquare.firstChild)
     }
-    toSquare.appendChild(fromSquare.firstChild)
 
     blacksturn = false;
 
