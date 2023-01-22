@@ -617,11 +617,11 @@ function possiblemoves(board, end) {
                     possible.push({fromY: y, fromX: x, toY: y, toX: x - 1})
                 }}
                 //todo castle
-                if (!kinghasmoved && !rook2hasmoved) {if (board[y][x + 1] == "0" && board[y][ x + 2] == "0" && board[y][ x + 3] == "rookblack"){
+                if (!kinghasmoved && !rook2hasmoved) {if (board[y][x + 1] == "0" && board[y][ x + 2] == "0" && board[y][ x + 3] == "rook" + end){
                     possible.push({fromY: y, fromX: x, toY: y, toX: x + 2, fromY2: y, fromX2: x + 3, toY2: y, toX2: x + 1})
                 }}
 
-                if (!kinghasmoved && !rook1hasmoved) {if (board[y][x - 1] == "0" && board[y][ x - 2] == "0" && board[y][ x - 3] == "0" && board[y][x - 4] == "rookblack"){
+                if (!kinghasmoved && !rook1hasmoved) {if (board[y][x - 1] == "0" && board[y][ x - 2] == "0" && board[y][ x - 3] == "0" && board[y][x - 4] == "rook" + end){
                     possible.push({fromY: y, fromX: x, toY: y, toX: x - 2, fromY2: y, fromX2: x - 4, toY2: y, toX2: x - 1})
                 }}
             }
@@ -675,6 +675,7 @@ function bestMove(possible, black, white, board) { //todo...lol
             let black2 = blackMaterial(board)
             let white2 = whiteMaterial(board)
             let difference2;
+            let ttemp2;
 
             for (let i = 0; i < possible2.length; i++) {
 
@@ -682,6 +683,12 @@ function bestMove(possible, black, white, board) { //todo...lol
 
                 board[possible2[i].toY][possible2[i].toX] = board[possible2[i].fromY][possible2[i].fromX]
                 board[possible2[i].fromY][possible2[i].fromX] = "0"
+
+                if (possible2[i].toY2) { // is defined
+                    ttemp2 = board[possible2[i].toY2][possible2[i].toX2]
+                    board[possible2[i].toY2][possible2[i].toX2] = board[possible2[i].fromY2][possible2[i].fromX2]
+                    board[possible2[i].fromY2][possible2[i].fromX2] = "0"
+                }
 
                 difference2 = (whiteMaterial(board) - white2) + (black2 - blackMaterial(board))
 
@@ -696,6 +703,7 @@ function bestMove(possible, black, white, board) { //todo...lol
                 let black3 = blackMaterial(board)
                 let white3 = whiteMaterial(board)
                 let difference3;
+                let ttemp3;
 
                 for (let i = 0; i < possible3.length; i++) {
 
@@ -703,12 +711,23 @@ function bestMove(possible, black, white, board) { //todo...lol
         
                     board[possible3[i].toY][possible3[i].toX] = board[possible3[i].fromY][possible3[i].fromX]
                     board[possible3[i].fromY][possible3[i].fromX] = "0"
-        
+
+                    if (possible3[i].toY2) { // is defined
+                        ttemp3 = board[possible3[i].toY2][possible3[i].toX2]
+                        board[possible3[i].toY2][possible3[i].toX2] = board[possible3[i].fromY2][possible3[i].fromX2]
+                        board[possible3[i].fromY2][possible3[i].fromX2] = "0"
+                    }
+                    
                     difference3 = (blackMaterial(board) - black3) + (white3 - whiteMaterial(board))
 
                     //todo insert here + append fixes (castle)
 
                     m.push(difference3)
+
+                    if (possible3[i].toY2) {
+                        board[possible3[i].fromY2][possible3[i].fromX2] = board[possible3[i].toY2][possible3[i].toX2]
+                        board[possible3[i].toY2][possible3[i].toX2] = ttemp3
+                    }
 
                     board[possible3[i].fromY][possible3[i].fromX] = board[possible3[i].toY][possible3[i].toX]
                     board[possible3[i].toY][possible3[i].toX] = temp3
@@ -718,6 +737,11 @@ function bestMove(possible, black, white, board) { //todo...lol
                 //#########################################################################
 
                 r.push(difference2)
+
+                if (possible2[i].toY2) {
+                    board[possible2[i].fromY2][possible2[i].fromX2] = board[possible2[i].toY2][possible2[i].toX2]
+                    board[possible2[i].toY2][possible2[i].toX2] = ttemp2
+                }
 
                 board[possible2[i].fromY][possible2[i].fromX] = board[possible2[i].toY][possible2[i].toX]
                 board[possible2[i].toY][possible2[i].toX] = temp2
