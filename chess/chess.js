@@ -281,10 +281,10 @@ function validate(f, t, piece, lastfrom, lastto) {
     }
 
     else if (piece == 'king') {
-        if (f == 61 && t == 63 && !hasPiece(62) && !whitekinghasmoved && !whiterook2hasmoved) {
+        if (f == 61 && t == 63 && !hasPiece(62) && !hasPiece(63) && !whitekinghasmoved && !whiterook2hasmoved) {
             castle2 = true
         }
-        if (f == 61 && t == 59 && !hasPiece(60) && !whitekinghasmoved && !whiterook1hasmoved) {
+        if (f == 61 && t == 59 && !hasPiece(60) && !hasPiece(59) && !hasPiece(58) && !whitekinghasmoved && !whiterook1hasmoved) {
             castle1 = true
         }
         if (f < t) {let a = f; f = t; t = a;}
@@ -642,12 +642,9 @@ function maxi(arr) {
     return t
 }
 
-function bestMove(possible, black, white, board) { //todo...lol
-
-    let best;
-    let q = [];
-    let p = [];
-
+function tree(possible, p, depth) {
+    let white = whiteMaterial(board)
+    let black = blackMaterial(board)
     for (let i = 0; i < possible.length; i++) {
 
         /*----------------------update position after blacks move----------------------*/
@@ -668,7 +665,7 @@ function bestMove(possible, black, white, board) { //todo...lol
 
         /*-----------------------check for whites best response-----------------------*/
         //1 move white
-        if (!checkCheckmateBlack() && !checkCheckmateWhite()) {
+        if (difference != 42 && depth > 1) {
             let possible2 = possiblemoves(board, "white")
             let r = [];
 
@@ -692,48 +689,125 @@ function bestMove(possible, black, white, board) { //todo...lol
 
                 difference2 = (whiteMaterial(board) - white2) + (black2 - blackMaterial(board))
 
-                if (difference2 == 42) {difference -= 1000}
-
                 //#########################################################################
                 //2 moves lookahead black
+                if (difference2 != 42 && depth > 2) {
 
-                let possible3 = possiblemoves(board, "black")
-                let m = [];
+                    let possible3 = possiblemoves(board, "black")
+                    let m = [];
 
-                let black3 = blackMaterial(board)
-                let white3 = whiteMaterial(board)
-                let difference3;
-                let ttemp3;
+                    let black3 = blackMaterial(board)
+                    let white3 = whiteMaterial(board)
+                    let difference3;
+                    let ttemp3;
 
-                for (let i = 0; i < possible3.length; i++) {
+                    for (let i = 0; i < possible3.length; i++) {
 
-                    let temp3 = board[possible3[i].toY][possible3[i].toX]
+                        let temp3 = board[possible3[i].toY][possible3[i].toX]
+            
+                        board[possible3[i].toY][possible3[i].toX] = board[possible3[i].fromY][possible3[i].fromX]
+                        board[possible3[i].fromY][possible3[i].fromX] = "0"
+
+                        if (possible3[i].toY2) { // is defined
+                            ttemp3 = board[possible3[i].toY2][possible3[i].toX2]
+                            board[possible3[i].toY2][possible3[i].toX2] = board[possible3[i].fromY2][possible3[i].fromX2]
+                            board[possible3[i].fromY2][possible3[i].fromX2] = "0"
+                        }
+                        
+                        difference3 = (blackMaterial(board) - black3) + (white3 - whiteMaterial(board))
+
+                        //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+                        if (difference3 != 42 && depth > 3) {
+
+                            let possible4 = possiblemoves(board, "black")
+                            let z = [];
         
-                    board[possible3[i].toY][possible3[i].toX] = board[possible3[i].fromY][possible3[i].fromX]
-                    board[possible3[i].fromY][possible3[i].fromX] = "0"
-
-                    if (possible3[i].toY2) { // is defined
-                        ttemp3 = board[possible3[i].toY2][possible3[i].toX2]
-                        board[possible3[i].toY2][possible3[i].toX2] = board[possible3[i].fromY2][possible3[i].fromX2]
-                        board[possible3[i].fromY2][possible3[i].fromX2] = "0"
-                    }
+                            let black4 = blackMaterial(board)
+                            let white4 = whiteMaterial(board)
+                            let difference4;
+                            let ttemp4;
+        
+                            for (let i = 0; i < possible4.length; i++) {
+        
+                                let temp4 = board[possible4[i].toY][possible4[i].toX]
                     
-                    difference3 = (blackMaterial(board) - black3) + (white3 - whiteMaterial(board))
+                                board[possible4[i].toY][possible4[i].toX] = board[possible4[i].fromY][possible4[i].fromX]
+                                board[possible4[i].fromY][possible4[i].fromX] = "0"
+        
+                                if (possible4[i].toY2) { // is defined
+                                    ttemp4 = board[possible4[i].toY2][possible4[i].toX2]
+                                    board[possible4[i].toY2][possible4[i].toX2] = board[possible4[i].fromY2][possible4[i].fromX2]
+                                    board[possible4[i].fromY2][possible4[i].fromX2] = "0"
+                                }
+                                
+                                difference4 = (blackMaterial(board) - black4) + (white4 - whiteMaterial(board))
+        
+                                //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                                if (difference4 != 42 && depth > 4) {
 
-                    //todo insert here + append fixes (castle)
+                                    let possible5 = possiblemoves(board, "black")
+                                    let z = [];
+                
+                                    let black5 = blackMaterial(board)
+                                    let white5 = whiteMaterial(board)
+                                    let difference5;
+                                    let ttemp5;
+                
+                                    for (let i = 0; i < possible5.length; i++) {
+                
+                                        let temp5 = board[possible5[i].toY][possible5[i].toX]
+                            
+                                        board[possible5[i].toY][possible5[i].toX] = board[possible5[i].fromY][possible5[i].fromX]
+                                        board[possible5[i].fromY][possible5[i].fromX] = "0"
+                
+                                        if (possible5[i].toY2) { // is defined
+                                            ttemp5 = board[possible5[i].toY2][possible5[i].toX2]
+                                            board[possible5[i].toY2][possible5[i].toX2] = board[possible5[i].fromY2][possible5[i].fromX2]
+                                            board[possible5[i].fromY2][possible5[i].fromX2] = "0"
+                                        }
+                                        
+                                        difference5 = (blackMaterial(board) - black5) + (white5 - whiteMaterial(board))
+                
+                                        z.push(difference5)
+                
+                                        if (possible5[i].toY2) {
+                                            board[possible5[i].fromY2][possible5[i].fromX2] = board[possible5[i].toY2][possible5[i].toX2]
+                                            board[possible5[i].toY2][possible5[i].toX2] = ttemp5
+                                        }
+                
+                                        board[possible5[i].fromY][possible5[i].fromX] = board[possible5[i].toY][possible5[i].toX]
+                                        board[possible5[i].toY][possible5[i].toX] = temp5
+                                    }
+                                difference4 -= maxi(z)
+                                }
+                                //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        
+                                z.push(difference4)
+        
+                                if (possible4[i].toY2) {
+                                    board[possible4[i].fromY2][possible4[i].fromX2] = board[possible4[i].toY2][possible4[i].toX2]
+                                    board[possible4[i].toY2][possible4[i].toX2] = ttemp4
+                                }
+        
+                                board[possible4[i].fromY][possible4[i].fromX] = board[possible4[i].toY][possible4[i].toX]
+                                board[possible4[i].toY][possible4[i].toX] = temp4
+                            }
+                        difference3 -= maxi(z)
+                        }
+                        //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
-                    m.push(difference3)
+                        m.push(difference3)
 
-                    if (possible3[i].toY2) {
-                        board[possible3[i].fromY2][possible3[i].fromX2] = board[possible3[i].toY2][possible3[i].toX2]
-                        board[possible3[i].toY2][possible3[i].toX2] = ttemp3
+                        if (possible3[i].toY2) {
+                            board[possible3[i].fromY2][possible3[i].fromX2] = board[possible3[i].toY2][possible3[i].toX2]
+                            board[possible3[i].toY2][possible3[i].toX2] = ttemp3
+                        }
+
+                        board[possible3[i].fromY][possible3[i].fromX] = board[possible3[i].toY][possible3[i].toX]
+                        board[possible3[i].toY][possible3[i].toX] = temp3
                     }
-
-                    board[possible3[i].fromY][possible3[i].fromX] = board[possible3[i].toY][possible3[i].toX]
-                    board[possible3[i].toY][possible3[i].toX] = temp3
-                }
-
                 difference2 -= maxi(m)
+                }
                 //#########################################################################
 
                 r.push(difference2)
@@ -764,6 +838,15 @@ function bestMove(possible, black, white, board) { //todo...lol
         board[possible[i].fromY][possible[i].fromX] = board[possible[i].toY][possible[i].toX]
         board[possible[i].toY][possible[i].toX] = temp
     }
+}
+
+function bestMove(possible, board) { //todo...lol
+
+    let best;
+    let q = [];
+    let p = [];
+
+    tree(possible, p, 3)
 
     for (let i = 0; i < p.length; i++) {
         if (p[i] == maxi(p)) {
@@ -771,7 +854,36 @@ function bestMove(possible, black, white, board) { //todo...lol
         }
     }
 
-    console.log(p, q)
+    console.log("pre", p, q)
+
+    let good = []
+    let qq = [];
+    let pp = [];
+
+    if (q.length <= p.length / 3 && q.length != 1) {
+            for (let i = 0; i < q.length; i ++) {
+            good[i] = possible[q[i]]
+        }
+
+        console.log(good)
+
+        tree(good, pp, 5)
+
+        for (let i = 0; i < pp.length; i++) {
+            if (pp[i] == maxi(pp)) {
+                qq.push(i)
+            }
+        }
+
+        console.log(pp, qq)
+
+        p = [...pp]
+        q = [...qq]
+        
+        possible = [...good]
+    }
+
+    console.log("aft", p, q)
 
     if (q.length > 1) { // dont do uneccesarry king moves
         for (let i = 0; i < q.length; i++) {
@@ -785,6 +897,7 @@ function bestMove(possible, black, white, board) { //todo...lol
             }
         }
     }
+
     if (!castlee) {best = possible[q[Math.floor(Math.random() * q.length)]]}
     
     return best
@@ -799,12 +912,9 @@ function firetheengineup() {
     //console.log("white material: " + whiteMaterial(currentBoard))
     //console.log("black material: " + blackMaterial(currentBoard))
 
-    let scoreWhite = whiteMaterial(currentBoard)
-    let scoreBlack = blackMaterial(currentBoard)
-
     let possible = possiblemoves(currentBoard, "black");
 
-    let best = bestMove(possible, scoreBlack, scoreWhite, currentBoard)
+    let best = bestMove(possible, currentBoard)
 
     let fromSquare = squares[best.fromY * 8 + best.fromX]
     let toSquare = squares[best.toY * 8 + best.toX]
