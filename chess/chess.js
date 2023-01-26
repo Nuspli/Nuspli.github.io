@@ -6,6 +6,8 @@ let endSquare;
 let black;
 let moves;
 
+/* vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv DRAG N DROP vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv */
+
 // Function to handle the selection of a piece
 function dragStart(event) {
     selectedPiece = event.target;
@@ -52,7 +54,7 @@ squares.forEach(square => {
     square.addEventListener('dragover', function(event) {
         event.preventDefault();
     });
-    square.addEventListener('drop', function(event) { // main loop (kind of)
+    square.addEventListener('drop', function(event) {
         event.preventDefault();
 
         if (square.lastElementChild) {
@@ -89,6 +91,117 @@ squares.forEach(square => {
         else {black = false;}
     });
 });
+
+/* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ DRAG N DROP ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+
+/* vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv CLICK / MOBILE vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv */
+
+let high;
+let highlighted;
+
+pieces.forEach(piece => {
+    piece.addEventListener('click', function (event) {
+
+        let x = event.clientX, y = event.clientY;
+
+        startSquare = getSquare(x, y)
+
+        if (getPieceColor(startSquare) != 'black') {
+            if (high) {
+                squares[highlighted].classList.remove('highlight')
+                if (highlighted != startSquare - 1) {
+                    squares[startSquare - 1].classList.add('highlight')
+                    highlighted = startSquare - 1
+                } else {
+                    high = false
+                }
+            } else {
+                squares[startSquare - 1].classList.add('highlight')
+                high = true
+                highlighted = startSquare - 1
+            }
+        } else if (getPieceColor(startSquare) == 'black' && highlighted) {
+            endSquare = startSquare
+            startSquare = highlighted + 1
+            piece = getPiece(startSquare).replace('white', '')
+        
+            validate(startSquare, endSquare, piece, lastfrom, lastto)
+
+            console.log(valid)
+
+            if (valid) {
+                if (squares[endSquare - 1].hasChildNodes()) {
+                    squares[endSquare - 1].removeChild(squares[endSquare - 1].firstChild);
+                }
+                squares[endSquare - 1].appendChild(squares[startSquare - 1].firstChild);
+                squares[startSquare - 1].classList.remove('highlight')
+                if (checkCheckmateBlack()){
+                    setTimeout(() => {
+                        if (confirm("yay, you won! press ok to restart the game")) {
+                            window.location.reload()
+                        }
+                    }, 0)
+                }
+                blacksturn = true;
+                moves ++;
+                
+                setTimeout(() => {
+                    firetheengineup();
+                }, 0)
+            }
+        }
+    })
+});
+
+squares.forEach(square => {
+    square.addEventListener('click', function (event) {
+        if (high) {
+
+            let x = event.clientX, y = event.clientY;
+            endSquare = getSquare(x, y)
+
+            if (startSquare != endSquare) {
+
+                if (square.lastElementChild) {
+                    color = square.lastElementChild.lastElementChild.lastElementChild.className;
+                }
+                else {color = 'no'}
+        
+                if (color != 'white' && !black && !blacksturn){
+
+                    piece = getPiece(startSquare).replace('white', '')
+        
+                    validate(startSquare, endSquare, piece, lastfrom, lastto)
+
+                    console.log(valid)
+        
+                    if (valid) {
+                        square.appendChild(squares[startSquare - 1].firstChild);
+                        squares[startSquare - 1].classList.remove('highlight')
+                        if (checkCheckmateBlack()){
+                            setTimeout(() => {
+                                if (confirm("yay, you won! press ok to restart the game")) {
+                                    window.location.reload()
+                                }
+                            }, 0)
+                        }
+                        blacksturn = true;
+                        moves ++;
+                        
+                        setTimeout(() => {
+                            firetheengineup();
+                        }, 0)
+                    }
+                }
+                else {black = false;}
+            } 
+        }
+    })
+})
+
+/* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ CLICK / MOBILE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+
+/* vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv USEFUL FUNCTIONS vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv */
 
 const retry = document.querySelector('.retry_button');
 
@@ -131,7 +244,9 @@ function getPieceColor(square) {
     }
 }
 
-/*---------------------------------MOVE VALIDATION---------------------------------*/
+/* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ USEFUL FUNCTIONS ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+
+/*---------------------------------MOVE VALIDATION FOR WHITE---------------------------------*/
 
 let valid;
 let castle1;
@@ -139,30 +254,41 @@ let castle2;
 let whitekinghasmoved = false;
 let whiterook1hasmoved = false;
 let whiterook2hasmoved = false;
+let promo = false;
+let enpassant = false;
 
 function validate(f, t, piece, lastfrom, lastto) {
 
     valid = false;
     castle1 = false;
     castle2 = false;
+    promo = false;
+    enpassant = false;
 
     if (piece == 'pawn') {
 
-        if (lastfrom && lastto) {if (((lastfrom == 9 && lastto == 25) ||
-                                     (lastfrom == 10 && lastto == 26) ||
-                                     (lastfrom == 11 && lastto == 27) ||
-                                     (lastfrom == 12 && lastto == 28) ||
-                                     (lastfrom == 13 && lastto == 29) ||
-                                     (lastfrom == 14 && lastto == 30) ||
-                                     (lastfrom == 15 && lastto == 31) ||
-                                     (lastfrom == 16 && lastto == 32)) && t + 8 == lastto) {
-                                        valid = true;
-                                     }}
+        if (lastfrom !== undefined) {if (((lastfrom == 9 && lastto == 25) ||
+                                          (lastfrom == 10 && lastto == 26) ||
+                                          (lastfrom == 11 && lastto == 27) ||
+                                          (lastfrom == 12 && lastto == 28) ||
+                                          (lastfrom == 13 && lastto == 29) ||
+                                          (lastfrom == 14 && lastto == 30) ||
+                                          (lastfrom == 15 && lastto == 31) ||
+                                          (lastfrom == 16 && lastto == 32)) && t + 8 == lastto && getPiece(lastto) == 'pawnblack') {
+                                            valid = true;
+                                            enpassant = true;
+                                        }}
         if ((f - t == 8 && !hasPiece(t)) || // 1 step
             (f - t == 16 && !hasPiece(t) && !hasPiece(f - 8) && f >= 49) || // 2 step first move
             (f - t == 7 && hasPiece(t)) || // take right
             (f - t == 9 && hasPiece(t)) // take left
-            ) {valid = true;}
+            ) {
+                valid = true;
+                if (t == 0 || t == 1 || t == 2 || t == 3 || t == 4 || t == 5 || t == 6 || t == 7 || t == 8) {
+                    promo = true;
+                    valid = false;
+                }
+            }
     }
 
     else if (piece == 'rook') {
@@ -294,7 +420,12 @@ function validate(f, t, piece, lastfrom, lastto) {
         }
     }
 
-    if (valid) {console.log("you: " + piece + " from " + f + " to " + t)}
+    if (valid) {
+        console.log("you: " + piece + " from " + f + " to " + t)
+        if (enpassant) {
+            squares[t + 7].removeChild(squares[t + 7].firstChild);
+        }
+    }
     else if (castle2) { // todo cant castle when through or under check
         console.log("you: O-O");
         valid = true;
@@ -304,6 +435,17 @@ function validate(f, t, piece, lastfrom, lastto) {
         console.log("you: O-O-O")
         valid = true;
         squares[59].appendChild(squares[56].lastElementChild) 
+    }
+    else if (promo) {
+        let queenie = make('queen', 'white')
+        squares[f - 1].removeChild(squares[f - 1].firstChild)
+        if (squares[t - 1].hasChildNodes()) {
+            squares[t - 1].removeChild(squares[t - 1].firstChild);
+        }
+        queenie.setAttribute("draggable", true);
+        queenie.addEventListener('dragstart', dragStart);
+        queenie.addEventListener('dragend', dragEnd);
+        squares[t - 1].appendChild(queenie)
     }
 }
 
@@ -333,7 +475,7 @@ function checkCheckmateWhite() {
     return whiteIsMate
 }
 
-/*---------------------------------MY ENGINE STUFF---------------------------------*/
+/*---------------------------------ENGINE STUFF---------------------------------*/
 
 const row1 = ["0","0","0","0","0","0","0","0"]
 const row2 = ["0","0","0","0","0","0","0","0"]
@@ -400,11 +542,13 @@ function getBoard() {
 let kinghasmoved = false;
 let rook1hasmoved = false;
 let rook2hasmoved = false;
+let promote;
 
 function possiblemoves(board, end) {
 
     let possible = [];
     let otherend;
+    promote = false;
 
     if (end == "white") {
         otherend = "black"
@@ -616,12 +760,12 @@ function possiblemoves(board, end) {
                 if (x != 0) {if (!board[y][x - 1].endsWith(end)) {
                     possible.push({fromY: y, fromX: x, toY: y, toX: x - 1})
                 }}
-                //todo castle
-                if (!kinghasmoved && !rook2hasmoved) {if (board[y][x + 1] == "0" && board[y][ x + 2] == "0" && board[y][ x + 3] == "rook" + end){
+
+                if (!kinghasmoved && !rook2hasmoved) {if (board[y][x + 1] == "0" && board[y][x + 2] == "0" && board[y][x + 3] == "rook" + end){
                     possible.push({fromY: y, fromX: x, toY: y, toX: x + 2, fromY2: y, fromX2: x + 3, toY2: y, toX2: x + 1})
                 }}
 
-                if (!kinghasmoved && !rook1hasmoved) {if (board[y][x - 1] == "0" && board[y][ x - 2] == "0" && board[y][ x - 3] == "0" && board[y][x - 4] == "rook" + end){
+                if (!kinghasmoved && !rook1hasmoved) {if (board[y][x - 1] == "0" && board[y][x - 2] == "0" && board[y][x - 3] == "0" && board[y][x - 4] == "rook" + end){
                     possible.push({fromY: y, fromX: x, toY: y, toX: x - 2, fromY2: y, fromX2: x - 4, toY2: y, toX2: x - 1})
                 }}
             }
@@ -642,15 +786,25 @@ function maxi(arr) {
     return t
 }
 
+let save;
+
 function tree(possible, p, depth) {
     let white = whiteMaterial(board)
     let black = blackMaterial(board)
+    save = -1
+
     for (let i = 0; i < possible.length; i++) {
 
         /*----------------------update position after blacks move----------------------*/
         //1 move black
         let ttemp
         let temp = board[possible[i].toY][possible[i].toX]
+
+        if (board[possible[i].fromY][possible[i].fromX] == "pawnblack" && possible[i].toY == 0) {
+            board[possible[i].fromY][possible[i].fromX] = "queenblack"
+            promote = true;
+            save = i
+        }
 
         board[possible[i].toY][possible[i].toX] = board[possible[i].fromY][possible[i].fromX]
         board[possible[i].fromY][possible[i].fromX] = "0"
@@ -854,18 +1008,14 @@ function bestMove(possible, board) { //todo...lol
         }
     }
 
-    console.log("pre", p, q)
-
     let good = []
     let qq = [];
     let pp = [];
 
-    if (q.length <= p.length / 3 && q.length != 1) {
+    if ((q.length <= p.length / 3 && q.length != 1) || (p.length <= 10)) {
             for (let i = 0; i < q.length; i ++) {
             good[i] = possible[q[i]]
         }
-
-        console.log(good)
 
         tree(good, pp, 5)
 
@@ -882,25 +1032,49 @@ function bestMove(possible, board) { //todo...lol
         
         possible = [...good]
     }
+    let k = 0;
 
-    console.log("aft", p, q)
-
-    if (q.length > 1) { // dont do uneccesarry king moves
-        for (let i = 0; i < q.length; i++) {
-            if (possible[q[i]].fromY2 !== undefined) {
-                castlee = true
-                console.log("hi")
-                best = possible[q[i]]
-            } else if (board[possible[q[i]].fromY][possible[q[i]].fromX] == "kingblack") {
-                console.log("ooof")
-                q.slice(i, 1)
-            }
+    for (let i = 0; i < q.length; i++) {
+        if (board[possible[q[i]].fromY][possible[q[i]].fromX] == "kingblack") {
+            k++
         }
     }
 
-    if (!castlee) {best = possible[q[Math.floor(Math.random() * q.length)]]}
+    for (let i = 0; i < q.length; i++) {
+        if (possible[q[i]].fromY2 !== undefined) {
+            castlee = true
+            console.log("hi")
+            best = possible[q[i]]
+        } else if (board[possible[q[i]].fromY][possible[q[i]].fromX] == "kingblack" && k < q.length) {
+            console.log("ooof")
+            q.splice(i, 1)
+            i--
+        }
+    }
+
+    if (!castlee) {
+        let uh = Math.floor(Math.random() * q.length)
+        best = possible[q[uh]]
+        if (save == uh) {
+            promote = true;
+        }
+    }
     
     return best
+}
+
+function make(piece, color) {
+
+    let pis = document.createElement('div')
+    pis.classList.add('piece')
+    let pies = document.createElement('div')
+    pies.classList.add(piece)
+    let colr = document.createElement('div')
+    colr.classList.add(color)
+
+    pies.appendChild(colr)
+    pis.appendChild(pies)
+    return pis
 }
 
 let castlee = false;
@@ -919,7 +1093,12 @@ function firetheengineup() {
     let fromSquare = squares[best.fromY * 8 + best.fromX]
     let toSquare = squares[best.toY * 8 + best.toX]
 
-    if (castlee) { // castle
+    if (promote) {
+        let queenie = make('queen', 'black')
+        toSquare.appendChild(queenie)
+        fromSquare.removeChild(fromSquare.firstChild)
+    }
+    else if (castlee) { // castle
         kinghasmoved = true
         let fromSquare2 = squares[best.fromY2 * 8 + best.fromX2]
         let toSquare2 = squares[best.toY2 * 8 + best.toX2]
@@ -934,7 +1113,10 @@ function firetheengineup() {
         else if (fromSquare.firstChild.firstChild.className == "rook" && best.fromX == 0) {rook1hasmoved = true}
         else if (fromSquare.firstChild.firstChild.className == "rook" && best.fromX == 7) {rook2hasmoved = true}
 
-        console.log("cpu: " + fromSquare.firstChild.firstChild.className + " from " + (best.fromY * 8 + best.fromX + 1) + " to " + (best.toY * 8 + best.toX + 1))
+        lastfrom = best.fromY * 8 + best.fromX + 1
+        lastto = best.toY * 8 + best.toX + 1
+
+        console.log("cpu: " + fromSquare.firstChild.firstChild.className + " from " + lastfrom + " to " + lastto)
 
         if (toSquare.hasChildNodes()) {
             toSquare.removeChild(toSquare.firstChild);
