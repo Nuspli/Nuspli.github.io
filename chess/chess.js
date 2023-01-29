@@ -66,7 +66,7 @@ squares.forEach(square => {
             let x = event.clientX, y = event.clientY;
             endSquare = getSquare(x, y)
 
-            validate(startSquare, endSquare, piece, lastfrom, lastto)
+            let move = validate(startSquare, endSquare, piece, lastfrom, lastto)
 
             if (valid) {
                 if (square.hasChildNodes()) {
@@ -84,7 +84,7 @@ squares.forEach(square => {
                 moves ++;
                 
                 setTimeout(() => {
-                    firetheengineup();
+                    firetheengineup(move);
                 }, 0)
             }
         }
@@ -125,9 +125,7 @@ pieces.forEach(piece => {
             startSquare = highlighted + 1
             piece = getPiece(startSquare).replace('white', '')
         
-            validate(startSquare, endSquare, piece, lastfrom, lastto)
-
-            console.log(valid)
+            let move = validate(startSquare, endSquare, piece, lastfrom, lastto)
 
             if (valid) {
                 if (squares[endSquare - 1].hasChildNodes()) {
@@ -147,7 +145,7 @@ pieces.forEach(piece => {
                 window.requestAnimationFrame(click)
                 
                 setTimeout(() => {
-                    firetheengineup();
+                    firetheengineup(move);
                 }, 0)
             }
         }
@@ -172,9 +170,7 @@ squares.forEach(square => {
 
                     piece = getPiece(startSquare).replace('white', '')
         
-                    validate(startSquare, endSquare, piece, lastfrom, lastto)
-
-                    console.log(valid)
+                    let move = validate(startSquare, endSquare, piece, lastfrom, lastto)
         
                     if (valid) {
                         square.appendChild(squares[startSquare - 1].firstChild);
@@ -190,7 +186,7 @@ squares.forEach(square => {
                         moves ++;
                         
                         setTimeout(() => {
-                            firetheengineup();
+                            firetheengineup(move);
                         }, 0)
                     }
                 }
@@ -448,6 +444,10 @@ function validate(f, t, piece, lastfrom, lastto) {
         queenie.addEventListener('dragend', dragEnd);
         squares[t - 1].appendChild(queenie)
     }
+
+    console.log({fromY: (f - (f % 8)) / 8, fromX: (f % 8) - 1, toY: (t - (t % 8)) / 8, toX: (f % 8) - 1})
+
+    return {fromY: (f - (f % 8)) / 8, fromX: (f % 8) - 1, toY: (t - (t % 8)) / 8, toX: (f % 8) - 1}
 }
 
 function checkCheckmateBlack() {
@@ -545,7 +545,7 @@ let rook1hasmoved = false;
 let rook2hasmoved = false;
 let promote;
 
-function possiblemoves(board, end) {
+function possiblemoves(board, end, lastMove) {
 
     let possible = [];
     let otherend;
@@ -575,7 +575,13 @@ function possiblemoves(board, end) {
                     possible.push({fromY: y, fromX: x, toY: y + 1, toX: x - 1})
                 }}
 
-                //TODO EN PASSANT
+                if (y == 4 && x != 7) {if (board[y][x + 1] == "pawn" + otherend && lastMove.toY == y && lastMove.toX == x + 1 && lastMove.fromY == y + 2){
+                    possible.push({fromY: y, fromX: x, toY: y + 1, toX: x + 1, enPassant: true})
+                }}
+
+                if (y == 4 && x != 0) {if (board[y][x - 1] == "pawn" + otherend && lastMove.toY == y && lastMove.toX == x - 1 && lastMove.fromY == y + 2){
+                    possible.push({fromY: y, fromX: x, toY: y + 1, toX: x - 1, enPassant: true})
+                }}
             }
 
             else if (board[y][x] == "pawn" + end && end == "white") { // pawn moves if white
@@ -590,6 +596,14 @@ function possiblemoves(board, end) {
                 }}
                 if (x != 0 && y != 0) {if (board[y - 1][x - 1].endsWith(otherend)) {
                     possible.push({fromY: y, fromX: x, toY: y - 1, toX: x - 1})
+                }}
+
+                if (y == 3 && x != 7) {if (board[y][x + 1] == "pawn" + otherend && lastMove.toY == y && lastMove.toX == x + 1 && lastMove.fromY == y - 2){
+                    possible.push({fromY: y, fromX: x, toY: y + 1, toX: x + 1, enPassant: true})
+                }}
+
+                if (y == 3 && x != 0) {if (board[y][x - 1] == "pawn" + otherend && lastMove.toY == y && lastMove.toX == x - 1 && lastMove.fromY == y - 2){
+                    possible.push({fromY: y, fromX: x, toY: y + 1, toX: x - 1, enPassant: true})
                 }}
             }
 
@@ -791,39 +805,49 @@ function maxi(arr) {
 
 let save;
 
-function tree(possible, p, depth) {
+function tree(possible, p, depth, lastMove) { // todo async?
     let white = whiteMaterial(board)
     let black = blackMaterial(board)
     save = [];
+    let las = lastMove
 
     for (let i = 0; i < possible.length; i++) {
 
         /*----------------------update position after blacks move----------------------*/
         //1 move black
+        lastMove = las
+        let tttemp
         let ttemp
         let temp = board[possible[i].toY][possible[i].toX]
 
         board[possible[i].toY][possible[i].toX] = board[possible[i].fromY][possible[i].fromX]
         board[possible[i].fromY][possible[i].fromX] = "0"
 
-        if (possible[i].toY2) { // is defined
+        if (possible[i].toY2) { // is defined (castle)
             ttemp = board[possible[i].toY2][possible[i].toX2]
             board[possible[i].toY2][possible[i].toX2] = board[possible[i].fromY2][possible[i].fromX2]
             board[possible[i].fromY2][possible[i].fromX2] = "0"
         }
 
+        if (possible[i].enPassant) {
+            tttemp = board[possible[i].toY - 1][possible[i].toX]
+            board[possible[i].toY - 1][possible[i].toX] = "0"
+        }
+
+        lastMove = possible[i]
         let difference = (blackMaterial(board) - black) + (white - whiteMaterial(board))
 
         /*-----------------------check for whites best response-----------------------*/
         //1 move white
         if (difference != 42 && depth > 1) {
-            let possible2 = possiblemoves(board, "white")
+            let possible2 = possiblemoves(board, "white", lastMove)
             let r = [];
 
             let black2 = blackMaterial(board)
             let white2 = whiteMaterial(board)
             let difference2;
             let ttemp2;
+            let tttemp2
 
             for (let i = 0; i < possible2.length; i++) {
 
@@ -838,19 +862,26 @@ function tree(possible, p, depth) {
                     board[possible2[i].fromY2][possible2[i].fromX2] = "0"
                 }
 
+                if (possible2[i].enPassant) {
+                    tttemp2 = board[possible2[i].toY + 1][possible2[i].toX]
+                    board[possible2[i].toY + 1][possible2[i].toX] = "0"
+                }
+
+                lastMove = possible2[i]
                 difference2 = (whiteMaterial(board) - white2) + (black2 - blackMaterial(board))
 
                 //#########################################################################
                 //2 moves lookahead black
                 if (difference2 != 42 && depth > 2) {
 
-                    let possible3 = possiblemoves(board, "black")
+                    let possible3 = possiblemoves(board, "black", lastMove)
                     let m = [];
 
                     let black3 = blackMaterial(board)
                     let white3 = whiteMaterial(board)
                     let difference3;
                     let ttemp3;
+                    let tttemp3;
 
                     for (let i = 0; i < possible3.length; i++) {
 
@@ -864,19 +895,26 @@ function tree(possible, p, depth) {
                             board[possible3[i].toY2][possible3[i].toX2] = board[possible3[i].fromY2][possible3[i].fromX2]
                             board[possible3[i].fromY2][possible3[i].fromX2] = "0"
                         }
+
+                        if (possible3[i].enPassant) {
+                            tttemp3 = board[possible3[i].toY - 1][possible3[i].toX]
+                            board[possible3[i].toY - 1][possible3[i].toX] = "0"
+                        }
                         
+                        lastMove = possible3[i]
                         difference3 = (blackMaterial(board) - black3) + (white3 - whiteMaterial(board))
 
                         //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
                         if (difference3 != 42 && depth > 3) {
 
-                            let possible4 = possiblemoves(board, "black")
+                            let possible4 = possiblemoves(board, "white", lastMove)
                             let z = [];
         
                             let black4 = blackMaterial(board)
                             let white4 = whiteMaterial(board)
                             let difference4;
                             let ttemp4;
+                            let tttemp4;
         
                             for (let i = 0; i < possible4.length; i++) {
         
@@ -890,19 +928,26 @@ function tree(possible, p, depth) {
                                     board[possible4[i].toY2][possible4[i].toX2] = board[possible4[i].fromY2][possible4[i].fromX2]
                                     board[possible4[i].fromY2][possible4[i].fromX2] = "0"
                                 }
+
+                                if (possible4[i].enPassant) {
+                                    tttemp4 = board[possible4[i].toY + 1][possible4[i].toX]
+                                    board[possible4[i].toY + 1][possible4[i].toX] = "0"
+                                }
                                 
+                                lastMove = possible4[i]
                                 difference4 = (blackMaterial(board) - black4) + (white4 - whiteMaterial(board))
         
                                 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                                 if (difference4 != 42 && depth > 4) {
 
-                                    let possible5 = possiblemoves(board, "black")
+                                    let possible5 = possiblemoves(board, "black", lastMove)
                                     let z = [];
                 
                                     let black5 = blackMaterial(board)
                                     let white5 = whiteMaterial(board)
                                     let difference5;
                                     let ttemp5;
+                                    let tttemp5;
                 
                                     for (let i = 0; i < possible5.length; i++) {
                 
@@ -916,10 +961,19 @@ function tree(possible, p, depth) {
                                             board[possible5[i].toY2][possible5[i].toX2] = board[possible5[i].fromY2][possible5[i].fromX2]
                                             board[possible5[i].fromY2][possible5[i].fromX2] = "0"
                                         }
+
+                                        if (possible5[i].enPassant) {
+                                            tttemp5 = board[possible5[i].toY - 1][possible5[i].toX]
+                                            board[possible5[i].toY - 1][possible5[i].toX] = "0"
+                                        }
                                         
                                         difference5 = (blackMaterial(board) - black5) + (white5 - whiteMaterial(board))
                 
                                         z.push(difference5)
+
+                                        if (possible5[i].enPassant) {
+                                            board[possible5[i].toY - 1][possible5[i].toX] = tttemp5
+                                        }
                 
                                         if (possible5[i].toY2) {
                                             board[possible5[i].fromY2][possible5[i].fromX2] = board[possible5[i].toY2][possible5[i].toX2]
@@ -934,6 +988,10 @@ function tree(possible, p, depth) {
                                 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         
                                 z.push(difference4)
+
+                                if (possible4[i].enPassant) {board[
+                                    possible4[i].toY + 1][possible4[i].toX] = tttemp4
+                                }
         
                                 if (possible4[i].toY2) {
                                     board[possible4[i].fromY2][possible4[i].fromX2] = board[possible4[i].toY2][possible4[i].toX2]
@@ -949,6 +1007,10 @@ function tree(possible, p, depth) {
 
                         m.push(difference3)
 
+                        if (possible3[i].enPassant) {
+                            board[possible3[i].toY - 1][possible3[i].toX] = tttemp3
+                        }
+
                         if (possible3[i].toY2) {
                             board[possible3[i].fromY2][possible3[i].fromX2] = board[possible3[i].toY2][possible3[i].toX2]
                             board[possible3[i].toY2][possible3[i].toX2] = ttemp3
@@ -963,6 +1025,10 @@ function tree(possible, p, depth) {
 
                 r.push(difference2)
 
+                if (possible2[i].enPassant) {
+                    board[possible2[i].toY + 1][possible2[i].toX] = tttemp2
+                }
+
                 if (possible2[i].toY2) {
                     board[possible2[i].fromY2][possible2[i].fromX2] = board[possible2[i].toY2][possible2[i].toX2]
                     board[possible2[i].toY2][possible2[i].toX2] = ttemp2
@@ -975,11 +1041,11 @@ function tree(possible, p, depth) {
         }
         /*----------------------------------------------------------------------------*/
 
-        //console.log("r", r)
-
-        //console.log("max", maxi(r), "after", possible[i])
-
         p.push(difference)
+
+        if (possible[i].enPassant) {
+            board[possible[i].toY - 1][possible[i].toX] = tttemp
+        }
 
         if (possible[i].toY2) {
             board[possible[i].fromY2][possible[i].fromX2] = board[possible[i].toY2][possible[i].toX2]
@@ -991,13 +1057,13 @@ function tree(possible, p, depth) {
     }
 }
 
-function bestMove(possible, board) { //todo...lol
+function bestMove(possible, board, lastMove) { //todo...
 
     let best;
     let q = [];
     let p = [];
 
-    tree(possible, p, 3)
+    tree(possible, p, 3, lastMove)
 
     for (let i = 0; i < p.length; i++) {
         if (p[i] == maxi(p)) {
@@ -1014,15 +1080,13 @@ function bestMove(possible, board) { //todo...lol
             good[i] = possible[q[i]]
         }
 
-        tree(good, pp, 5)
+        tree(good, pp, 5, lastMove)
 
         for (let i = 0; i < pp.length; i++) {
             if (pp[i] == maxi(pp)) {
                 qq.push(i)
             }
         }
-
-        console.log(pp, qq)
 
         p = [...pp]
         q = [...qq]
@@ -1038,12 +1102,18 @@ function bestMove(possible, board) { //todo...lol
     }
 
     for (let i = 0; i < q.length; i++) {
-        if (possible[q[i]].fromY2 !== undefined) {
+        if (possible[q[i]].fromY2 !== undefined) { // when castling is among the best moves, castle
             castlee = true
-            console.log("hi")
             best = possible[q[i]]
-        } else if (board[possible[q[i]].fromY][possible[q[i]].fromX] == "kingblack" && k < q.length && moves < 25) {
-            console.log("ooof")
+        } else if (possible[q[i]].fromY * 8 + possible[q[i]].fromX + 1 == lastto && possible[q[i]].toY * 8 + possible[q[i]].toX + 1 == lastfrom) { // dont repeat moves
+            q.splice(i, 1)
+            i--
+        }
+        else if (board[possible[q[i]].fromY][possible[q[i]].fromX] == "kingblack" && k < q.length && moves < 25) { // no unnecessary king moves
+            q.splice(i, 1)
+            i--
+        } else if (board[possible[q[i]].fromY][possible[q[i]].fromX] == "knightblack" && ( // knight is bad on the edge of the board
+                   possible[q[i]].toX == 0 || possible[q[i]].toX == 7)){
             q.splice(i, 1)
             i--
         }
@@ -1052,11 +1122,12 @@ function bestMove(possible, board) { //todo...lol
     if (!castlee) {
         let uh = Math.floor(Math.random() * q.length)
         best = possible[q[uh]]
-        console.log(best)
-        if (best.toY == 7 && board[best.fromY][best.fromX] == "pawnblack") { // todo fix
+        if (best.toY == 7 && board[best.fromY][best.fromX] == "pawnblack") {
             promote = true;
         }
     }
+
+    // TODO ENDGAME MATING STRATEGIES
     
     return best
 }
@@ -1077,22 +1148,20 @@ function make(piece, color) {
 
 let castlee = false;
 
-function firetheengineup() {
+function firetheengineup(lastMove) {
 
     currentBoard = getBoard();
 
     //console.log("white material: " + whiteMaterial(currentBoard))
     //console.log("black material: " + blackMaterial(currentBoard))
 
-    let possible = possiblemoves(currentBoard, "black");
+    let possible = possiblemoves(currentBoard, "black", lastMove);
 
-    let best = bestMove(possible, currentBoard)
+    let best = bestMove(possible, currentBoard, lastMove)
 
     let fromSquare = squares[best.fromY * 8 + best.fromX]
     let toSquare = squares[best.toY * 8 + best.toX]
-
-    console.log(promote)
-
+    
     if (promote) {
         let queenie = make('queen', 'black')
         if (toSquare.hasChildNodes()) {
@@ -1115,6 +1184,10 @@ function firetheengineup() {
         if (fromSquare.firstChild.firstChild.className == "king") {kinghasmoved = true}
         else if (fromSquare.firstChild.firstChild.className == "rook" && best.fromX == 0) {rook1hasmoved = true}
         else if (fromSquare.firstChild.firstChild.className == "rook" && best.fromX == 7) {rook2hasmoved = true}
+
+        if (best.enPassant == true) {
+            squares[(best.toY - 1) * 8 + best.toX].removeChild(squares[(best.toY - 1) * 8 + best.toX].firstChild)
+        }
 
         lastfrom = best.fromY * 8 + best.fromX + 1
         lastto = best.toY * 8 + best.toX + 1
