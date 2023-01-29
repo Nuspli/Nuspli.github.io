@@ -100,7 +100,7 @@ let high;
 let highlighted;
 
 pieces.forEach(piece => {
-    piece.addEventListener('click', function (event) {
+    piece.addEventListener('click', function click (event) {
 
         let x = event.clientX, y = event.clientY;
 
@@ -144,6 +144,7 @@ pieces.forEach(piece => {
                 }
                 blacksturn = true;
                 moves ++;
+                window.requestAnimationFrame(click)
                 
                 setTimeout(() => {
                     firetheengineup();
@@ -573,6 +574,8 @@ function possiblemoves(board, end) {
                 if (x != 0 && y != 7) {if (board[y + 1][x - 1].endsWith(otherend)) {
                     possible.push({fromY: y, fromX: x, toY: y + 1, toX: x - 1})
                 }}
+
+                //TODO EN PASSANT
             }
 
             else if (board[y][x] == "pawn" + end && end == "white") { // pawn moves if white
@@ -791,7 +794,7 @@ let save;
 function tree(possible, p, depth) {
     let white = whiteMaterial(board)
     let black = blackMaterial(board)
-    save = -1
+    save = [];
 
     for (let i = 0; i < possible.length; i++) {
 
@@ -799,12 +802,6 @@ function tree(possible, p, depth) {
         //1 move black
         let ttemp
         let temp = board[possible[i].toY][possible[i].toX]
-
-        if (board[possible[i].fromY][possible[i].fromX] == "pawnblack" && possible[i].toY == 0) {
-            board[possible[i].fromY][possible[i].fromX] = "queenblack"
-            promote = true;
-            save = i
-        }
 
         board[possible[i].toY][possible[i].toX] = board[possible[i].fromY][possible[i].fromX]
         board[possible[i].fromY][possible[i].fromX] = "0"
@@ -1013,7 +1010,7 @@ function bestMove(possible, board) { //todo...lol
     let pp = [];
 
     if ((q.length <= p.length / 3 && q.length != 1) || (p.length <= 10)) {
-            for (let i = 0; i < q.length; i ++) {
+        for (let i = 0; i < q.length; i ++) {
             good[i] = possible[q[i]]
         }
 
@@ -1045,7 +1042,7 @@ function bestMove(possible, board) { //todo...lol
             castlee = true
             console.log("hi")
             best = possible[q[i]]
-        } else if (board[possible[q[i]].fromY][possible[q[i]].fromX] == "kingblack" && k < q.length) {
+        } else if (board[possible[q[i]].fromY][possible[q[i]].fromX] == "kingblack" && k < q.length && moves < 25) {
             console.log("ooof")
             q.splice(i, 1)
             i--
@@ -1055,7 +1052,8 @@ function bestMove(possible, board) { //todo...lol
     if (!castlee) {
         let uh = Math.floor(Math.random() * q.length)
         best = possible[q[uh]]
-        if (save == uh) {
+        console.log(best)
+        if (best.toY == 7 && board[best.fromY][best.fromX] == "pawnblack") { // todo fix
             promote = true;
         }
     }
@@ -1093,8 +1091,13 @@ function firetheengineup() {
     let fromSquare = squares[best.fromY * 8 + best.fromX]
     let toSquare = squares[best.toY * 8 + best.toX]
 
+    console.log(promote)
+
     if (promote) {
         let queenie = make('queen', 'black')
+        if (toSquare.hasChildNodes()) {
+            toSquare.removeChild(toSquare.firstChild)
+        }
         toSquare.appendChild(queenie)
         fromSquare.removeChild(fromSquare.firstChild)
     }
