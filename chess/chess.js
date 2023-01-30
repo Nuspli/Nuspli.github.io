@@ -105,60 +105,62 @@ let high;
 let highlighted;
 
 pieces.forEach(piece => {
-    piece.addEventListener('click', function click (event) {
+    piece.addEventListener('click', click)
+});
 
-        let x = event.clientX, y = event.clientY;
+function click (event) {
 
-        startSquare = getSquare(x, y)
+    let x = event.clientX, y = event.clientY;
 
-        if (getPieceColor(startSquare) != 'black') {
-            if (high) {
-                squares[highlighted].classList.remove('highlight')
-                if (highlighted != startSquare - 1) {
-                    squares[startSquare - 1].classList.add('highlight')
-                    highlighted = startSquare - 1
-                } else {
-                    high = false
-                }
-            } else {
+    startSquare = getSquare(x, y)
+
+    if (getPieceColor(startSquare) != 'black') {
+        if (high) {
+            squares[highlighted].classList.remove('highlight')
+            if (highlighted != startSquare - 1) {
                 squares[startSquare - 1].classList.add('highlight')
-                high = true
                 highlighted = startSquare - 1
+            } else {
+                high = false
             }
-        } else if (getPieceColor(startSquare) == 'black' && highlighted) {
-            endSquare = startSquare
-            startSquare = highlighted + 1
-            piece = getPiece(startSquare).replace('white', '')
-        
-            let move = validate(startSquare, endSquare, piece, lastfrom, lastto)
+        } else {
+            squares[startSquare - 1].classList.add('highlight')
+            high = true
+            highlighted = startSquare - 1
+        }
+    } else if (getPieceColor(startSquare) == 'black' && highlighted) {
+        endSquare = startSquare
+        startSquare = highlighted + 1
+        piece = getPiece(startSquare).replace('white', '')
+    
+        let move = validate(startSquare, endSquare, piece, lastfrom, lastto)
 
-            if (valid) {
-                if (squares[endSquare - 1].hasChildNodes()) {
-                    squares[endSquare - 1].removeChild(squares[endSquare - 1].firstChild);
-                }
-                squares[endSquare - 1].appendChild(squares[startSquare - 1].firstChild);
-                squares[startSquare - 1].classList.remove('highlight')
-                if (checkCheckmateBlack()){
-                    setTimeout(() => {
-                        if (confirm("yay, you won! press ok to restart the game")) {
-                            window.location.reload()
-                        }
-                    }, 0)
-                }
-                blacksturn = true;
-                moves ++;
-                if (lastfrom) {
-                    squares[lastfrom - 1].classList.remove('enginefrom')
-                    squares[lastto - 1].classList.remove('engineto')
-                }
-                
+        if (valid) {
+            if (squares[endSquare - 1].hasChildNodes()) {
+                squares[endSquare - 1].removeChild(squares[endSquare - 1].firstChild);
+            }
+            squares[endSquare - 1].appendChild(squares[startSquare - 1].firstChild);
+            squares[startSquare - 1].classList.remove('highlight')
+            if (checkCheckmateBlack()){
                 setTimeout(() => {
-                    firetheengineup(move);
+                    if (confirm("yay, you won! press ok to restart the game")) {
+                        window.location.reload()
+                    }
                 }, 0)
             }
+            blacksturn = true;
+            moves ++;
+            if (lastfrom) {
+                squares[lastfrom - 1].classList.remove('enginefrom')
+                squares[lastto - 1].classList.remove('engineto')
+            }
+            
+            setTimeout(() => {
+                firetheengineup(move);
+            }, 0)
         }
-    })
-});
+    }
+}
 
 squares.forEach(square => {
     square.addEventListener('click', function (event) {
@@ -448,14 +450,13 @@ function validate(f, t, piece, lastfrom, lastto) {
     }
     else if (promo) {
         let queenie = make('queen', 'white')
-        squares[f - 1].removeChild(squares[f - 1].firstChild)
-        if (squares[t - 1].hasChildNodes()) {
-            squares[t - 1].removeChild(squares[t - 1].firstChild);
-        }
         queenie.setAttribute("draggable", true);
         queenie.addEventListener('dragstart', dragStart);
         queenie.addEventListener('dragend', dragEnd);
-        squares[t - 1].appendChild(queenie)
+        queenie.addEventListener('click', click)
+        squares[f - 1].removeChild(squares[f - 1].firstChild)
+        squares[f - 1].appendChild(queenie)
+        valid = true;
     }
 
     let ty;
@@ -472,9 +473,7 @@ function validate(f, t, piece, lastfrom, lastto) {
         ty = (t - (t % 8)) / 8
     }
 
-    console.log({fromY: fy, fromX: (f - 1) % 8 , toY: ty, toX: (f - 1) % 8}) // todo
-
-    return {fromY: fy, fromX: (f - 1) % 8 , toY: ty, toX: (f - 1) % 8}
+    if (valid) {return {fromY: fy, fromX: (f - 1) % 8 , toY: ty, toX: (f - 1) % 8}}
 }
 
 function checkCheckmateBlack() {
