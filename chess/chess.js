@@ -4,7 +4,7 @@ let selectedPiece;
 let startSquare;
 let endSquare;
 let black;
-let moves;
+let moves = 0;
 
 /* vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv DRAG N DROP vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv */
 
@@ -445,9 +445,23 @@ function validate(f, t, piece, lastfrom, lastto) {
         squares[t - 1].appendChild(queenie)
     }
 
-    console.log({fromY: (f - (f % 8)) / 8, fromX: (f % 8) - 1, toY: (t - (t % 8)) / 8, toX: (f % 8) - 1})
+    let ty;
+    let fy;
 
-    return {fromY: (f - (f % 8)) / 8, fromX: (f % 8) - 1, toY: (t - (t % 8)) / 8, toX: (f % 8) - 1}
+    if (f == 8 || f == 16 || f == 24 || f == 32 || f == 40 || f == 48 || f == 56 || f == 64) {
+        fy = f / 8 - 1
+    } else {
+        fy = (f - (f % 8)) / 8
+    }
+    if (t == 8 || t == 16 || t == 24 || t == 32 || t == 40 || t == 48 || t == 56 || t == 64) {
+        ty = t / 8 - 1
+    } else {
+        ty = (t - (t % 8)) / 8
+    }
+
+    console.log({fromY: fy, fromX: (f - 1) % 8 , toY: ty, toX: (f - 1) % 8}) // todo
+
+    return {fromY: fy, fromX: (f - 1) % 8 , toY: ty, toX: (f - 1) % 8}
 }
 
 function checkCheckmateBlack() {
@@ -1101,21 +1115,33 @@ function bestMove(possible, board, lastMove) { //todo...
         }
     }
 
+    console.log(q)
+
+    console.log(lastto, lastfrom)
+
     for (let i = 0; i < q.length; i++) {
-        if (possible[q[i]].fromY2 !== undefined) { // when castling is among the best moves, castle
-            castlee = true
-            best = possible[q[i]]
-        } else if (possible[q[i]].fromY * 8 + possible[q[i]].fromX + 1 == lastto && possible[q[i]].toY * 8 + possible[q[i]].toX + 1 == lastfrom) { // dont repeat moves
-            q.splice(i, 1)
-            i--
-        }
-        else if (board[possible[q[i]].fromY][possible[q[i]].fromX] == "kingblack" && k < q.length && moves < 25) { // no unnecessary king moves
-            q.splice(i, 1)
-            i--
-        } else if (board[possible[q[i]].fromY][possible[q[i]].fromX] == "knightblack" && ( // knight is bad on the edge of the board
-                   possible[q[i]].toX == 0 || possible[q[i]].toX == 7)){
-            q.splice(i, 1)
-            i--
+        if (q.length != 1) {
+            if (possible[q[i]].fromY2 !== undefined) { // when castling is among the best moves, castle
+                castlee = true
+                best = possible[q[i]]
+                break
+            } else if (board[possible[q[i]].fromY][possible[q[i]].fromX] == "kingblack" && k < q.length && moves < 25) { // no unnecessary king moves
+                q.splice(i, 1)
+                i--
+            } else if (board[possible[q[i]].fromY][possible[q[i]].fromX] == "knightblack" && ( // knight is bad on the edge of the board
+                    possible[q[i]].toX == 0 || possible[q[i]].toX == 7)){
+                q.splice(i, 1)
+                i--
+            } else if (board[possible[q[i]].fromY][possible[q[i]].fromX] == "pawnblack" && moves < 3 && (possible[q[i]].toX == 7 || possible[q[i]].toX == 0 || possible[q[i]].toX == 6 || possible[q[i]].toX == 1)) {
+                q.splice(i, 1) // no stupid pawn moves
+                i--
+            } else if (board[possible[q[i]].fromY][possible[q[i]].fromX] == "queenblack" && moves < 10) { // no stupid queen moves
+                q.splice(i, 1)
+                i--
+            } else if (possible[q[i]].fromY * 8 + possible[q[i]].fromX + 1 == lastto && moves < 10) {
+                q.splice(i, 1)
+                i--
+            }
         }
     }
 
