@@ -82,6 +82,11 @@ squares.forEach(square => {
                 }
                 blacksturn = true;
                 moves ++;
+
+                if (lastfrom) {
+                    squares[lastfrom - 1].classList.remove('enginefrom')
+                    squares[lastto - 1].classList.remove('engineto')
+                }
                 
                 setTimeout(() => {
                     firetheengineup(move);
@@ -142,7 +147,10 @@ pieces.forEach(piece => {
                 }
                 blacksturn = true;
                 moves ++;
-                window.requestAnimationFrame(click)
+                if (lastfrom) {
+                    squares[lastfrom - 1].classList.remove('enginefrom')
+                    squares[lastto - 1].classList.remove('engineto')
+                }
                 
                 setTimeout(() => {
                     firetheengineup(move);
@@ -184,6 +192,11 @@ squares.forEach(square => {
                         }
                         blacksturn = true;
                         moves ++;
+
+                        if (lastfrom) {
+                            squares[lastfrom - 1].classList.remove('enginefrom')
+                            squares[lastto - 1].classList.remove('engineto')
+                        }
                         
                         setTimeout(() => {
                             firetheengineup(move);
@@ -1138,7 +1151,7 @@ function bestMove(possible, board, lastMove) { //todo...
             } else if (board[possible[q[i]].fromY][possible[q[i]].fromX] == "queenblack" && moves < 10) { // no stupid queen moves
                 q.splice(i, 1)
                 i--
-            } else if (possible[q[i]].fromY * 8 + possible[q[i]].fromX + 1 == lastto && moves < 10) {
+            } else if (possible[q[i]].fromY * 8 + possible[q[i]].fromX + 1 == lastto && moves < 10) { // dont repeat moves
                 q.splice(i, 1)
                 i--
             }
@@ -1224,6 +1237,9 @@ function firetheengineup(lastMove) {
             toSquare.removeChild(toSquare.firstChild);
         }
         toSquare.appendChild(fromSquare.firstChild)
+
+        squares[lastfrom - 1].classList.add('enginefrom')
+        squares[lastto - 1].classList.add('engineto')
     }
 
     blacksturn = false;
