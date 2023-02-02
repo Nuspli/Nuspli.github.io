@@ -1,5 +1,3 @@
-// functions > OOP
-
 let selectedPiece;
 let startSquare;
 let endSquare;
@@ -829,261 +827,267 @@ function maxi(arr) {
     return t
 }
 
-let save;
+function doMove(i, white, black, las, p, depth, possible, board) {
+    console.log("hi")
+    
+    /*----------------------update position after blacks move----------------------*/
+    //1 move black
+    lastMove = las
+    let tttemp
+    let ttemp
+    let temp = board[possible[i].toY][possible[i].toX]
 
-function tree(possible, p, depth, lastMove) { // todo async?
-    let white = whiteMaterial(board)
-    let black = blackMaterial(board)
-    save = [];
-    let las = lastMove
+    board[possible[i].toY][possible[i].toX] = board[possible[i].fromY][possible[i].fromX]
+    board[possible[i].fromY][possible[i].fromX] = "0"
 
-    for (let i = 0; i < possible.length; i++) {
-
-        /*----------------------update position after blacks move----------------------*/
-        //1 move black
-        lastMove = las
-        let tttemp
-        let ttemp
-        let temp = board[possible[i].toY][possible[i].toX]
-
-        board[possible[i].toY][possible[i].toX] = board[possible[i].fromY][possible[i].fromX]
-        board[possible[i].fromY][possible[i].fromX] = "0"
-
-        if (possible[i].toY2) { // is defined (castle)
-            ttemp = board[possible[i].toY2][possible[i].toX2]
-            board[possible[i].toY2][possible[i].toX2] = board[possible[i].fromY2][possible[i].fromX2]
-            board[possible[i].fromY2][possible[i].fromX2] = "0"
-        }
-
-        if (possible[i].enPassant) {
-            tttemp = board[possible[i].toY - 1][possible[i].toX]
-            board[possible[i].toY - 1][possible[i].toX] = "0"
-        }
-
-        lastMove = possible[i]
-        let difference = (blackMaterial(board) - black) + (white - whiteMaterial(board))
-
-        /*-----------------------check for whites best response-----------------------*/
-        //1 move white
-        if (difference != 42 && depth > 1) {
-            let possible2 = possiblemoves(board, "white", lastMove)
-            let r = [];
-
-            let black2 = blackMaterial(board)
-            let white2 = whiteMaterial(board)
-            let difference2;
-            let ttemp2;
-            let tttemp2
-
-            for (let i = 0; i < possible2.length; i++) {
-
-                let temp2 = board[possible2[i].toY][possible2[i].toX]
-
-                board[possible2[i].toY][possible2[i].toX] = board[possible2[i].fromY][possible2[i].fromX]
-                board[possible2[i].fromY][possible2[i].fromX] = "0"
-
-                if (possible2[i].toY2) { // is defined
-                    ttemp2 = board[possible2[i].toY2][possible2[i].toX2]
-                    board[possible2[i].toY2][possible2[i].toX2] = board[possible2[i].fromY2][possible2[i].fromX2]
-                    board[possible2[i].fromY2][possible2[i].fromX2] = "0"
-                }
-
-                if (possible2[i].enPassant) {
-                    tttemp2 = board[possible2[i].toY + 1][possible2[i].toX]
-                    board[possible2[i].toY + 1][possible2[i].toX] = "0"
-                }
-
-                lastMove = possible2[i]
-                difference2 = (whiteMaterial(board) - white2) + (black2 - blackMaterial(board))
-
-                //#########################################################################
-                //2 moves lookahead black
-                if (difference2 != 42 && depth > 2) {
-
-                    let possible3 = possiblemoves(board, "black", lastMove)
-                    let m = [];
-
-                    let black3 = blackMaterial(board)
-                    let white3 = whiteMaterial(board)
-                    let difference3;
-                    let ttemp3;
-                    let tttemp3;
-
-                    for (let i = 0; i < possible3.length; i++) {
-
-                        let temp3 = board[possible3[i].toY][possible3[i].toX]
-            
-                        board[possible3[i].toY][possible3[i].toX] = board[possible3[i].fromY][possible3[i].fromX]
-                        board[possible3[i].fromY][possible3[i].fromX] = "0"
-
-                        if (possible3[i].toY2) { // is defined
-                            ttemp3 = board[possible3[i].toY2][possible3[i].toX2]
-                            board[possible3[i].toY2][possible3[i].toX2] = board[possible3[i].fromY2][possible3[i].fromX2]
-                            board[possible3[i].fromY2][possible3[i].fromX2] = "0"
-                        }
-
-                        if (possible3[i].enPassant) {
-                            tttemp3 = board[possible3[i].toY - 1][possible3[i].toX]
-                            board[possible3[i].toY - 1][possible3[i].toX] = "0"
-                        }
-                        
-                        lastMove = possible3[i]
-                        difference3 = (blackMaterial(board) - black3) + (white3 - whiteMaterial(board))
-
-                        //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-                        if (difference3 != 42 && depth > 3) {
-
-                            let possible4 = possiblemoves(board, "white", lastMove)
-                            let z = [];
-        
-                            let black4 = blackMaterial(board)
-                            let white4 = whiteMaterial(board)
-                            let difference4;
-                            let ttemp4;
-                            let tttemp4;
-        
-                            for (let i = 0; i < possible4.length; i++) {
-        
-                                let temp4 = board[possible4[i].toY][possible4[i].toX]
-                    
-                                board[possible4[i].toY][possible4[i].toX] = board[possible4[i].fromY][possible4[i].fromX]
-                                board[possible4[i].fromY][possible4[i].fromX] = "0"
-        
-                                if (possible4[i].toY2) { // is defined
-                                    ttemp4 = board[possible4[i].toY2][possible4[i].toX2]
-                                    board[possible4[i].toY2][possible4[i].toX2] = board[possible4[i].fromY2][possible4[i].fromX2]
-                                    board[possible4[i].fromY2][possible4[i].fromX2] = "0"
-                                }
-
-                                if (possible4[i].enPassant) {
-                                    tttemp4 = board[possible4[i].toY + 1][possible4[i].toX]
-                                    board[possible4[i].toY + 1][possible4[i].toX] = "0"
-                                }
-                                
-                                lastMove = possible4[i]
-                                difference4 = (blackMaterial(board) - black4) + (white4 - whiteMaterial(board))
-        
-                                //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                                if (difference4 != 42 && depth > 4) {
-
-                                    let possible5 = possiblemoves(board, "black", lastMove)
-                                    let z = [];
-                
-                                    let black5 = blackMaterial(board)
-                                    let white5 = whiteMaterial(board)
-                                    let difference5;
-                                    let ttemp5;
-                                    let tttemp5;
-                
-                                    for (let i = 0; i < possible5.length; i++) {
-                
-                                        let temp5 = board[possible5[i].toY][possible5[i].toX]
-                            
-                                        board[possible5[i].toY][possible5[i].toX] = board[possible5[i].fromY][possible5[i].fromX]
-                                        board[possible5[i].fromY][possible5[i].fromX] = "0"
-                
-                                        if (possible5[i].toY2) { // is defined
-                                            ttemp5 = board[possible5[i].toY2][possible5[i].toX2]
-                                            board[possible5[i].toY2][possible5[i].toX2] = board[possible5[i].fromY2][possible5[i].fromX2]
-                                            board[possible5[i].fromY2][possible5[i].fromX2] = "0"
-                                        }
-
-                                        if (possible5[i].enPassant) {
-                                            tttemp5 = board[possible5[i].toY - 1][possible5[i].toX]
-                                            board[possible5[i].toY - 1][possible5[i].toX] = "0"
-                                        }
-                                        
-                                        difference5 = (blackMaterial(board) - black5) + (white5 - whiteMaterial(board))
-                
-                                        z.push(difference5)
-
-                                        if (possible5[i].enPassant) {
-                                            board[possible5[i].toY - 1][possible5[i].toX] = tttemp5
-                                        }
-                
-                                        if (possible5[i].toY2) {
-                                            board[possible5[i].fromY2][possible5[i].fromX2] = board[possible5[i].toY2][possible5[i].toX2]
-                                            board[possible5[i].toY2][possible5[i].toX2] = ttemp5
-                                        }
-                
-                                        board[possible5[i].fromY][possible5[i].fromX] = board[possible5[i].toY][possible5[i].toX]
-                                        board[possible5[i].toY][possible5[i].toX] = temp5
-                                    }
-                                difference4 -= maxi(z)
-                                }
-                                //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        
-                                z.push(difference4)
-
-                                if (possible4[i].enPassant) {board[
-                                    possible4[i].toY + 1][possible4[i].toX] = tttemp4
-                                }
-        
-                                if (possible4[i].toY2) {
-                                    board[possible4[i].fromY2][possible4[i].fromX2] = board[possible4[i].toY2][possible4[i].toX2]
-                                    board[possible4[i].toY2][possible4[i].toX2] = ttemp4
-                                }
-        
-                                board[possible4[i].fromY][possible4[i].fromX] = board[possible4[i].toY][possible4[i].toX]
-                                board[possible4[i].toY][possible4[i].toX] = temp4
-                            }
-                        difference3 -= maxi(z)
-                        }
-                        //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-
-                        m.push(difference3)
-
-                        if (possible3[i].enPassant) {
-                            board[possible3[i].toY - 1][possible3[i].toX] = tttemp3
-                        }
-
-                        if (possible3[i].toY2) {
-                            board[possible3[i].fromY2][possible3[i].fromX2] = board[possible3[i].toY2][possible3[i].toX2]
-                            board[possible3[i].toY2][possible3[i].toX2] = ttemp3
-                        }
-
-                        board[possible3[i].fromY][possible3[i].fromX] = board[possible3[i].toY][possible3[i].toX]
-                        board[possible3[i].toY][possible3[i].toX] = temp3
-                    }
-                difference2 -= maxi(m)
-                }
-                //#########################################################################
-
-                r.push(difference2)
-
-                if (possible2[i].enPassant) {
-                    board[possible2[i].toY + 1][possible2[i].toX] = tttemp2
-                }
-
-                if (possible2[i].toY2) {
-                    board[possible2[i].fromY2][possible2[i].fromX2] = board[possible2[i].toY2][possible2[i].toX2]
-                    board[possible2[i].toY2][possible2[i].toX2] = ttemp2
-                }
-
-                board[possible2[i].fromY][possible2[i].fromX] = board[possible2[i].toY][possible2[i].toX]
-                board[possible2[i].toY][possible2[i].toX] = temp2
-            }
-            difference -= maxi(r)
-        }
-        /*----------------------------------------------------------------------------*/
-
-        p.push(difference)
-
-        if (possible[i].enPassant) {
-            board[possible[i].toY - 1][possible[i].toX] = tttemp
-        }
-
-        if (possible[i].toY2) {
-            board[possible[i].fromY2][possible[i].fromX2] = board[possible[i].toY2][possible[i].toX2]
-            board[possible[i].toY2][possible[i].toX2] = ttemp
-        }
-
-        board[possible[i].fromY][possible[i].fromX] = board[possible[i].toY][possible[i].toX]
-        board[possible[i].toY][possible[i].toX] = temp
+    if (possible[i].toY2) { // is defined (castle)
+        ttemp = board[possible[i].toY2][possible[i].toX2]
+        board[possible[i].toY2][possible[i].toX2] = board[possible[i].fromY2][possible[i].fromX2]
+        board[possible[i].fromY2][possible[i].fromX2] = "0"
     }
+
+    if (possible[i].enPassant) {
+        tttemp = board[possible[i].toY - 1][possible[i].toX]
+        board[possible[i].toY - 1][possible[i].toX] = "0"
+    }
+
+    lastMove = possible[i]
+    let difference = (blackMaterial(board) - black) + (white - whiteMaterial(board))
+
+    /*-----------------------check for whites best response-----------------------*/
+    //1 move white
+    if (difference != 42 && depth > 1) {
+        let possible2 = possiblemoves(board, "white", lastMove)
+        let r = [];
+
+        let black2 = blackMaterial(board)
+        let white2 = whiteMaterial(board)
+        let difference2;
+        let ttemp2;
+        let tttemp2
+
+        for (let i = 0; i < possible2.length; i++) {
+
+            let temp2 = board[possible2[i].toY][possible2[i].toX]
+
+            board[possible2[i].toY][possible2[i].toX] = board[possible2[i].fromY][possible2[i].fromX]
+            board[possible2[i].fromY][possible2[i].fromX] = "0"
+
+            if (possible2[i].toY2) { // is defined
+                ttemp2 = board[possible2[i].toY2][possible2[i].toX2]
+                board[possible2[i].toY2][possible2[i].toX2] = board[possible2[i].fromY2][possible2[i].fromX2]
+                board[possible2[i].fromY2][possible2[i].fromX2] = "0"
+            }
+
+            if (possible2[i].enPassant) {
+                tttemp2 = board[possible2[i].toY + 1][possible2[i].toX]
+                board[possible2[i].toY + 1][possible2[i].toX] = "0"
+            }
+
+            lastMove = possible2[i]
+            difference2 = (whiteMaterial(board) - white2) + (black2 - blackMaterial(board))
+
+            //#########################################################################
+            //2 moves lookahead black
+            if (difference2 != 42 && depth > 2) {
+
+                let possible3 = possiblemoves(board, "black", lastMove)
+                let m = [];
+
+                let black3 = blackMaterial(board)
+                let white3 = whiteMaterial(board)
+                let difference3;
+                let ttemp3;
+                let tttemp3;
+
+                for (let i = 0; i < possible3.length; i++) {
+
+                    let temp3 = board[possible3[i].toY][possible3[i].toX]
+        
+                    board[possible3[i].toY][possible3[i].toX] = board[possible3[i].fromY][possible3[i].fromX]
+                    board[possible3[i].fromY][possible3[i].fromX] = "0"
+
+                    if (possible3[i].toY2) { // is defined
+                        ttemp3 = board[possible3[i].toY2][possible3[i].toX2]
+                        board[possible3[i].toY2][possible3[i].toX2] = board[possible3[i].fromY2][possible3[i].fromX2]
+                        board[possible3[i].fromY2][possible3[i].fromX2] = "0"
+                    }
+
+                    if (possible3[i].enPassant) {
+                        tttemp3 = board[possible3[i].toY - 1][possible3[i].toX]
+                        board[possible3[i].toY - 1][possible3[i].toX] = "0"
+                    }
+                    
+                    lastMove = possible3[i]
+                    difference3 = (blackMaterial(board) - black3) + (white3 - whiteMaterial(board))
+
+                    //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+                    if (difference3 != 42 && depth > 3) {
+
+                        let possible4 = possiblemoves(board, "white", lastMove)
+                        let z = [];
+    
+                        let black4 = blackMaterial(board)
+                        let white4 = whiteMaterial(board)
+                        let difference4;
+                        let ttemp4;
+                        let tttemp4;
+    
+                        for (let i = 0; i < possible4.length; i++) {
+    
+                            let temp4 = board[possible4[i].toY][possible4[i].toX]
+                
+                            board[possible4[i].toY][possible4[i].toX] = board[possible4[i].fromY][possible4[i].fromX]
+                            board[possible4[i].fromY][possible4[i].fromX] = "0"
+    
+                            if (possible4[i].toY2) { // is defined
+                                ttemp4 = board[possible4[i].toY2][possible4[i].toX2]
+                                board[possible4[i].toY2][possible4[i].toX2] = board[possible4[i].fromY2][possible4[i].fromX2]
+                                board[possible4[i].fromY2][possible4[i].fromX2] = "0"
+                            }
+
+                            if (possible4[i].enPassant) {
+                                tttemp4 = board[possible4[i].toY + 1][possible4[i].toX]
+                                board[possible4[i].toY + 1][possible4[i].toX] = "0"
+                            }
+                            
+                            lastMove = possible4[i]
+                            difference4 = (blackMaterial(board) - black4) + (white4 - whiteMaterial(board))
+    
+                            //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                            if (difference4 != 42 && depth > 4) {
+
+                                let possible5 = possiblemoves(board, "black", lastMove)
+                                let z = [];
+            
+                                let black5 = blackMaterial(board)
+                                let white5 = whiteMaterial(board)
+                                let difference5;
+                                let ttemp5;
+                                let tttemp5;
+            
+                                for (let i = 0; i < possible5.length; i++) {
+            
+                                    let temp5 = board[possible5[i].toY][possible5[i].toX]
+                        
+                                    board[possible5[i].toY][possible5[i].toX] = board[possible5[i].fromY][possible5[i].fromX]
+                                    board[possible5[i].fromY][possible5[i].fromX] = "0"
+            
+                                    if (possible5[i].toY2) { // is defined
+                                        ttemp5 = board[possible5[i].toY2][possible5[i].toX2]
+                                        board[possible5[i].toY2][possible5[i].toX2] = board[possible5[i].fromY2][possible5[i].fromX2]
+                                        board[possible5[i].fromY2][possible5[i].fromX2] = "0"
+                                    }
+
+                                    if (possible5[i].enPassant) {
+                                        tttemp5 = board[possible5[i].toY - 1][possible5[i].toX]
+                                        board[possible5[i].toY - 1][possible5[i].toX] = "0"
+                                    }
+                                    
+                                    difference5 = (blackMaterial(board) - black5) + (white5 - whiteMaterial(board))
+            
+                                    z.push(difference5)
+
+                                    if (possible5[i].enPassant) {
+                                        board[possible5[i].toY - 1][possible5[i].toX] = tttemp5
+                                    }
+            
+                                    if (possible5[i].toY2) {
+                                        board[possible5[i].fromY2][possible5[i].fromX2] = board[possible5[i].toY2][possible5[i].toX2]
+                                        board[possible5[i].toY2][possible5[i].toX2] = ttemp5
+                                    }
+            
+                                    board[possible5[i].fromY][possible5[i].fromX] = board[possible5[i].toY][possible5[i].toX]
+                                    board[possible5[i].toY][possible5[i].toX] = temp5
+                                }
+                            difference4 -= maxi(z)
+                            }
+                            //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    
+                            z.push(difference4)
+
+                            if (possible4[i].enPassant) {board[
+                                possible4[i].toY + 1][possible4[i].toX] = tttemp4
+                            }
+    
+                            if (possible4[i].toY2) {
+                                board[possible4[i].fromY2][possible4[i].fromX2] = board[possible4[i].toY2][possible4[i].toX2]
+                                board[possible4[i].toY2][possible4[i].toX2] = ttemp4
+                            }
+    
+                            board[possible4[i].fromY][possible4[i].fromX] = board[possible4[i].toY][possible4[i].toX]
+                            board[possible4[i].toY][possible4[i].toX] = temp4
+                        }
+                    difference3 -= maxi(z)
+                    }
+                    //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+                    m.push(difference3)
+
+                    if (possible3[i].enPassant) {
+                        board[possible3[i].toY - 1][possible3[i].toX] = tttemp3
+                    }
+
+                    if (possible3[i].toY2) {
+                        board[possible3[i].fromY2][possible3[i].fromX2] = board[possible3[i].toY2][possible3[i].toX2]
+                        board[possible3[i].toY2][possible3[i].toX2] = ttemp3
+                    }
+
+                    board[possible3[i].fromY][possible3[i].fromX] = board[possible3[i].toY][possible3[i].toX]
+                    board[possible3[i].toY][possible3[i].toX] = temp3
+                }
+            difference2 -= maxi(m)
+            }
+            //#########################################################################
+
+            r.push(difference2)
+
+            if (possible2[i].enPassant) {
+                board[possible2[i].toY + 1][possible2[i].toX] = tttemp2
+            }
+
+            if (possible2[i].toY2) {
+                board[possible2[i].fromY2][possible2[i].fromX2] = board[possible2[i].toY2][possible2[i].toX2]
+                board[possible2[i].toY2][possible2[i].toX2] = ttemp2
+            }
+
+            board[possible2[i].fromY][possible2[i].fromX] = board[possible2[i].toY][possible2[i].toX]
+            board[possible2[i].toY][possible2[i].toX] = temp2
+        }
+        difference -= maxi(r)
+    }
+    /*----------------------------------------------------------------------------*/
+
+    p.push(difference)
+
+    if (possible[i].enPassant) {
+        board[possible[i].toY - 1][possible[i].toX] = tttemp
+    }
+
+    if (possible[i].toY2) {
+        board[possible[i].fromY2][possible[i].fromX2] = board[possible[i].toY2][possible[i].toX2]
+        board[possible[i].toY2][possible[i].toX2] = ttemp
+    }
+
+    board[possible[i].fromY][possible[i].fromX] = board[possible[i].toY][possible[i].toX]
+    board[possible[i].toY][possible[i].toX] = temp
 }
 
-function bestMove(possible, board, lastMove) { //todo...
+async function tree(possible, p, depth, lastMove) {
+    let white = whiteMaterial(board)
+    let black = blackMaterial(board)
+    let las = lastMove
+    var tasks = []
+
+    for (let i = 0; i < possible.length; i++) {
+        let currentBoard = [...board]
+        tasks.push(doMove(i, white, black, las, p, depth, possible, currentBoard))
+    }
+
+    await Promise.all(tasks);
+}
+
+function bestMove(possible, board, lastMove) {
 
     let best;
     let q = [];
@@ -1157,6 +1161,8 @@ function bestMove(possible, board, lastMove) { //todo...
         }
     }
 
+    console.log(q)
+
     if (!castlee) {
         let uh = Math.floor(Math.random() * q.length)
         best = possible[q[uh]]
@@ -1187,6 +1193,8 @@ function make(piece, color) {
 let castlee = false;
 
 function firetheengineup(lastMove) {
+
+    console.time('engine')
 
     currentBoard = getBoard();
 
@@ -1250,4 +1258,6 @@ function firetheengineup(lastMove) {
             }
         }, 0)
     }
+
+    console.timeEnd('engine')
 }
