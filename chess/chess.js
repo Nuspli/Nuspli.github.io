@@ -1081,7 +1081,10 @@ async function tree(possible, p, depth, lastMove) {
 
     for (let i = 0; i < possible.length; i++) {
         let currentBoard = [...board]
-        tasks.push(doMove(i, white, black, las, p, depth, possible, currentBoard))
+        tasks.push(new Promise((resolve, reject) => {
+            doMove(i, white, black, las, p, depth, possible, currentBoard)
+            resolve()
+        }))
     }
 
     await Promise.all(tasks);
@@ -1093,14 +1096,14 @@ function bestMove(possible, board, lastMove) {
     let q = [];
     let p = [];
 
-    tree(possible, p, 3, lastMove)
+    tree(possible, p, 5, lastMove)
 
     for (let i = 0; i < p.length; i++) {
         if (p[i] == maxi(p)) {
             q.push(i)
         }
     }
-
+    /*
     let good = []
     let qq = [];
     let pp = [];
@@ -1123,6 +1126,8 @@ function bestMove(possible, board, lastMove) {
         
         possible = [...good]
     }
+    */
+    
     let k = 0;
 
     for (let i = 0; i < q.length; i++) {
