@@ -160,12 +160,34 @@
         content: "";
         display: block;
         width: 100%;
+        height: 100%;
         padding-top: 100%;
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
         position: relative;
         pointer-events: all;
+    }
+
+    .select_piece * *{
+        content: "";
+        display: block;
+        width: 100%;
+        height: 100%;
+        padding-top: 100%;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        position: relative;
+        pointer-events: none;
+    }
+
+    .select_piece {
+        pointer-events: all;
+    }
+
+    .piece:hover {
+        cursor: pointer;
     }
 
     .pawn .black{
@@ -225,14 +247,14 @@
     .retry_button {
         pointer-events: all;
         cursor: pointer;
-        border-radius: 10%;
+        border-radius: 1vmin;
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
         content: "";
         display: block;
-        width: 8%;
-        padding: 4%;
+        width: 2vmin;
+        padding: 3.325vmin;
         background-image: url('images_chess/retry.png');
         background-color: black;
     }
@@ -262,6 +284,29 @@
         background-color: aquamarine;
     }
 
+    .promote_container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .promote_selector {
+        position: absolute;
+        top: -1000px;
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(4, 1fr);
+        border-radius: 0.5vmin;
+        width: 9vmin;
+        height: 36vmin;
+        background-color: rgb(100, 80, 80);
+    }
+
+    .promote_selector .select_piece:hover {
+        position: relative;
+        background-color: rgb(120, 100, 100);
+        cursor: pointer;
+    }
 
 </style>
 <body>
@@ -358,6 +403,14 @@
         </div>
         <div class="retry">
             <button class="retry_button"></button>
+        </div>
+        <div class="promote_container">
+            <div class="promote_selector">
+                <div class="select_piece"><div class="queen"><div class="white"></div></div></div>
+                <div class="select_piece"><div class="rook"><div class="white"></div></div></div>
+                <div class="select_piece"><div class="bishop"><div class="white"></div></div></div>
+                <div class="select_piece"><div class="knight"><div class="white"></div></div></div>
+            </div>
         </div>
     </div>
     <script src="chess.js"></script>
