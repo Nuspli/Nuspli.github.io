@@ -534,12 +534,12 @@ function whiteMaterial(board) {
     let material = 0;
     for (let i = 0; i < 8; i++) {
         for (let x = 0; x < 8; x++) {
-            if (board[i][x] == "pawnwhite") {material += 1}
-            else if (board[i][x] == "knightwhite") {material += 3}
-            else if (board[i][x] == "bishopwhite") {material += 3}
-            else if (board[i][x] == "rookwhite") {material += 5}
-            else if (board[i][x] == "queenwhite") {material += 9}
-            else if (board[i][x] == "kingwhite") {material += 42}
+            if (board[i][x] == "pawnwhite") {material += 100}
+            else if (board[i][x] == "knightwhite") {material += 300}
+            else if (board[i][x] == "bishopwhite") {material += 300}
+            else if (board[i][x] == "rookwhite") {material += 500}
+            else if (board[i][x] == "queenwhite") {material += 900}
+            else if (board[i][x] == "kingwhite") {material += 10000}
         }
     }
     return material
@@ -970,7 +970,7 @@ function doMove(move, board) {
     if (move.promoto){
         newBoard[move.toY][move.toX] = move.promoto
     }
-    else if (move.toY2) { // is defined (castle)
+    else if (move.toY2) {
         newBoard[move.toY2][move.toX2] = newBoard[move.fromY2][move.fromX2];
         newBoard[move.fromY2][move.fromX2] = "0";
     } else if (move.enPassant) {
