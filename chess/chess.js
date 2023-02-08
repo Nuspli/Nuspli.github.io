@@ -2,7 +2,7 @@ let selectedPiece;
 let startSquare;
 let endSquare;
 let black;
-let moves = 0;
+let moveCount = 0;
 
 /* vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv DRAG N DROP vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv */
 
@@ -75,7 +75,7 @@ squares.forEach(square => {
                 square.appendChild(selectedPiece);
 
                 blacksturn = true;
-                moves ++;
+                moveCount ++;
 
                 if (lastfrom) {
                     squares[lastfrom - 1].classList.remove('enginefrom')
@@ -138,7 +138,7 @@ function click (event) {
             squares[endSquare - 1].appendChild(squares[startSquare - 1].firstChild);
             squares[startSquare - 1].classList.remove('highlight')
             blacksturn = true;
-            moves ++;
+            moveCount ++;
             if (lastfrom) {
                 squares[lastfrom - 1].classList.remove('enginefrom')
                 squares[lastto - 1].classList.remove('engineto')
@@ -179,7 +179,7 @@ squares.forEach(square => {
                         square.appendChild(squares[startSquare - 1].firstChild);
                         squares[startSquare - 1].classList.remove('highlight')
                         blacksturn = true;
-                        moves ++;
+                        moveCount ++;
 
                         if (lastfrom) {
                             squares[lastfrom - 1].classList.remove('enginefrom')
@@ -947,12 +947,17 @@ function check(possible, board, end, lastMove) {
 
 function maxi(arr) {
     let t = arr[0]
+    let m = 0
+    let a = []
     for (let i = 1; i < arr.length; i++) {
         if (arr[i] > t) {
             t = arr[i]
+            m = i
         }
     }
-    return t
+    a.push(t)
+    a.push(m)
+    return a
 }
 
 let nodes = 0
@@ -1032,14 +1037,25 @@ function tree(board, depth, alpha, beta, maximizingPlayer, lastMove) {
       if (moves[i].promoto) {
         guess += pieceValue(moves[i].promoto)
       }
+      if (board[moves[i].fromY][moves[i].fromX].startsWith('king') && moveCount < 25) {
+        guess -= 50
+      }
+      else if (board[moves[i].fromY][moves[i].fromX].startsWith('knight') && moveCount < 20 && (moves[i].toY == 0 || moves[i].toY == 7)) {
+        guess -= 25
+      }
+      else if (board[moves[i].fromY][moves[i].fromX].startsWith('pawn') && moveCount < 10) {
+        if (moves[i].toY == 3 || moves[i].toY == 4) {guess += 10}
+        else if (moves[i].toY == 2 || moves[i].toY == 5) {guess += 5}
+      }
+      else if (board[moves[i].fromY][moves[i].fromX].startsWith('queen') && moveCount < 15) {
+        guess -= 50
+      }
       scores.push(guess)
     }
 
-    console.log(moves, scores)
+    console.log(scores)
 
     moves = moves.sort((a, b) => scores[moves.indexOf(b)] - scores[moves.indexOf(a)]);
-
-    console.log(moves)
 
     return moves;
   }
@@ -1063,81 +1079,32 @@ function bestMove(possible, board, lastMove) {
     }
 
     console.log(p)
+    let max = maxi(p)[0]
+    let index = maxi(p)[1]
 
-    for (let i = 0; i < p.length; i++) {
-        if (p[i] == maxi(p)) {
-            q.push(i)
-        }
-    }
+    console.log(index)
+    
     /*
-    let good = []
-    let qq = [];
-    let pp = [];
-
-    if ((q.length <= p.length / 3 && q.length != 1) || (p.length <= 10)) {
-        for (let i = 0; i < q.length; i ++) {
-            good[i] = possible[q[i]]
-        }
-
-        tree(good, pp, 5, lastMove)
-
-        for (let i = 0; i < pp.length; i++) {
-            if (pp[i] == maxi(pp)) {
-                qq.push(i)
-            }
-        }
-
-        p = [...pp]
-        q = [...qq]
-        
-        possible = [...good]
-    }
-    */
-    
-    
-    let k = 0;
-
-    for (let i = 0; i < q.length; i++) {
-        if (board[possible[q[i]].fromY][possible[q[i]].fromX] == "kingblack") {
-            k++
-        }
-    }
-
     for (let i = 0; i < q.length; i++) {
         if (q.length != 1) {
             if (possible[q[i]].fromY2 !== undefined) { // when castling is among the best moves, castle
                 castlee = true
                 best = possible[q[i]]
                 break
-            } else if (board[possible[q[i]].fromY][possible[q[i]].fromX] == "kingblack" && k < q.length && moves < 25) { // no unnecessary king moves
-                q.splice(i, 1)
-                i--
-            } else if (board[possible[q[i]].fromY][possible[q[i]].fromX] == "knightblack" && ( // knight is bad on the edge of the board
-                    possible[q[i]].toX == 0 || possible[q[i]].toX == 7)){
-                q.splice(i, 1)
-                i--
-            } else if (board[possible[q[i]].fromY][possible[q[i]].fromX] == "pawnblack" && moves < 3 && (possible[q[i]].toX == 7 || possible[q[i]].toX == 0 || possible[q[i]].toX == 6 || possible[q[i]].toX == 1)) {
-                q.splice(i, 1) // no stupid pawn moves
-                i--
-            } else if (board[possible[q[i]].fromY][possible[q[i]].fromX] == "queenblack" && moves < 10) { // no stupid queen moves
-                q.splice(i, 1)
-                i--
-            } else if (possible[q[i]].fromY * 8 + possible[q[i]].fromX + 1 == lastto && moves < 10) { // dont repeat moves
+            } else if (possible[q[i]].fromY * 8 + possible[q[i]].fromX + 1 == lastto) { // dont repeat moves
                 q.splice(i, 1)
                 i--
             }
         }
     }
+    */
 
-    console.log(q)
-    if (!castlee) {
-        let uh = Math.floor(Math.random() * q.length)
-        best = possible[q[uh]]
-        if (best !== undefined) {
-        if (best.toY == 7 && board[best.fromY][best.fromX] == "pawnblack") {
-            promote = true;
-        }}
-    }
+    best = possible[index]
+    if (best !== undefined) {
+    if (best.toY == 7 && board[best.fromY][best.fromX] == "pawnblack") {
+        promote = true;
+    }}
+
 
     // TODO ENDGAME MATING STRATEGIES
     
