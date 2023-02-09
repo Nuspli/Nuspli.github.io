@@ -980,13 +980,47 @@ function doMove(move, board) {
     return newBoard;
 }
 
+function evaluate(board) {
+    let b = blackMaterial(board)
+    let w = whiteMaterial(board)
+    let evaluation = b - w;
+    if (moveCount < 12) { // opening
+        if (board[0][4] != 'kingblack') {evaluation -= 64}
+        if (board[0][2] == 'kingblack' || board[0][6] == 'kingblack') {evaluation += 96}
+        if (board[0][3] != 'queenblack') {evaluation -= 32}
+        if (board[1][3] != 'pawnblack') {evaluation += 16}
+        if (board[1][4] != 'pawnblack') {evaluation += 16}
+        if (board[0][1] != 'knightblack') {evaluation += 16}
+        if (board[0][6] != 'knightblack') {evaluation += 16}
+        if (board[0][2] != 'bishopblack') {evaluation += 16}
+        if (board[0][5] != 'bishopblack') {evaluation += 16}
+
+    } else if (b < 12000 || w < 12000) { // endgame
+        for (let x = 0; x < 8; x++) {
+            if (board[4][x] == "pawnblack") {evaluation += 4}
+            if (board[5][x] == "pawnblack") {evaluation += 8}
+            if (board[6][x] == "pawnblack") {evaluation += 32}
+            if (board[7][x] == "pawnblack") {evaluation += 64}
+            // todo mating strategies here? yes
+            if (board[0][x] == 'kingwhite' || board[7][x] == 'kingwhite') {evaluation += 128}
+        } 
+    } else { // middlegame
+        if (board[0][4] != 'kingblack') {evaluation -= 64}
+        if (board[0][2] == 'kingblack' || board[0][6] == 'kingblack') {evaluation += 96}
+        if (board[0][0] != 'rookblack') {evaluation += 16}
+        if (board[0][7] != 'rookblack') {evaluation += 16}
+        if (board[0][3] != 'queenblack') {evaluation += 16}
+    }
+    return evaluation
+}
+
 function tree(board, depth, alpha, beta, maximizingPlayer, lastMove) {
 
     nodes++
     let color
 
     if (depth == 0) {
-      return blackMaterial(board) - whiteMaterial(board);
+      return evaluate(board)
     }
 
     if (maximizingPlayer) {color = 'black'} else {color = 'white'}
@@ -1063,6 +1097,7 @@ function tree(board, depth, alpha, beta, maximizingPlayer, lastMove) {
   
 
 function bestMove(possible, board, lastMove) {
+    console.log(moveCount)
     nodes = 0
 
     let best;
@@ -1123,8 +1158,6 @@ function make(piece, color) {
     return pis
 }
 
-let castlee = false;
-
 function firetheengineup(lastMove) {
 
     console.time('engine')
@@ -1159,7 +1192,7 @@ function firetheengineup(lastMove) {
         toSquare.appendChild(newPiece)
         fromSquare.removeChild(fromSquare.firstChild)
     }
-    else if (castlee) { // castle
+    else if (best.toY2 !== undefined) { // castle
         kinghasmoved = true
         let fromSquare2 = squares[best.fromY2 * 8 + best.fromX2]
         let toSquare2 = squares[best.toY2 * 8 + best.toX2]
@@ -1167,7 +1200,6 @@ function firetheengineup(lastMove) {
         else {console.log("cpu: O-O-O")}
         toSquare.appendChild(fromSquare.firstChild)
         toSquare2.appendChild(fromSquare2.firstChild)
-        castlee = false
     } else {
     
         if (fromSquare.firstChild.firstChild.className == "king") {kinghasmoved = true}
