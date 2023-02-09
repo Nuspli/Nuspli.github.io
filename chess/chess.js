@@ -895,7 +895,7 @@ function possiblemoves(board, end, lastMove) {
     return possible
 }
 
-function check(possible, board, end, lastMove) {
+function check(possible, board, end, lastMove) { // todo improve or replace this
     for (let i = 0; i < possible.length; i++) {
         let check = false
 
@@ -992,7 +992,10 @@ function tree(board, depth, alpha, beta, maximizingPlayer, lastMove) {
     if (maximizingPlayer) {color = 'black'} else {color = 'white'}
   
     let moves = possiblemoves(board, color, lastMove);
-    moves = check(moves, board, color, lastMove)
+    //moves = shuffle(moves)
+    moves = order(moves, board)
+
+    if (moves.length == 0) {return 0}
 
     if (maximizingPlayer) {
       let value = -Infinity;
@@ -1053,8 +1056,6 @@ function tree(board, depth, alpha, beta, maximizingPlayer, lastMove) {
       scores.push(guess)
     }
 
-    console.log(scores)
-
     moves = moves.sort((a, b) => scores[moves.indexOf(b)] - scores[moves.indexOf(a)]);
 
     return moves;
@@ -1065,7 +1066,6 @@ function bestMove(possible, board, lastMove) {
     nodes = 0
 
     let best;
-    let q = [];
     let p = [];
 
     possible = shuffle(possible)
@@ -1074,15 +1074,13 @@ function bestMove(possible, board, lastMove) {
     for (let i = 0; i < possible.length; i++) {
         let newBoard = doMove(possible[i], board)
         lastMove = possible[i]
-        let value = tree(newBoard, 2, -Infinity, Infinity, false, lastMove)
+        let value = tree(newBoard, 4, -Infinity, Infinity, false, lastMove)
         p.push(value)
     }
 
     console.log(p)
     let max = maxi(p)[0]
     let index = maxi(p)[1]
-
-    console.log(index)
     
     /*
     for (let i = 0; i < q.length; i++) {
