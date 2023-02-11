@@ -1141,11 +1141,13 @@ function bestMove(possible, board, lastMove) {
 
     let best;
     let p = [];
+    let maxTime
 
     possible = shuffle(possible)
     possible = order(possible, board)
 
     let maxDepth = 10
+    if (moveCount > 50) {maxTime = 30000} else if (moves < 10) {maxTime = 5000} else {maxTime = 1000}
     let start = Date.now()
 
     for (let depth = 0; depth < maxDepth; depth++) {
@@ -1156,9 +1158,10 @@ function bestMove(possible, board, lastMove) {
             lastMove = possible[i]
             let value = tree(newBoard, depth, -Infinity, Infinity, false, lastMove)
             p.push(value)
-            if (Date.now() - start > 10000) {break}
+            if (Date.now() - start > maxTime) {break}
         }
-        if (Date.now() - start > 10000) {break}
+        if (Date.now() - start > maxTime) {break}
+        console.log(p)
         possible = possible.sort((a, b) => p[possible.indexOf(b)] - p[possible.indexOf(a)])
     }
 
