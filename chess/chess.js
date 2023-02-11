@@ -1147,7 +1147,7 @@ function bestMove(possible, board, lastMove) {
     possible = order(possible, board)
 
     let maxDepth = 10
-    if (moveCount > 50) {maxTime = 30000} else if (moves < 10) {maxTime = 5000} else {maxTime = 1000}
+    if (moveCount > 50) {maxTime = 30000} else if (moveCount < 10) {maxTime = 5000} else {maxTime = 1000}
     let start = Date.now()
 
     for (let depth = 0; depth < maxDepth; depth++) {
