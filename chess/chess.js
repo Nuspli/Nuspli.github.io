@@ -895,7 +895,7 @@ function possiblemoves(board, end, lastMove) {
     return possible
 }
 
-function check(possible, board, end, lastMove) { // todo improve or replace this
+function check(possible, board, end, lastMove) {
     for (let i = 0; i < possible.length; i++) {
         let check = false
 
@@ -981,61 +981,94 @@ function doMove(move, board) {
 }
 
 function evaluate(board) {
-    let b = blackMaterial(board)
-    let w = whiteMaterial(board)
-    let evaluation = b - w;
-    if (moveCount < 12) { // opening
-        if (board[0][4] != 'kingblack') {evaluation -= 64}
-        if (board[0][2] == 'kingblack' || board[0][6] == 'kingblack') {evaluation += 96}
-        if (board[0][3] != 'queenblack') {evaluation -= 32}
-        if (board[1][3] != 'pawnblack') {evaluation += 16}
-        if (board[1][4] != 'pawnblack') {evaluation += 16}
-        if (board[0][1] != 'knightblack') {evaluation += 16}
-        if (board[0][6] != 'knightblack') {evaluation += 16}
-        if (board[0][2] != 'bishopblack') {evaluation += 16}
-        if (board[0][5] != 'bishopblack') {evaluation += 16}
-
-    } else if (b < 12000 || w < 12000) { // endgame
-        for (let x = 0; x < 8; x++) {
-            if (board[4][x] == "pawnblack") {evaluation += 4}
-            if (board[5][x] == "pawnblack") {evaluation += 8}
-            if (board[6][x] == "pawnblack") {evaluation += 32}
-            if (board[7][x] == "pawnblack") {evaluation += 64}
-            // todo mating strategies here? yes
-            if (board[0][x] == 'kingwhite' || board[7][x] == 'kingwhite') {evaluation += 128}
-        } 
-    } else { // middlegame
-        if (board[0][4] != 'kingblack') {evaluation -= 64}
-        if (board[0][2] == 'kingblack' || board[0][6] == 'kingblack') {evaluation += 96}
-        if (board[0][0] != 'rookblack') {evaluation += 16}
-        if (board[0][7] != 'rookblack') {evaluation += 16}
-        if (board[0][3] != 'queenblack') {evaluation += 16}
+    let hash = hashBoard(board);
+    let entry = transTable.get(hash);
+    if (entry !== undefined) {
+        transpositions ++
+        return entry.value;
     }
-    return evaluation
+    else {
+        let b = blackMaterial(board)
+        let w = whiteMaterial(board)
+        let evaluation = b - w;
+        if (moveCount < 12) { // opening
+            if (board[0][4] != 'kingblack') {evaluation -= 64}
+            if (board[0][2] == 'kingblack' || board[0][6] == 'kingblack') {evaluation += 96}
+            if (board[0][3] != 'queenblack') {evaluation -= 32}
+            if (board[1][3] != 'pawnblack') {evaluation += 16}
+            if (board[1][4] != 'pawnblack') {evaluation += 16}
+            if (board[0][1] != 'knightblack') {evaluation += 16}
+            if (board[0][6] != 'knightblack') {evaluation += 16}
+            if (board[0][2] != 'bishopblack') {evaluation += 16}
+            if (board[0][5] != 'bishopblack') {evaluation += 16}
+
+        } else if (b < 12000 || w < 12000) { // endgame
+            for (let x = 0; x < 8; x++) {
+                if (board[4][x] == "pawnblack") {evaluation += 4}
+                if (board[5][x] == "pawnblack") {evaluation += 8}
+                if (board[6][x] == "pawnblack") {evaluation += 32}
+                if (board[7][x] == "pawnblack") {evaluation += 64}
+                // todo mating strategies here?
+                if (board[0][x] == 'kingwhite' || board[7][x] == 'kingwhite') {evaluation += 128}
+            } 
+        } else { // middlegame
+            if (board[0][4] != 'kingblack') {evaluation -= 64}
+            if (board[0][2] == 'kingblack' || board[0][6] == 'kingblack') {evaluation += 96}
+            if (board[0][0] != 'rookblack') {evaluation += 16}
+            if (board[0][7] != 'rookblack') {evaluation += 16}
+            if (board[0][3] != 'queenblack') {evaluation += 16}
+        }
+        transTable.set(hash, {
+            value: evaluation
+        });
+        return evaluation
+    }
 }
 
-function tree(board, depth, alpha, beta, maximizingPlayer, lastMove) {
+function hashBoard(board) {
+    let hash = "";
+    for (let i = 0; i < board.length; i++) {
+      for (let j = 0; j < board[i].length; j++) {
+        hash += board[i][j];
+      }
+    }
+    return hash;
+  }
 
-    nodes++
-    let color
+  let transpositions = 0
+
+  let transTable = new Map();
+
+  function tree(board, depth, alpha, beta, maximizingPlayer, lastMove) {
+
+    nodes++;
+    let color;
 
     if (depth == 0) {
-      return evaluate(board)
+      return evaluate(board);
     }
 
-    if (maximizingPlayer) {color = 'black'} else {color = 'white'}
-  
-    let moves = possiblemoves(board, color, lastMove);
-    //moves = shuffle(moves)
-    moves = order(moves, board)
+    if (maximizingPlayer) {
+      color = "black";
+    } else {
+      color = "white";
+    }
 
-    if (moves.length == 0) {return 0}
+    let moves = possiblemoves(board, color, lastMove);
+    moves = order(moves, board);
+
+    if (moves.length == 0) {
+      return 0;
+    }
 
     if (maximizingPlayer) {
       let value = -Infinity;
       for (let i = 0; i < moves.length; i++) {
         let newBoard = doMove(moves[i], board);
-        value = Math.max(value, tree(newBoard, depth - 1, alpha, beta, false, moves[i]));
+        value = Math.max(
+          value,
+          tree(newBoard, depth - 1, alpha, beta, false, moves[i])
+        );
         alpha = Math.max(alpha, value);
         if (beta <= alpha) {
           break;
@@ -1046,7 +1079,10 @@ function tree(board, depth, alpha, beta, maximizingPlayer, lastMove) {
       let value = Infinity;
       for (let i = 0; i < moves.length; i++) {
         let newBoard = doMove(moves[i], board);
-        value = Math.min(value, tree(newBoard, depth - 1, alpha, beta, true, moves[i]));
+        value = Math.min(
+          value,
+          tree(newBoard, depth - 1, alpha, beta, true, moves[i])
+        );
         beta = Math.min(beta, value);
         if (beta <= alpha) {
           break;
@@ -1055,6 +1091,8 @@ function tree(board, depth, alpha, beta, maximizingPlayer, lastMove) {
       return value;
     }
   }
+
+
 
   function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -1099,6 +1137,7 @@ function tree(board, depth, alpha, beta, maximizingPlayer, lastMove) {
 function bestMove(possible, board, lastMove) {
     console.log(moveCount)
     nodes = 0
+    transpositions = 0
 
     let best;
     let p = [];
@@ -1106,17 +1145,25 @@ function bestMove(possible, board, lastMove) {
     possible = shuffle(possible)
     possible = order(possible, board)
 
-    for (let i = 0; i < possible.length; i++) {
-        let newBoard = doMove(possible[i], board)
-        lastMove = possible[i]
-        let value = tree(newBoard, 4, -Infinity, Infinity, false, lastMove)
-        p.push(value)
+    let maxDepth = 10
+    let start = Date.now()
+
+    for (let depth = 0; depth < maxDepth; depth++) {
+        console.log('searching', depth)
+        p = []
+        for (let i = 0; i < possible.length; i++) {
+            let newBoard = doMove(possible[i], board)
+            lastMove = possible[i]
+            let value = tree(newBoard, depth, -Infinity, Infinity, false, lastMove)
+            p.push(value)
+            if (Date.now() - start > 10000) {break}
+        }
+        if (Date.now() - start > 10000) {break}
+        possible = possible.sort((a, b) => p[possible.indexOf(b)] - p[possible.indexOf(a)])
     }
 
-    console.log(p)
-    let max = maxi(p)[0]
-    let index = maxi(p)[1]
-    
+    console.log(transpositions)
+
     /*
     for (let i = 0; i < q.length; i++) {
         if (q.length != 1) {
@@ -1132,7 +1179,7 @@ function bestMove(possible, board, lastMove) {
     }
     */
 
-    best = possible[index]
+    best = possible[0]
     if (best !== undefined) {
     if (best.toY == 7 && board[best.fromY][best.fromX] == "pawnblack") {
         promote = true;
