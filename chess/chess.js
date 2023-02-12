@@ -4,6 +4,60 @@ let endSquare;
 let black;
 let moveCount = 0;
 
+const squares = document.querySelectorAll('.square');
+const selectPieces = document.querySelectorAll('.select_piece');
+
+function boardSetup() {
+    let startPosition = [["rookblack","knightblack","bishopblack","queenblack","kingblack","bishopblack","knightblack","rookblack"],
+                         ["pawnblack","pawnblack","pawnblack","pawnblack","pawnblack","pawnblack","pawnblack","pawnblack"],
+                         ["0","0","0","0","0","0","0","0"],
+                         ["0","0","0","0","0","0","0","0"],
+                         ["0","0","0","0","0","0","0","0"],
+                         ["0","0","0","0","0","0","0","0"],
+                         ["pawnwhite","pawnwhite","pawnwhite","pawnwhite","pawnwhite","pawnwhite","pawnwhite","pawnwhite"],
+                         ["rookwhite","knightwhite","bishopwhite","queenwhite","kingwhite","bishopwhite","knightwhite","rookwhite"]]
+
+    let startPosition1 = [["0","0","0","0","0","0","0","0"],
+                        ["0","0","0","0","0","0","0","0"],
+                        ["0","0","0","0","0","0","0","0"],
+                        ["0","0","rookblack","kingblack","0","0","0","0"],
+                        ["0","0","0","0","0","0","0","0"],
+                        ["0","0","0","0","0","kingwhite","0","0"],
+                        ["0","0","0","0","0","0","0","0"],
+                        ["0","0","0","0","0","0","0","0"]]
+
+    let piece
+    let color
+    let s = -1
+
+    for (let i = 0; i < 8; i++) {
+        for (let x = 0; x < 8; x++) {
+            s++
+            if (startPosition[i][x].endsWith('white')) {
+                color = 'white'
+            } else if (startPosition[i][x].endsWith('black')) {
+                color = 'black'
+            }
+            if (startPosition[i][x] != '0') {
+                if (startPosition[i][x].startsWith('king')) {piece = 'king'}
+                else if (startPosition[i][x].startsWith('queen')) {piece = 'queen'}
+                else if (startPosition[i][x].startsWith('rook')) {piece = 'rook'}
+                else if (startPosition[i][x].startsWith('bishop')) {piece = 'bishop'}
+                else if (startPosition[i][x].startsWith('knight')) {piece = 'knight'}
+                else if (startPosition[i][x].startsWith('pawn')) {piece = 'pawn'}
+                let newPiece = make(piece, color)
+                newPiece.setAttribute("draggable", true);
+                newPiece.addEventListener('dragstart', dragStart);
+                newPiece.addEventListener('dragend', dragEnd);
+                newPiece.addEventListener('click', click)
+                squares[s].appendChild(newPiece)
+            }
+        }
+    }
+}
+
+boardSetup()
+
 /* vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv DRAG N DROP vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv */
 
 // Function to handle the selection of a piece
@@ -32,22 +86,12 @@ function dragEnd(event) {
     }
 }
 
-const squares = document.querySelectorAll('.square');
-const pieces = document.querySelectorAll('.piece');
-const selectPieces = document.querySelectorAll('.select_piece');
 let color;
 let piece;
 let lastfrom;
 let lastto;
 let blacksturn;
 let select = false;
-
-// Add event listeners to each piece
-pieces.forEach(piece => {
-    piece.setAttribute("draggable", true);
-    piece.addEventListener('dragstart', dragStart);
-    piece.addEventListener('dragend', dragEnd);
-});
 
 // Add event listeners to each square
 squares.forEach(square => {
@@ -99,10 +143,6 @@ squares.forEach(square => {
 
 let high;
 let highlighted;
-
-pieces.forEach(piece => {
-    piece.addEventListener('click', click)
-});
 
 function click (event) {
 
@@ -586,6 +626,7 @@ function isInCheck(color, board, lastMove) {
             } 
         } 
     }
+    if (kingPosition === undefined) {return true}
     let other = possiblemoves(board, otherColor, lastMove)
     for (let i = 0; i < other.length; i++) {
         if (other[i].toY == kingPosition.y && other[i].toX == kingPosition.x) {
@@ -960,6 +1001,14 @@ function maxi(arr) {
     return a
 }
 
+function absolute(number) {
+    if (number < 0) {
+        return -1 * number
+    } else {
+        return number
+    }
+}
+
 let nodes = 0
 
 function doMove(move, board) {
@@ -1002,15 +1051,26 @@ function evaluate(board) {
             if (board[0][2] != 'bishopblack') {evaluation += 16}
             if (board[0][5] != 'bishopblack') {evaluation += 16}
 
-        } else if (b < 12000 || w < 12000) { // endgame
+        } else if ((b < 12000 || w < 12000) && moveCount > 30) { // endgame
+            let blackKingPosition = [100, 100]
+            let whiteKingPosition = [100, 100]
             for (let x = 0; x < 8; x++) {
                 if (board[4][x] == "pawnblack") {evaluation += 4}
                 if (board[5][x] == "pawnblack") {evaluation += 8}
-                if (board[6][x] == "pawnblack") {evaluation += 32}
-                if (board[7][x] == "pawnblack") {evaluation += 64}
-                // todo mating strategies here?
-                if (board[0][x] == 'kingwhite' || board[7][x] == 'kingwhite') {evaluation += 128}
-            } 
+                if (board[6][x] == "pawnblack") {evaluation += 16}
+                if (board[7][x] == "pawnblack") {evaluation += 32}
+                for (let y = 0; y < 8; y++) {
+                    if (board[y][x] == 'kingblack') {blackKingPosition[0] = y; blackKingPosition[1] = x}
+                    if (board[y][x] == 'kingwhite') {whiteKingPosition[0] = y; whiteKingPosition[1] = x}
+                }
+            }
+            if (b == 10500 && w <= 10200 || b == 11000 && w <= 10200 || b == 19000 && w <= 10200) {
+                let whiteKingDistToCenter = Math.max(3 - whiteKingPosition[0], whiteKingPosition[0] - 4) + Math.max(3 - whiteKingPosition[1], whiteKingPosition[1] - 4)
+                let distBetweenKings = absolute(blackKingPosition[0] - whiteKingPosition[0]) + absolute(blackKingPosition[1] - whiteKingPosition[1])
+                if (distBetweenKings > 4) {evaluation -= distBetweenKings}
+                else if (distBetweenKings == 2) {evaluation += whiteKingDistToCenter}
+            }
+
         } else { // middlegame
             if (board[0][4] != 'kingblack') {evaluation -= 64}
             if (board[0][2] == 'kingblack' || board[0][6] == 'kingblack') {evaluation += 96}
@@ -1045,7 +1105,7 @@ function hashBoard(board) {
     let color;
 
     if (depth == 0) {
-      return evaluate(board);
+        return evaluate(board)
     }
 
     if (maximizingPlayer) {
@@ -1133,9 +1193,12 @@ function hashBoard(board) {
     return moves;
   }
   
+let oldBoard
+let oldBoard2
 
 function bestMove(possible, board, lastMove) {
     console.log(moveCount)
+    console.log(oldBoard, oldBoard2)
     nodes = 0
     transpositions = 0
 
@@ -1146,9 +1209,10 @@ function bestMove(possible, board, lastMove) {
     possible = shuffle(possible)
     possible = order(possible, board)
 
-    let maxDepth = 10
+    let maxDepth = 9
     if (moveCount > 50) {maxTime = 30000} else if (moveCount < 10) {maxTime = 5000} else {maxTime = 10000}
     let start = Date.now()
+    let stopSearch = false
 
     for (let depth = 0; depth < maxDepth; depth++) {
         console.log('searching', depth)
@@ -1159,10 +1223,16 @@ function bestMove(possible, board, lastMove) {
             let value = tree(newBoard, depth, -Infinity, Infinity, false, lastMove)
             p.push(value)
             if (Date.now() - start > maxTime) {break}
+            else if (value >= 10000) {
+                console.log('mate in', depth - 1)
+                stopSearch = true
+            }
         }
         if (Date.now() - start > maxTime) {break}
-        console.log(p)
         possible = possible.sort((a, b) => p[possible.indexOf(b)] - p[possible.indexOf(a)])
+        console.log(p)
+        console.log(possible)
+        if (stopSearch) {break}
     }
 
     console.log(transpositions)
@@ -1182,7 +1252,12 @@ function bestMove(possible, board, lastMove) {
     }
     */
 
-    best = possible[0]
+    if (possible[0].fromY * 8 + possible[0].fromX + 1 == lastto && possible.length > 1) {
+        best = possible[1]
+    } else {
+        best = possible[0]
+    }
+
     if (best !== undefined) {
     if (best.toY == 7 && board[best.fromY][best.fromX] == "pawnblack") {
         promote = true;
@@ -1246,10 +1321,12 @@ function firetheengineup(lastMove) {
         kinghasmoved = true
         let fromSquare2 = squares[best.fromY2 * 8 + best.fromX2]
         let toSquare2 = squares[best.toY2 * 8 + best.toX2]
-        if (toSquare == 2) {console.log("cpu: O-O")}
-        else {console.log("cpu: O-O-O")}
+        if (best.toX == 2) {console.log("cpu: O-O-O")}
+        else {console.log("cpu: O-O")}
         toSquare.appendChild(fromSquare.firstChild)
         toSquare2.appendChild(fromSquare2.firstChild)
+        lastfrom = best.fromY * 8 + best.fromX + 1
+        lastto = best.toY * 8 + best.toX + 1
     } else {
     
         if (fromSquare.firstChild.firstChild.className == "king") {kinghasmoved = true}
@@ -1269,10 +1346,10 @@ function firetheengineup(lastMove) {
             toSquare.removeChild(toSquare.firstChild);
         }
         toSquare.appendChild(fromSquare.firstChild)
-
-        squares[lastfrom - 1].classList.add('enginefrom')
-        squares[lastto - 1].classList.add('engineto')
     }
+
+    fromSquare.classList.add('enginefrom')
+    toSquare.classList.add('engineto')
 
     blacksturn = false;
     console.log('nodes searched', nodes)
@@ -1289,9 +1366,27 @@ function firetheengineup(lastMove) {
         }, 0)
     }
 
+    currentBoard = doMove(best, currentBoard)
+    let blackKingPosition = [0,0]
+    let whiteKingPosition = [0,0]
+    for (let x = 0; x < 8; x++) {
+        for (let y = 0; y < 8; y++) {
+            if (currentBoard[y][x] == 'kingblack') {blackKingPosition[0] = y; blackKingPosition[1] = x}
+            if (currentBoard[y][x] == 'kingwhite') {whiteKingPosition[0] = y; whiteKingPosition[1] = x}
+        }
+    }
+    console.log(whiteKingPosition, blackKingPosition)
+    let whiteKingDistToCenter = Math.max(3 - whiteKingPosition[0], whiteKingPosition[0] - 4) + Math.max(3 - whiteKingPosition[1], whiteKingPosition[1] - 4)
+    console.log(whiteKingDistToCenter)
+    let distBetweenKings = absolute(blackKingPosition[0] - whiteKingPosition[0]) + absolute(blackKingPosition[1] - whiteKingPosition[1])
+    console.log(distBetweenKings)
+    console.log(whiteKingDistToCenter * 10 + (14 - distBetweenKings) * 4)
+
     console.timeEnd('engine')
 
     let updatedBoard = getBoard()
+    if (oldBoard !== undefined) {oldBoard2 = oldBoard.map(row => row.slice());}
+    oldBoard = updatedBoard.map(row => row.slice());
     let whitemoves = possiblemoves(updatedBoard, 'white', lastMove)
     whitemoves = check(whitemoves, updatedBoard, 'white', lastMove)
 
