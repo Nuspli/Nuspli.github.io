@@ -333,6 +333,7 @@ function validate(f, t, piece, lastfrom, lastto) {
     enpassant = false;
     let move = {fromY: square2yx(f).y, fromX: square2yx(f).x, toY: square2yx(t).y, toX: square2yx(t).x}
     let possible = check(possiblemoves(getBoard(), 'white', {}), getBoard(), 'white', {})
+    console.log(possible)
 
     let of = f
     let ot = t
@@ -342,8 +343,11 @@ function validate(f, t, piece, lastfrom, lastto) {
         for (let i = 0; i < possible.length; i++) {
             if (move.fromY == possible[i].fromY && move.fromX == possible[i].fromX && move.toY == possible[i].toY && move.toX == possible[i].toX) {
                 valid = true
+                break
             }
         }
+
+        if (!valid) {return}
 
         if (piece == 'pawn') {
 
@@ -382,43 +386,6 @@ function validate(f, t, piece, lastfrom, lastto) {
             if (f - t == 8 || f - t == 1 || f - t == 7 || f - t == 9) {
                 valid = true;
                 whitekinghasmoved = true
-            }
-        }
-
-        let b = getBoard()
-        b[square2yx(ot).y][square2yx(ot).x] = piece + 'white'
-        b[square2yx(of).y][square2yx(of).x] = '0'
-
-        if (isInCheck('white', b)) {
-            valid = false; castle1 = false; castle2 = false; promo = false
-            console.log('check')
-        } 
-        if (castle2) {
-            let b = getBoard()
-            if (isInCheck('white', b)) {
-                valid = false; castle1 = false; castle2 = false; promo = false
-                console.log('check')
-            }
-            b[7][5] = 'kingwhite'
-            b[7][4] = '0'
-            if (isInCheck('white', b)) {
-                valid = false; castle1 = false; castle2 = false; promo = false
-                console.log('check')
-            }
-        }
-        if (castle1) {
-            let b = getBoard()
-            if (isInCheck('white', b)) {
-                valid = false; castle1 = false; castle2 = false; promo = false
-                console.log('check')
-            }
-            b[7][3] = 'kingwhite'
-            b[7][4] = '0'
-
-            console.log(b)
-            if (isInCheck('white', b)) {
-                valid = false; castle1 = false; castle2 = false; promo = false
-                console.log('check')
             }
         }
 
@@ -461,35 +428,33 @@ const row8 = ["0","0","0","0","0","0","0","0"]
 
 const board = [row1, row2, row3, row4, row5, row6, row7, row8]
 
-function whiteMaterial(board) {
-    let material = 0;
-    for (let i = 0; i < 8; i++) {
-        for (let x = 0; x < 8; x++) {
-            if (board[i][x] == "pawnwhite") {material += 100}
-            else if (board[i][x] == "knightwhite") {material += 300}
-            else if (board[i][x] == "bishopwhite") {material += 300}
-            else if (board[i][x] == "rookwhite") {material += 500}
-            else if (board[i][x] == "queenwhite") {material += 900}
-            else if (board[i][x] == "kingwhite") {material += 10000}
-        }
-    }
-    return material
-}
+const PIECE_VALUES = {
+    "pawn": 100,
+    "knight": 300,
+    "bishop": 300,
+    "rook": 500,
+    "queen": 900,
+    "king": 10000
+};
 
-function blackMaterial(board) {
-    blackPieceAmount = 0;
+function Material(board) {
     let material = 0;
     for (let i = 0; i < 8; i++) {
         for (let x = 0; x < 8; x++) {
-            if (board[i][x] == "pawnblack") {material += 100}
-            else if (board[i][x] == "knightblack") {material += 300}
-            else if (board[i][x] == "bishopblack") {material += 300}
-            else if (board[i][x] == "rookblack") {material += 500}
-            else if (board[i][x] == "queenblack") {material += 900}
-            else if (board[i][x] == "kingblack") {material += 10000}
+            const piece = board[i][x];
+            if (piece != "0") {
+                const color = piece.slice(-5); // get the color from the end of the string
+                const type = piece.slice(0, -5); // get the type from the beginning of the string
+                const value = PIECE_VALUES[type];
+                if (color === "white") {
+                    material -= value;
+                } else {
+                    material += value;
+                }
+            }
         }
     }
-    return material
+    return material;
 }
 
 function pieceValue(piece) {
@@ -502,28 +467,6 @@ function pieceValue(piece) {
     else if (piece.startsWith('king')) {value = 10000}
     return value
     
-}
-
-function isInCheck(color, board) {
-    let inCheck = false
-    let otherColor = 'white'
-    if (color == 'white') {otherColor = 'black'}
-    let kingPosition;
-    for (let y = 0; y < 8; y++) {
-        for (let x = 0; x < 8; x++) {
-            if (board[y][x] == "king" + color) {
-                kingPosition = {y:y, x:x}
-                break
-            } 
-        } 
-    }
-    if (kingPosition === undefined) {return true}
-
-    if (canCapture(board, otherColor, kingPosition)) {
-        inCheck = true
-    }
-
-    return inCheck
 }
 
 function getBoard() {
@@ -608,13 +551,7 @@ function rookCheck(board, end, kp) {
 function canCapture(board, end, kingPosition) {
     let yes = false
     let kp = kingPosition
-    if (end == "white") {
-        otherend = "black"
-    }
-    else {
-        otherend = "white"
-    }
-    
+
         if (kp.y+2 <= 7 && kp.x-1 >= 0) {if (board[kp.y+2][kp.x-1] == 'knight'+end) {yes = true}}
         if (kp.y+1 <= 7 && kp.x-2 >= 0) {if (board[kp.y+1][kp.x-2] == 'knight'+end) {yes = true}}
         if (kp.y-1 >= 0 && kp.x-2 >= 0) {if (board[kp.y-1][kp.x-2] == 'knight'+end) {yes = true}}
@@ -624,19 +561,29 @@ function canCapture(board, end, kingPosition) {
         if (kp.y+1 <= 7 && kp.x+2 <= 7) {if (board[kp.y+1][kp.x+2] == 'knight'+end) {yes = true}}
         if (kp.y+2 <= 7 && kp.x+1 <= 7) {if (board[kp.y+2][kp.x+1] == 'knight'+end) {yes = true}}
 
-        if (kp.y+1 <= 7 && kp.x-1 >= 0) {if ((board[kp.y+1][kp.x-1] == 'king'+end) || (board[kp.y+1][kp.x-1] == 'bishop'+end) || (board[kp.y+1][kp.x-1] == 'queen'+end) || ((board[kp.y+1][kp.x-1] == 'pawn'+end) && end == 'white')) {yes = true}}
+        if (kp.y+1 <= 7 && kp.x-1 >= 0) {if ((board[kp.y+1][kp.x-1] == 'king'+end) || (board[kp.y+1][kp.x-1] == 'bishop'+end) || (board[kp.y+1][kp.x-1] == 'queen'+end) || 
+        ((board[kp.y+1][kp.x-1] == 'pawnwhite') && end == 'white')) {yes = true}}
+
         if (kp.x-1 >= 0) {if ((board[kp.y][kp.x-1] == 'king'+end) || (board[kp.y][kp.x-1] == 'rook'+end) || (board[kp.y][kp.x-1] == 'queen'+end)) {yes = true}}
-        if (kp.y-1 >= 0 && kp.x-1 >= 0) {if ((board[kp.y-1][kp.x-1] == 'king'+end) || (board[kp.y-1][kp.x-1] == 'bishop'+end) || (board[kp.y-1][kp.x-1] == 'queen'+end) || ((board[kp.y-1][kp.x-1] == 'pawn'+end) && end == 'black')) {yes = true}}
+
+        if (kp.y-1 >= 0 && kp.x-1 >= 0) {if ((board[kp.y-1][kp.x-1] == 'king'+end) || (board[kp.y-1][kp.x-1] == 'bishop'+end) || (board[kp.y-1][kp.x-1] == 'queen'+end) || 
+        ((board[kp.y-1][kp.x-1] == 'pawnblack') && end == 'black')) {yes = true}} // why this not work
+
         if (kp.y-1 >= 0) {if ((board[kp.y-1][kp.x] == 'king'+end) || (board[kp.y-1][kp.x] == 'rook'+end) || (board[kp.y-1][kp.x] == 'queen'+end)) {yes = true}}
-        if (kp.y-1 >= 0) {if (kp.x+1 <= 7 && (board[kp.y-1][kp.x+1] == 'king'+end) || (board[kp.y-1][kp.x+1] == 'bishop'+end) || (board[kp.y-1][kp.x+1] == 'queen'+end) || ((board[kp.y-1][kp.x+1] == 'pawn'+end) && end == 'black')) {yes = true}}
+
+        if (kp.y-1 >= 0 && kp.x+1 <= 7) {if ((board[kp.y-1][kp.x+1] == 'king'+end) || (board[kp.y-1][kp.x+1] == 'bishop'+end) || (board[kp.y-1][kp.x+1] == 'queen'+end) || 
+        ((board[kp.y-1][kp.x+1] == 'pawnblack') && end == 'black')) {yes = true}}
+
         if (kp.x+1 <= 7) {if ((board[kp.y][kp.x+1] == 'king'+end) || (board[kp.y][kp.x+1] == 'rook'+end) || (board[kp.y][kp.x+1] == 'queen'+end)) {yes = true}}
-        if (kp.y+1 <= 7) {if (kp.x+1 <= 7 && (board[kp.y+1][kp.x+1] == 'king'+end) || (board[kp.y+1][kp.x+1] == 'bishop'+end) || (board[kp.y+1][kp.x+1] == 'queen'+end) || ((board[kp.y+1][kp.x+1] == 'pawn'+end) && end == 'white')) {yes = true}}
+
+        if (kp.y+1 <= 7 && kp.x+1 <= 7) {if ((board[kp.y+1][kp.x+1] == 'king'+end) || (board[kp.y+1][kp.x+1] == 'bishop'+end) || (board[kp.y+1][kp.x+1] == 'queen'+end) || 
+        ((board[kp.y+1][kp.x+1] == 'pawnwhite') && end == 'white')) {yes = true}}
+        
         if (kp.y+1 <= 7) {if ((board[kp.y+1][kp.x] == 'king'+end) || (board[kp.y+1][kp.x] == 'rook'+end) || (board[kp.y+1][kp.x] == 'queen'+end)) {yes = true}}
 
         if (bishopCheck(board, end, kp)) {yes = true}
 
         if (rookCheck(board, end, kp)) {yes = true}
-        
     return yes
 }
 
@@ -923,29 +870,56 @@ function possiblemoves(board, end, lastMove) {
 }
 
 function check(possible, board, end) {
+    let otherend
+    let kingPosition
+
+    if (end == "white") {
+        otherend = "black"
+    }
+    else {
+        otherend = "white"
+    }
+
+    for (let y = 0; y < 8; y++) {
+        for (let x = 0; x < 8; x++) {
+            if (board[y][x] == "king" + end) {
+                kingPosition = {y:y, x:x}
+                break
+            } 
+        } 
+    }
+    if (kingPosition === undefined) {return possible}
     for (let i = 0; i < possible.length; i++) {
         let check = false
 
         if (possible[i].toY2) {
-            if (isInCheck(end, board)) { // cant castle if in check
-                check = true
-            }
-
-            let newBoard = doMove(possible[i], board)
-
-            if (isInCheck(end, newBoard)) { // cant castle if in check afterwards
+            if (canCapture(board, otherend, kingPosition)) { // cant castle if in check
                 check = true
             }
 
             let betweenMove
+            let betweenKingPosition
+            let newkingPosition
 
             if (possible.toX == 2) {
                 betweenMove = {fromY: possible[i].fromY, fromX: possible[i].fromX, toY: possible[i].toY, toX: 3}
-            } else {betweenMove = {fromY: possible[i].fromY, fromX: possible[i].fromX, toY: possible[i].toY, toX: 5}}
+                newkingPosition = {y: kingPosition.y, x: 2}
+                betweenKingPosition = {y: kingPosition.y, x: 3}
+            } else {
+                betweenMove = {fromY: possible[i].fromY, fromX: possible[i].fromX, toY: possible[i].toY, toX: 5}
+                newkingPosition = {y: kingPosition.y, x: 6}
+                betweenKingPosition = {y: kingPosition.y, x: 5}
+            }
+
+            let newBoard = doMove(possible[i], board)
+
+            if (canCapture(newBoard, otherend, newkingPosition)) { // cant castle if in check afterwards
+                check = true
+            }
 
             newBoard = doMove(betweenMove, board)
 
-            if (isInCheck(end, newBoard)) {
+            if (canCapture(newBoard, otherend, betweenKingPosition)) {
                 check = true
             }
 
@@ -953,10 +927,28 @@ function check(possible, board, end) {
         } else {
 
             let newBoard = doMove(possible[i], board)
+            let newKing = {y:0 ,x:0}
 
-            if (isInCheck(end, newBoard)) {
-                check = true
+            if (newBoard[kingPosition.y][kingPosition.x] != 'king'+end) {
+                if (kingPosition.y - 1 >= 0 && kingPosition.x - 1 >= 0) {if (newBoard[kingPosition.y - 1][kingPosition.x - 1] == 'king'+end) {newKing.y = kingPosition.y - 1; newKing.x = kingPosition.x - 1}}
+                if (kingPosition.y - 1 >= 0 && kingPosition.x + 1 <= 7) {if (newBoard[kingPosition.y - 1][kingPosition.x + 1] == 'king'+end) {newKing.y = kingPosition.y - 1; newKing.x = kingPosition.x + 1}}
+                if (kingPosition.y + 1 <= 7 && kingPosition.x - 1 >= 0) {if (newBoard[kingPosition.y + 1][kingPosition.x - 1] == 'king'+end) {newKing.y = kingPosition.y + 1; newKing.x = kingPosition.x - 1}}
+                if (kingPosition.y + 1 <= 7 && kingPosition.x + 1 <= 7) {if (newBoard[kingPosition.y + 1][kingPosition.x + 1] == 'king'+end) {newKing.y = kingPosition.y + 1; newKing.x = kingPosition.x + 1}}
+                if (kingPosition.y - 1 >= 0) {if (newBoard[kingPosition.y - 1][kingPosition.x] == 'king'+end) {newKing.y = kingPosition.y - 1; newKing.x = kingPosition.x}}
+                if (kingPosition.y + 1 <= 7) {if (newBoard[kingPosition.y + 1][kingPosition.x] == 'king'+end) {newKing.y = kingPosition.y + 1; newKing.x = kingPosition.x}}
+                if (kingPosition.x - 1 >= 0) {if (newBoard[kingPosition.y][kingPosition.x - 1] == 'king'+end) {newKing.y = kingPosition.y; newKing.x = kingPosition.x - 1}}
+                if (kingPosition.x + 1 <= 7) {if (newBoard[kingPosition.y][kingPosition.x + 1] == 'king'+end) {newKing.y = kingPosition.y; newKing.x = kingPosition.x + 1}}
+
+                if (canCapture(newBoard, otherend, newKing)) {
+                    check = true
+                }
+            } else {
+                if (canCapture(newBoard, otherend, kingPosition)) {
+                    check = true
+                }
             }
+
+            
 
         }
 
@@ -1015,9 +1007,7 @@ function doMove(move, board) {
 function evaluate(board) {
     
     let evaluation
-    let b = blackMaterial(board)
-    let w = whiteMaterial(board)
-    evaluation = b - w;
+    evaluation = Material(board)
     if (moveCount < 12) { // opening
         if (board[0][4] != 'kingblack') {evaluation -= 64}
         if (board[0][2] == 'kingblack' || board[0][6] == 'kingblack') {evaluation += 96}
@@ -1058,7 +1048,6 @@ function evaluate(board) {
     }
     
     return evaluation
-
 }
 
 let transTable = new Map();
@@ -1109,10 +1098,14 @@ function hashBoard(board) {
         }
 
     let color;
+    let other
+
     if (maximizingPlayer) {
         color = "black";
+        other = 'white'
       } else {
         color = "white";
+        other = 'black'
       }
 
     if (depth == 0) {
@@ -1122,13 +1115,34 @@ function hashBoard(board) {
     let moves = possiblemoves(board, color, lastMove);
 
     if (check(moves, board, color).length == 0) {
-        if (isInCheck(color, board)) {
-            if (color == 'white') {return 100000} else {return -100000}
-        } else {
-            return 0
+        let kingpos
+        let king
+        if (maximizingPlayer) {
+            king = kingb
+          } else {
+            king = kingw
+          }
+        kingpos = king
+        if (board[kingpos.y][kingpos.x] != 'king' + color) {
+            for (let y = 0; y < 8; y++) {
+                for (let x = 0; x < 8; x++) {
+                    if (board[y][x] == 'king' + color) {
+                        kingpos = {y:y, x:x}
+                        break
+                    } 
+                } 
+            }
         }
+        if (kingpos !== undefined) {
+            if (canCapture(board, other, kingpos)) {
+                if (color == 'white') {return 100000} else {return -100000}
+            }
+            else {
+                return 0
+            }
+        } 
     }
-
+    
     moves = order(moves, board);
 
     if (maximizingPlayer) {
@@ -1174,7 +1188,7 @@ function hashBoard(board) {
     return array;
   }
 
-  function order(moves, board) {
+  function order(moves, board) { // todo improve
     let scores = []
     for (let i = 0; i < moves.length; i++) {
       let guess = 0
@@ -1207,6 +1221,8 @@ function hashBoard(board) {
   
 let oldBoard
 let oldBoard2
+let kingw
+let kingb
 
 function bestMove(possible, board, lastMove) {
     console.log(moveCount)
@@ -1222,10 +1238,19 @@ function bestMove(possible, board, lastMove) {
 
     let maxDepth = 13 // 3 or 7 for rook + king mate // 3 for 2 rooks + king mate // 7 or 3 for queen + king mate
     if (moveCount > 50) {maxTime = 30000} else if (moveCount < 10) {maxTime = 5000} else {maxTime = 10000}
-    //maxTime = 10000
     let start = Date.now()
     let stopSearch = false
     let d = 0
+
+    for (let y = 0; y < 8; y++) {
+        for (let x = 0; x < 8; x++) {
+            if (board[y][x] == "kingblack") {
+                kingb = {y:y, x:x}
+            } else if (board[y][x] == "kingwhite") {
+                kingw = {y:y, x:x}
+            }
+        } 
+    }
 
     for (let depth = 0; depth < maxDepth; depth++) {
         console.log('searching', depth)
@@ -1379,7 +1404,15 @@ function firetheengineup(lastMove) {
 
     if (best === undefined){
         let msg
-        if (isInCheck('black', currentBoard)) {msg = "you won, press ok to try again"}
+        for (let y = 0; y < 8; y++) { // todo only update by neighboring
+            for (let x = 0; x < 8; x++) {
+                if (currentBoard[y][x] == "kingblack") {
+                    bkp = {y:y, x:x}
+                    break
+                } 
+            } 
+        }
+        if (canCapture(currentBoard, 'white', bkp)) {msg = "you won, press ok to try again"}
         else {msg = "draw, press ok to try again"}
         setTimeout(() => {
             if (confirm(msg)) {
@@ -1413,8 +1446,16 @@ function firetheengineup(lastMove) {
     whitemoves = check(whitemoves, updatedBoard, 'white')
 
     if (whitemoves.length == 0) {
+        for (let y = 0; y < 8; y++) { // todo only update by neighboring
+            for (let x = 0; x < 8; x++) {
+                if (updatedBoard[y][x] == "kingwhite") {
+                    wkp = {y:y, x:x}
+                    break
+                } 
+            } 
+        }
         let msg
-        if (isInCheck('white', currentBoard)) {msg = "you lost, press ok to try again"}
+        if (canCapture(updatedBoard, 'black', wkp)) {msg = "you lost, press ok to try again"}
         else {msg = "draw, press ok to try again"}
         setTimeout(() => {
             if (confirm(msg)) {
