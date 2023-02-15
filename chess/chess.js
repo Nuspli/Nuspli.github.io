@@ -438,7 +438,9 @@ const PIECE_VALUES = {
 };
 
 function Material(board) {
-    let material = 0;
+    let material = []
+    let bmaterial = 0
+    let wmaterial = 0;
     for (let i = 0; i < 8; i++) {
         for (let x = 0; x < 8; x++) {
             const piece = board[i][x];
@@ -447,13 +449,16 @@ function Material(board) {
                 const type = piece.slice(0, -5); // get the type from the beginning of the string
                 const value = PIECE_VALUES[type];
                 if (color === "white") {
-                    material -= value;
+                    wmaterial += value;
                 } else {
-                    material += value;
+                    bmaterial += value;
                 }
             }
         }
     }
+    material.push(bmaterial - wmaterial)
+    material.push(bmaterial)
+    material.push(wmaterial)
     return material;
 }
 
@@ -1006,8 +1011,11 @@ function doMove(move, board) {
 
 function evaluate(board) {
     
-    let evaluation
-    evaluation = Material(board)
+    let material = Material(board)
+    let evaluation = material[0]
+    let b = material[1]
+    let w = material[2]
+
     if (moveCount < 12) { // opening
         if (board[0][4] != 'kingblack') {evaluation -= 64}
         if (board[0][2] == 'kingblack' || board[0][6] == 'kingblack') {evaluation += 96}
