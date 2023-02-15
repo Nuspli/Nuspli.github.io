@@ -129,7 +129,7 @@ squares.forEach(square => {
                 if (!select) {
                     setTimeout(() => {
                         firetheengineup(move);
-                    }, 0)
+                    }, 10)
                 }
             }
         }
@@ -187,7 +187,7 @@ function click (event) {
             if (!select) {
                 setTimeout(() => {
                     firetheengineup(move);
-                }, 0)
+                }, 10)
             }
         }
     }
@@ -229,7 +229,7 @@ squares.forEach(square => {
                         if (!select) {
                             setTimeout(() => {
                                 firetheengineup(move);
-                            }, 0)
+                            }, 10)
                         }
                     }
                 }
