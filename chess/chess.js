@@ -7,24 +7,56 @@ let moveCount = 0;
 const squares = document.querySelectorAll('.square');
 const selectPieces = document.querySelectorAll('.select_piece');
 
-function boardSetup() {
-    let startPosition = [["rookblack","knightblack","bishopblack","queenblack","kingblack","bishopblack","knightblack","rookblack"],
-                         ["pawnblack","pawnblack","pawnblack","pawnblack","pawnblack","pawnblack","pawnblack","pawnblack"],
-                         ["0","0","0","0","0","0","0","0"],
-                         ["0","0","0","0","0","0","0","0"],
-                         ["0","0","0","0","0","0","0","0"],
-                         ["0","0","0","0","0","0","0","0"],
-                         ["pawnwhite","pawnwhite","pawnwhite","pawnwhite","pawnwhite","pawnwhite","pawnwhite","pawnwhite"],
-                         ["rookwhite","knightwhite","bishopwhite","queenwhite","kingwhite","bishopwhite","knightwhite","rookwhite"]]
+const p = 1
+const n = 2
+const b = 3
+const r = 4
+const q = 5
+const k = 6
 
-    let startPosition1 = [["0","kingblack","0","0","0","0","0","rookblack"],
-                        ["pawnblack","0","panwblack","0","0","0","0","0"],
-                        ["0","pawnblack","biahopblack","0","0","0","0","0"],
-                        ["0","0","0","pawnblack","queenwhite","0","queenblack","0"],
-                        ["0","0","0","knightblack","0","0","knightwhite","0"],
-                        ["pawnwhite","0","0","pawnwhite","0","pawnwhite","0","0"],
-                        ["0","pawnwhite","pawnwhite","0","0","0","0","0"],
-                        ["0","kingwhite","rookwhite","0","0","0","0","bishopwhite"]]
+const P = -1
+const N = -2
+const B = -3
+const R = -4
+const Q = -5
+const K = -6
+
+const numbers = {
+    'pawnblack': p,
+    'knightblack': n,
+    'bishopblack': b,
+    'rookblack': r,
+    'queenblack': q,
+    'kingblack': k,
+
+    'pawnwhite': P,
+    'knightwhite': N,
+    'bishopwhite': B,
+    'rookwhite': R,
+    'queenwhite': Q,
+    'kingwhite': K,
+
+    0:0
+}
+
+function boardSetup() {
+    let startPosition = [[r,n,b,q,k,b,n,r],
+                         [p,p,p,p,p,p,p,p],
+                         [0,0,0,0,0,0,0,0],
+                         [0,0,0,0,0,0,0,0],
+                         [0,0,0,0,0,0,0,0],
+                         [0,0,0,0,0,0,0,0],
+                         [P,P,P,P,P,P,P,P],
+                         [R,N,B,Q,K,B,N,R]]
+
+    let startPosition1 = [[0,k,0,0,0,0,0,r],
+                         [0,0,0,0,0,0,0,0],
+                         [0,0,0,0,0,0,0,0],
+                         [0,0,0,0,0,0,0,0],
+                         [0,0,0,0,0,0,0,0],
+                         [0,0,0,0,0,0,0,0],
+                         [0,0,0,0,0,0,0,0],
+                         [0,K,0,0,0,0,0,0]]
 
     let piece
     let color
@@ -33,18 +65,18 @@ function boardSetup() {
     for (let i = 0; i < 8; i++) {
         for (let x = 0; x < 8; x++) {
             s++
-            if (startPosition[i][x].endsWith('white')) {
+            if (startPosition[i][x] < 0) {
                 color = 'white'
-            } else if (startPosition[i][x].endsWith('black')) {
+            } else if (startPosition[i][x] > 0) {
                 color = 'black'
             }
-            if (startPosition[i][x] != '0') {
-                if (startPosition[i][x].startsWith('king')) {piece = 'king'}
-                else if (startPosition[i][x].startsWith('queen')) {piece = 'queen'}
-                else if (startPosition[i][x].startsWith('rook')) {piece = 'rook'}
-                else if (startPosition[i][x].startsWith('bishop')) {piece = 'bishop'}
-                else if (startPosition[i][x].startsWith('knight')) {piece = 'knight'}
-                else if (startPosition[i][x].startsWith('pawn')) {piece = 'pawn'}
+            if (startPosition[i][x] != 0) {
+                if (startPosition[i][x] == k || startPosition[i][x] == K) {piece = 'king'}
+                else if (startPosition[i][x] == q || startPosition[i][x] == Q) {piece = 'queen'}
+                else if (startPosition[i][x] == r || startPosition[i][x] == R) {piece = 'rook'}
+                else if (startPosition[i][x] == b || startPosition[i][x] == B) {piece = 'bishop'}
+                else if (startPosition[i][x] == n || startPosition[i][x] == N) {piece = 'knight'}
+                else if (startPosition[i][x] == p || startPosition[i][x] == P) {piece = 'pawn'}
                 let newPiece = make(piece, color)
                 newPiece.setAttribute("draggable", true);
                 newPiece.addEventListener('dragstart', dragStart);
@@ -256,7 +288,6 @@ retry.addEventListener('click', function() {
 selectPieces.forEach(piece => {
     piece.addEventListener('click', function(event) {
         let p = event.target
-        console.log('p', p)
         let selected = p.offsetParent.lastElementChild.className
 
         let piece = make(selected, 'white')
@@ -292,7 +323,7 @@ function getPiece(square) {
         squares[square - 1].lastElementChild.lastElementChild.lastElementChild.className
     }
     else {
-        return "0";
+        return 0;
     }
 }
 
@@ -301,7 +332,7 @@ function getPieceColor(square) {
         return squares[square - 1].lastElementChild.lastElementChild.lastElementChild.className
     }
     else {
-        return "0";
+        return 0;
     }
 }
 
@@ -332,6 +363,7 @@ function validate(f, t, piece, lastfrom, lastto) {
     promo = false;
     enpassant = false;
     let move = {fromY: square2yx(f).y, fromX: square2yx(f).x, toY: square2yx(t).y, toX: square2yx(t).x}
+    console.log(possiblemoves(getBoard(), 'white', {}))
     let possible = check(possiblemoves(getBoard(), 'white', {}), getBoard(), 'white', {})
     console.log(possible)
 
@@ -417,25 +449,18 @@ function validate(f, t, piece, lastfrom, lastto) {
 }
 /*---------------------------------ENGINE STUFF---------------------------------*/
 
-const row1 = ["0","0","0","0","0","0","0","0"]
-const row2 = ["0","0","0","0","0","0","0","0"]
-const row3 = ["0","0","0","0","0","0","0","0"]
-const row4 = ["0","0","0","0","0","0","0","0"]
-const row5 = ["0","0","0","0","0","0","0","0"]
-const row6 = ["0","0","0","0","0","0","0","0"]
-const row7 = ["0","0","0","0","0","0","0","0"]
-const row8 = ["0","0","0","0","0","0","0","0"]
+const row1 = [0,0,0,0,0,0,0,0]
+const row2 = [0,0,0,0,0,0,0,0]
+const row3 = [0,0,0,0,0,0,0,0]
+const row4 = [0,0,0,0,0,0,0,0]
+const row5 = [0,0,0,0,0,0,0,0]
+const row6 = [0,0,0,0,0,0,0,0]
+const row7 = [0,0,0,0,0,0,0,0]
+const row8 = [0,0,0,0,0,0,0,0]
 
 const board = [row1, row2, row3, row4, row5, row6, row7, row8]
 
-const PIECE_VALUES = {
-    "pawn": 100,
-    "knight": 300,
-    "bishop": 300,
-    "rook": 500,
-    "queen": 900,
-    "king": 10000
-};
+const PIECE_VALUES = [0, 100, 300, 300, 500, 900, 10000]
 
 function Material(board) {
     let material = []
@@ -444,11 +469,9 @@ function Material(board) {
     for (let i = 0; i < 8; i++) {
         for (let x = 0; x < 8; x++) {
             const piece = board[i][x];
-            if (piece != "0") {
-                const color = piece.slice(-5); // get the color from the end of the string
-                const type = piece.slice(0, -5); // get the type from the beginning of the string
-                const value = PIECE_VALUES[type];
-                if (color === "white") {
+            if (piece != 0) {
+                const value = PIECE_VALUES[abs(piece)];
+                if (piece < 0) {
                     wmaterial += value;
                 } else {
                     bmaterial += value;
@@ -464,12 +487,12 @@ function Material(board) {
 
 function pieceValue(piece) {
     let value = 0
-    if (piece.startsWith('pawn')) {value = 100}
-    else if (piece.startsWith('knight')) {value = 300}
-    else if (piece.startsWith('bishop')) {value = 300}
-    else if (piece.startsWith('rook')) {value = 500}
-    else if (piece.startsWith('queen')) {value = 900}
-    else if (piece.startsWith('king')) {value = 10000}
+    if (piece == p || piece == P) {value = 100}
+    else if (piece == n || piece == N) {value = 300}
+    else if (piece == b || piece == B) {value = 300}
+    else if (piece == r || piece == R) {value = 500}
+    else if (piece == q || piece == Q) {value = 900}
+    else if (piece == k || piece == K) {value = 10000}
     return value
     
 }
@@ -478,11 +501,11 @@ function getBoard() {
     let a = 1;
     for (let i = 0; i < 8; i++) {
         for (let x = 0; x < 8; x++) {
-            board[i][x] = getPiece(a)
+            let p = getPiece(a)
+            board[i][x] = numbers[p]
             a++;
         }
     }
-    //console.log("board: " , board)
     return board
 }
 
@@ -491,7 +514,7 @@ let rook1hasmoved = false;
 let rook2hasmoved = false;
 let promote;
 
-function bishopCheck(board, end, kp) {
+function bishopCheck(board, c, kp) {
     let check = false
     let v = 1;
     let t = - 1;
@@ -504,10 +527,10 @@ function bishopCheck(board, end, kp) {
                 ((t == 1 && p == -1) && (kp.x == 0 || kp.y == 7)) ||
                 (kp.y + t*v == -1 || kp.y + t*v == 8 || kp.x + p*v == -1 || kp.x + p*v == 8)) {break;}
 
-            if (board[kp.y + t*v][kp.x + p*v] == "0") {
+            if (board[kp.y + t*v][kp.x + p*v] == 0) {
                 v++
             }
-            else if (board[kp.y + t*v][kp.x + p*v] == 'bishop'+end || board[kp.y + t*v][kp.x + p*v] == 'queen'+end) {
+            else if (board[kp.y + t*v][kp.x + p*v] == b*c || board[kp.y + t*v][kp.x + p*v] == q*c) {
                 check = true
                 break;
             }
@@ -522,7 +545,7 @@ function bishopCheck(board, end, kp) {
     return check
 }
 
-function rookCheck(board, end, kp) {
+function rookCheck(board, c, kp) {
     let check = false
     let v = 1;
     let t = 0;
@@ -535,10 +558,10 @@ function rookCheck(board, end, kp) {
                 ((t == 1 && p == 0) && kp.y == 7) ||
                 (kp.y + t*v == -1 || kp.y + t*v == 8 || kp.x + p*v == -1 || kp.x + p*v == 8)) {break;}
 
-            if (board[kp.y + t*v][kp.x + p*v] == "0") {
+            if (board[kp.y + t*v][kp.x + p*v] == 0) {
                 v++;
             }
-            else if (board[kp.y + t*v][kp.x + p*v] == 'rook'+end || board[kp.y + t*v][kp.x + p*v] == 'queen'+end) {
+            else if (board[kp.y + t*v][kp.x + p*v] == r*c || board[kp.y + t*v][kp.x + p*v] == q*c) {
                 check = true
                 break;
             }
@@ -553,171 +576,170 @@ function rookCheck(board, end, kp) {
     return check
 }
 
-function canCapture(board, end, kingPosition) {
+function canCapture(board, c, kingPosition) {
     let yes = false
     let kp = kingPosition
 
-        if (kp.y+2 <= 7 && kp.x-1 >= 0) {if (board[kp.y+2][kp.x-1] == 'knight'+end) {yes = true}}
-        if (kp.y+1 <= 7 && kp.x-2 >= 0) {if (board[kp.y+1][kp.x-2] == 'knight'+end) {yes = true}}
-        if (kp.y-1 >= 0 && kp.x-2 >= 0) {if (board[kp.y-1][kp.x-2] == 'knight'+end) {yes = true}}
-        if (kp.y-2 >= 0 && kp.x-1 >= 0) {if (board[kp.y-2][kp.x-1] == 'knight'+end) {yes = true}}
-        if (kp.y-2 >= 0 && kp.x+1 <= 7) {if (board[kp.y-2][kp.x+1] == 'knight'+end) {yes = true}}
-        if (kp.y-1 >= 0 && kp.x+2 <= 7) {if (board[kp.y-1][kp.x+2] == 'knight'+end) {yes = true}}
-        if (kp.y+1 <= 7 && kp.x+2 <= 7) {if (board[kp.y+1][kp.x+2] == 'knight'+end) {yes = true}}
-        if (kp.y+2 <= 7 && kp.x+1 <= 7) {if (board[kp.y+2][kp.x+1] == 'knight'+end) {yes = true}}
+        if (kp.y+2 <= 7 && kp.x-1 >= 0) {if (board[kp.y+2][kp.x-1] == c*n) {yes = true}}
+        if (kp.y+1 <= 7 && kp.x-2 >= 0) {if (board[kp.y+1][kp.x-2] == c*n) {yes = true}}
+        if (kp.y-1 >= 0 && kp.x-2 >= 0) {if (board[kp.y-1][kp.x-2] == c*n) {yes = true}}
+        if (kp.y-2 >= 0 && kp.x-1 >= 0) {if (board[kp.y-2][kp.x-1] == c*n) {yes = true}}
+        if (kp.y-2 >= 0 && kp.x+1 <= 7) {if (board[kp.y-2][kp.x+1] == c*n) {yes = true}}
+        if (kp.y-1 >= 0 && kp.x+2 <= 7) {if (board[kp.y-1][kp.x+2] == c*n) {yes = true}}
+        if (kp.y+1 <= 7 && kp.x+2 <= 7) {if (board[kp.y+1][kp.x+2] == c*n) {yes = true}}
+        if (kp.y+2 <= 7 && kp.x+1 <= 7) {if (board[kp.y+2][kp.x+1] == c*n) {yes = true}}
 
-        if (kp.y+1 <= 7 && kp.x-1 >= 0) {if ((board[kp.y+1][kp.x-1] == 'king'+end) || (board[kp.y+1][kp.x-1] == 'bishop'+end) || (board[kp.y+1][kp.x-1] == 'queen'+end) || 
-        ((board[kp.y+1][kp.x-1] == 'pawnwhite') && end == 'white')) {yes = true}}
+        if (kp.y+1 <= 7 && kp.x-1 >= 0) {if ((board[kp.y+1][kp.x-1] == k*c) || (board[kp.y+1][kp.x-1] == b*c) || (board[kp.y+1][kp.x-1] == q*c) || 
+        ((board[kp.y+1][kp.x-1] == P) && c == -1)) {yes = true}}
 
-        if (kp.x-1 >= 0) {if ((board[kp.y][kp.x-1] == 'king'+end) || (board[kp.y][kp.x-1] == 'rook'+end) || (board[kp.y][kp.x-1] == 'queen'+end)) {yes = true}}
+        if (kp.x-1 >= 0) {if ((board[kp.y][kp.x-1] == k*c) || (board[kp.y][kp.x-1] == r*c) || (board[kp.y][kp.x-1] == q*c)) {yes = true}}
 
-        if (kp.y-1 >= 0 && kp.x-1 >= 0) {if ((board[kp.y-1][kp.x-1] == 'king'+end) || (board[kp.y-1][kp.x-1] == 'bishop'+end) || (board[kp.y-1][kp.x-1] == 'queen'+end) || 
-        ((board[kp.y-1][kp.x-1] == 'pawnblack') && end == 'black')) {yes = true}} // why this not work
+        if (kp.y-1 >= 0 && kp.x-1 >= 0) {if ((board[kp.y-1][kp.x-1] == k*c) || (board[kp.y-1][kp.x-1] == b*c) || (board[kp.y-1][kp.x-1] == q*c) || 
+        ((board[kp.y-1][kp.x-1] == p) && c == 1)) {yes = true}}
 
-        if (kp.y-1 >= 0) {if ((board[kp.y-1][kp.x] == 'king'+end) || (board[kp.y-1][kp.x] == 'rook'+end) || (board[kp.y-1][kp.x] == 'queen'+end)) {yes = true}}
+        if (kp.y-1 >= 0) {if ((board[kp.y-1][kp.x] == k*c) || (board[kp.y-1][kp.x] == r*c) || (board[kp.y-1][kp.x] == q*c)) {yes = true}}
 
-        if (kp.y-1 >= 0 && kp.x+1 <= 7) {if ((board[kp.y-1][kp.x+1] == 'king'+end) || (board[kp.y-1][kp.x+1] == 'bishop'+end) || (board[kp.y-1][kp.x+1] == 'queen'+end) || 
-        ((board[kp.y-1][kp.x+1] == 'pawnblack') && end == 'black')) {yes = true}}
+        if (kp.y-1 >= 0 && kp.x+1 <= 7) {if ((board[kp.y-1][kp.x+1] == k*c) || (board[kp.y-1][kp.x+1] == b*c) || (board[kp.y-1][kp.x+1] == q*c) || 
+        ((board[kp.y-1][kp.x+1] == p) && c == 1)) {yes = true}}
 
-        if (kp.x+1 <= 7) {if ((board[kp.y][kp.x+1] == 'king'+end) || (board[kp.y][kp.x+1] == 'rook'+end) || (board[kp.y][kp.x+1] == 'queen'+end)) {yes = true}}
+        if (kp.x+1 <= 7) {if ((board[kp.y][kp.x+1] == k*c) || (board[kp.y][kp.x+1] == r*c) || (board[kp.y][kp.x+1] == q*c)) {yes = true}}
 
-        if (kp.y+1 <= 7 && kp.x+1 <= 7) {if ((board[kp.y+1][kp.x+1] == 'king'+end) || (board[kp.y+1][kp.x+1] == 'bishop'+end) || (board[kp.y+1][kp.x+1] == 'queen'+end) || 
-        ((board[kp.y+1][kp.x+1] == 'pawnwhite') && end == 'white')) {yes = true}}
+        if (kp.y+1 <= 7 && kp.x+1 <= 7) {if ((board[kp.y+1][kp.x+1] == k*c) || (board[kp.y+1][kp.x+1] == b*c) || (board[kp.y+1][kp.x+1] == q*c) || 
+        ((board[kp.y+1][kp.x+1] == P) && c == -1)) {yes = true}}
         
-        if (kp.y+1 <= 7) {if ((board[kp.y+1][kp.x] == 'king'+end) || (board[kp.y+1][kp.x] == 'rook'+end) || (board[kp.y+1][kp.x] == 'queen'+end)) {yes = true}}
+        if (kp.y+1 <= 7) {if ((board[kp.y+1][kp.x] == k*c) || (board[kp.y+1][kp.x] == r*c) || (board[kp.y+1][kp.x] == q*c)) {yes = true}}
 
-        if (bishopCheck(board, end, kp)) {yes = true}
+        if (bishopCheck(board, c, kp)) {yes = true}
 
-        if (rookCheck(board, end, kp)) {yes = true}
+        if (rookCheck(board, c, kp)) {yes = true}
     return yes
 }
 
 function possiblemoves(board, end, lastMove) {
 
     let possible = [];
-    let otherend;
     promote = false;
+    let c = 0
 
     if (end == "white") {
-        otherend = "black"
+        c = -1
     }
     else {
-        otherend = "white"
+        c = 1
     }
 
     for (let y = 0; y < 8; y++) { // for every black piece check its possible moves
         for (let x = 0; x < 8; x++) {
-
-            if (board[y][x] == "pawn" + end && end == "black") { // pawn moves if black
-                if (y != 7) {if (board[y + 1][x] == "0") { // if there is no piece blocking its way
+            if (board[y][x] == p && c == 1) { // pawn moves if black
+                if (y != 7) {if (board[y + 1][x] == 0) { // if there is no piece blocking its way
                     if (y == 6) { // if it goes to the last rank, it promotes
-                        possible.push({fromY: y, fromX: x, toY: y + 1, toX: x, promoto: 'knight' + end})
-                        possible.push({fromY: y, fromX: x, toY: y + 1, toX: x, promoto: 'bishop' + end})
-                        possible.push({fromY: y, fromX: x, toY: y + 1, toX: x, promoto: 'rook' + end})
-                        possible.push({fromY: y, fromX: x, toY: y + 1, toX: x, promoto: 'queen' + end})
+                        possible.push({fromY: y, fromX: x, toY: y + 1, toX: x, promoto: n})
+                        possible.push({fromY: y, fromX: x, toY: y + 1, toX: x, promoto: b})
+                        possible.push({fromY: y, fromX: x, toY: y + 1, toX: x, promoto: r})
+                        possible.push({fromY: y, fromX: x, toY: y + 1, toX: x, promoto: q})
                     }
                     else {possible.push({fromY: y, fromX: x, toY: y + 1, toX: x})} // pawn push
                 }}
-                if (y == 1) {if (board[y + 1][x] == "0" && board[y + 2][x] == "0") { // pawn can also move 2 squares down, if its on its starting square
+                if (y == 1) {if (board[y + 1][x] == 0 && board[y + 2][x] == 0) { // pawn can also move 2 squares down, if its on its starting square
                     possible.push({fromY: y, fromX: x, toY: y + 2, toX: x})
                 }}
-                if (x != 7 && y != 7) {if (board[y + 1][x + 1].endsWith(otherend)) { // taking to the right
+                if (x != 7 && y != 7) {if (board[y + 1][x + 1] * c < 0) { // taking to the right
                     if (y == 6) { // could also be promoting
-                        possible.push({fromY: y, fromX: x, toY: y + 1, toX: x + 1, promoto: 'knight' + end})
-                        possible.push({fromY: y, fromX: x, toY: y + 1, toX: x + 1, promoto: 'bishop' + end})
-                        possible.push({fromY: y, fromX: x, toY: y + 1, toX: x + 1, promoto: 'rook' + end})
-                        possible.push({fromY: y, fromX: x, toY: y + 1, toX: x + 1, promoto: 'queen' + end})
+                        possible.push({fromY: y, fromX: x, toY: y + 1, toX: x + 1, promoto: n})
+                        possible.push({fromY: y, fromX: x, toY: y + 1, toX: x + 1, promoto: b})
+                        possible.push({fromY: y, fromX: x, toY: y + 1, toX: x + 1, promoto: r})
+                        possible.push({fromY: y, fromX: x, toY: y + 1, toX: x + 1, promoto: q})
                     }
                     else {possible.push({fromY: y, fromX: x, toY: y + 1, toX: x + 1})}
                 }}
-                if (x != 0 && y != 7) {if (board[y + 1][x - 1].endsWith(otherend)) { // taking to the left
+                if (x != 0 && y != 7) {if (board[y + 1][x - 1] * c < 0) { // taking to the left
                     if (y == 6) {
-                        possible.push({fromY: y, fromX: x, toY: y + 1, toX: x - 1, promoto: 'knight' + end})
-                        possible.push({fromY: y, fromX: x, toY: y + 1, toX: x - 1, promoto: 'bishop' + end})
-                        possible.push({fromY: y, fromX: x, toY: y + 1, toX: x - 1, promoto: 'rook' + end})
-                        possible.push({fromY: y, fromX: x, toY: y + 1, toX: x - 1, promoto: 'queen' + end})
+                        possible.push({fromY: y, fromX: x, toY: y + 1, toX: x - 1, promoto: n})
+                        possible.push({fromY: y, fromX: x, toY: y + 1, toX: x - 1, promoto: b})
+                        possible.push({fromY: y, fromX: x, toY: y + 1, toX: x - 1, promoto: r})
+                        possible.push({fromY: y, fromX: x, toY: y + 1, toX: x - 1, promoto: q})
                     }
                     else {possible.push({fromY: y, fromX: x, toY: y + 1, toX: x - 1});}
                 }}
 
-                if (y == 4 && x != 7) {if (board[y][x + 1] == "pawn" + otherend && lastMove.toY == y && lastMove.toX == x + 1 && lastMove.fromY == y + 2){ // en passant
+                if (y == 4 && x != 7) {if (board[y][x + 1] == P && lastMove.toY == y && lastMove.toX == x + 1 && lastMove.fromY == y + 2){ // en passant
                     possible.push({fromY: y, fromX: x, toY: y + 1, toX: x + 1, enPassant: true})
                 }}
 
-                if (y == 4 && x != 0) {if (board[y][x - 1] == "pawn" + otherend && lastMove.toY == y && lastMove.toX == x - 1 && lastMove.fromY == y + 2){
+                if (y == 4 && x != 0) {if (board[y][x - 1] == P && lastMove.toY == y && lastMove.toX == x - 1 && lastMove.fromY == y + 2){
                     possible.push({fromY: y, fromX: x, toY: y + 1, toX: x - 1, enPassant: true})
                 }}
             }
 
-            else if (board[y][x] == "pawn" + end && end == "white") { // pawn moves if white
-                if (y != 0) {if (board[y - 1][x] == "0") {
+            else if (board[y][x] == P && c == -1) { // pawn moves if white
+                if (y != 0) {if (board[y - 1][x] == 0) {
                     if (y == 1) {
-                        possible.push({fromY: y, fromX: x, toY: y - 1, toX: x, promoto: 'knight' + end})
-                        possible.push({fromY: y, fromX: x, toY: y - 1, toX: x, promoto: 'bishop' + end})
-                        possible.push({fromY: y, fromX: x, toY: y - 1, toX: x, promoto: 'rook' + end})
-                        possible.push({fromY: y, fromX: x, toY: y - 1, toX: x, promoto: 'queen' + end})
+                        possible.push({fromY: y, fromX: x, toY: y - 1, toX: x, promoto: N})
+                        possible.push({fromY: y, fromX: x, toY: y - 1, toX: x, promoto: B})
+                        possible.push({fromY: y, fromX: x, toY: y - 1, toX: x, promoto: R})
+                        possible.push({fromY: y, fromX: x, toY: y - 1, toX: x, promoto: Q})
                     }
                     else {possible.push({fromY: y, fromX: x, toY: y - 1, toX: x})}
                 }}
-                if (y == 6) {if (board[y - 1][x] == "0" && board[y - 2][x] == "0") {
+                if (y == 6) {if (board[y - 1][x] == 0 && board[y - 2][x] == 0) {
                     possible.push({fromY: y, fromX: x, toY: y - 2, toX: x})
                 }}
-                if (x != 7 && y != 0) {if (board[y - 1][x + 1].endsWith(otherend)) {
+                if (x != 7 && y != 0) {if (board[y - 1][x + 1] * c < 0) {
                     if (y == 1) {
-                        possible.push({fromY: y, fromX: x, toY: y - 1, toX: x + 1, promoto: 'knight' + end})
-                        possible.push({fromY: y, fromX: x, toY: y - 1, toX: x + 1, promoto: 'bishop' + end})
-                        possible.push({fromY: y, fromX: x, toY: y - 1, toX: x + 1, promoto: 'rook' + end})
-                        possible.push({fromY: y, fromX: x, toY: y - 1, toX: x + 1, promoto: 'queen' + end})
+                        possible.push({fromY: y, fromX: x, toY: y - 1, toX: x + 1, promoto: N})
+                        possible.push({fromY: y, fromX: x, toY: y - 1, toX: x + 1, promoto: B})
+                        possible.push({fromY: y, fromX: x, toY: y - 1, toX: x + 1, promoto: R})
+                        possible.push({fromY: y, fromX: x, toY: y - 1, toX: x + 1, promoto: Q})
                     }
                     else {possible.push({fromY: y, fromX: x, toY: y - 1, toX: x + 1})}
                 }}
-                if (x != 0 && y != 0) {if (board[y - 1][x - 1].endsWith(otherend)) {
+                if (x != 0 && y != 0) {if (board[y - 1][x - 1] * c < 0) {
                     if (y == 7) {
-                        possible.push({fromY: y, fromX: x, toY: y - 1, toX: x - 1, promoto: 'knight' + end})
-                        possible.push({fromY: y, fromX: x, toY: y - 1, toX: x - 1, promoto: 'bishop' + end})
-                        possible.push({fromY: y, fromX: x, toY: y - 1, toX: x - 1, promoto: 'rook' + end})
-                        possible.push({fromY: y, fromX: x, toY: y - 1, toX: x - 1, promoto: 'queen' + end})
+                        possible.push({fromY: y, fromX: x, toY: y - 1, toX: x - 1, promoto: N})
+                        possible.push({fromY: y, fromX: x, toY: y - 1, toX: x - 1, promoto: B})
+                        possible.push({fromY: y, fromX: x, toY: y - 1, toX: x - 1, promoto: R})
+                        possible.push({fromY: y, fromX: x, toY: y - 1, toX: x - 1, promoto: Q})
                     }
                     else {possible.push({fromY: y, fromX: x, toY: y - 1, toX: x - 1})}
                 }}
 
-                if (y == 3 && x != 7) {if (board[y][x + 1] == "pawn" + otherend && lastMove.toY == y && lastMove.toX == x + 1 && lastMove.fromY == y - 2){
+                if (y == 3 && x != 7) {if (board[y][x + 1] == p && lastMove.toY == y && lastMove.toX == x + 1 && lastMove.fromY == y - 2){
                     possible.push({fromY: y, fromX: x, toY: y + 1, toX: x + 1, enPassant: true})
                 }}
 
-                if (y == 3 && x != 0) {if (board[y][x - 1] == "pawn" + otherend && lastMove.toY == y && lastMove.toX == x - 1 && lastMove.fromY == y - 2){
+                if (y == 3 && x != 0) {if (board[y][x - 1] == p && lastMove.toY == y && lastMove.toX == x - 1 && lastMove.fromY == y - 2){
                     possible.push({fromY: y, fromX: x, toY: y + 1, toX: x - 1, enPassant: true})
                 }}
             }
 
-            else if (board[y][x] == "knight" + end) {
-                if (x != 0 && x != 1 && y != 0) {if (!board[y - 1][x - 2].endsWith(end)) {
+            else if (board[y][x] == c * n) {
+                if (x != 0 && x != 1 && y != 0) {if ((board[y - 1][x - 2] <= 0 && c == 1) || (board[y - 1][x - 2] >= 0 && c == -1)) {
                     possible.push({fromY: y, fromX: x, toY: y - 1, toX: x - 2})
                 }}
-                if (x != 0 && y != 0 && y != 1) {if (!board[y - 2][x - 1].endsWith(end)) {
+                if (x != 0 && y != 0 && y != 1) {if ((board[y - 2][x - 1] <= 0 && c == 1) || (board[y - 2][x - 1] >= 0 && c == -1)) {
                     possible.push({fromY: y, fromX: x, toY: y - 2, toX: x - 1})
                 }}
-                if (x != 7 && y != 0 && y != 1) {if (!board[y - 2][x + 1].endsWith(end)) {
+                if (x != 7 && y != 0 && y != 1) {if ((board[y - 2][x + 1] <= 0 && c == 1) || (board[y - 2][x + 1] >= 0 && c == -1)) {
                     possible.push({fromY: y, fromX: x, toY: y - 2, toX: x + 1})
                 }}
-                if (x != 6 && x != 7 && y != 0) {if (!board[y - 1][x + 2].endsWith(end)) {
+                if (x != 6 && x != 7 && y != 0) {if ((board[y - 1][x + 2] <= 0 && c == 1) || (board[y - 1][x + 2] >= 0 && c == -1)) {
                     possible.push({fromY: y, fromX: x, toY: y - 1, toX: x + 2})
                 }}
-                if (x != 0 && x != 1 && y != 7) {if (!board[y + 1][x - 2].endsWith(end)) {
+                if (x != 0 && x != 1 && y != 7) {if ((board[y + 1][x - 2] <= 0 && c == 1) || (board[y + 1][x - 2] >= 0 && c == -1)) {
                     possible.push({fromY: y, fromX: x, toY: y + 1, toX: x - 2})
                 }}
-                if (x != 0 && y != 6 && y != 7) {if (!board[y + 2][x - 1].endsWith(end)) {
+                if (x != 0 && y != 6 && y != 7) {if ((board[y + 2][x - 1] <= 0 && c == 1) || (board[y + 2][x - 1] >= 0 && c == -1)) {
                     possible.push({fromY: y, fromX: x, toY: y + 2, toX: x - 1})
                 }}
-                if (x != 7 && y != 6 && y != 7) {if (!board[y + 2][x + 1].endsWith(end)) {
+                if (x != 7 && y != 6 && y != 7) {if ((board[y + 2][x + 1] <= 0 && c == 1) || (board[y + 2][x + 1] >= 0 && c == -1)) {
                     possible.push({fromY: y, fromX: x, toY: y + 2, toX: x + 1})
                 }}
-                if (x != 6 && x != 7 && y != 7) {if (!board[y + 1][x + 2].endsWith(end)) {
+                if (x != 6 && x != 7 && y != 7) {if ((board[y + 1][x + 2] <= 0 && c == 1) || (board[y + 1][x + 2] >= 0 && c == -1)) {
                     possible.push({fromY: y, fromX: x, toY: y + 1, toX: x + 2})
                 }}
             }
 
-            else if (board[y][x] == "bishop" + end) {
+            else if (board[y][x] == c * b) {
                 let v = 1;
                 let t = - 1;
                 let p = - 1;
@@ -729,10 +751,10 @@ function possiblemoves(board, end, lastMove) {
                             ((t == 1 && p == -1) && ( x == 0 || y == 7)) ||
                             (y + t*v == -1 || y + t*v == 8 || x + p*v == -1 || x + p*v == 8)) {break;}
 
-                        if (board[y + t*v][x + p*v] == "0") {
+                        if (board[y + t*v][x + p*v] == 0) {
                             possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v}); // keep moving the bishop if nothing blocks it
                         }
-                        else if (board[y + t*v][x + p*v].endsWith(otherend)) {
+                        else if ((board[y + t*v][x + p*v] < 0 && c == 1) || (board[y + t*v][x + p*v] > 0 && c == -1)) {
                             possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v}); // if there is an enemy piece, capturing is possible, but going further isnt
                             break;
                         }
@@ -747,7 +769,7 @@ function possiblemoves(board, end, lastMove) {
                 }
             }
 
-            else if (board[y][x] == "rook" + end) { // similar to the bishop, keep moving in all 4 directions until something is hit
+            else if (board[y][x] == c * r) { // similar to the bishop, keep moving in all 4 directions until something is hit
                 let v = 1;
                 let t = 0;
                 let p = - 1;
@@ -759,10 +781,10 @@ function possiblemoves(board, end, lastMove) {
                             ((t == 1 && p == 0) && y == 7) ||
                             (y + t*v == -1 || y + t*v == 8 || x + p*v == -1 || x + p*v == 8)) {break;}
 
-                        if (board[y + t*v][x + p*v] == "0") {
+                        if (board[y + t*v][x + p*v] == 0) {
                             possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v});
                         }
-                        else if (board[y + t*v][x + p*v].endsWith(otherend)) {
+                        else if ((board[y + t*v][x + p*v] < 0 && c == 1) || (board[y + t*v][x + p*v] > 0 && c == -1)) {
                             possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v});
                             break;
                         }
@@ -777,7 +799,7 @@ function possiblemoves(board, end, lastMove) {
                 }
             }
 
-            else if (board[y][x] == "queen" + end) { // the queen has all of the bishops and rooks moves combined
+            else if (board[y][x] == c * q) { // the queen has all of the bishops and rooks moves combined
                 let v = 1;
                 let t = 0;
                 let p = - 1;
@@ -789,10 +811,10 @@ function possiblemoves(board, end, lastMove) {
                             ((t == 1 && p == 0) && y == 7) ||
                             (y + t*v == -1 || y + t*v == 8 || x + p*v == -1 || x + p*v == 8)) {break;}
 
-                        if (board[y + t*v][x + p*v] == "0") {
+                        if (board[y + t*v][x + p*v] == 0) {
                             possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v});
                         }
-                        else if (board[y + t*v][x + p*v].endsWith(otherend)) {
+                        else if ((board[y + t*v][x + p*v] < 0 && c == 1) || (board[y + t*v][x + p*v] > 0 && c == -1)) {
                             possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v});
                             break;
                         }
@@ -817,10 +839,10 @@ function possiblemoves(board, end, lastMove) {
                             ((t == 1 && p == -1) && ( x == 0 || y == 7)) ||
                             (y + t*v == -1 || y + t*v == 8 || x + p*v == -1 || x + p*v == 8)) {break;}
 
-                        if (board[y + t*v][x + p*v] == "0") {
+                        if (board[y + t*v][x + p*v] == 0) {
                             possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v});
                         }
-                        else if (board[y + t*v][x + p*v].endsWith(otherend)) {
+                        else if ((board[y + t*v][x + p*v] < 0 && c == 1) || (board[y + t*v][x + p*v] > 0 && c == -1)) {
                             possible.push({fromY: y, fromX: x, toY: y + t*v, toX: x + p*v});
                             break;
                         }
@@ -835,37 +857,37 @@ function possiblemoves(board, end, lastMove) {
                 }
             }
 
-            else if (board[y][x] == "king" + end) { // king can move 1 square in every direction
-                if (x != 0 && y != 0) {if (!board[y - 1][x - 1].endsWith(end)) {
+            else if (board[y][x] == c * k) { // king can move 1 square in every direction
+                if (x != 0 && y != 0) {if ((board[y - 1][x - 1] <= 0 && c == 1) || (board[y - 1][x - 1] >= 0 && c == -1)) {
                     possible.push({fromY: y, fromX: x, toY: y - 1, toX: x - 1})
                 }}
-                if (y != 0) {if (!board[y - 1][x].endsWith(end)) {
+                if (y != 0) {if ((board[y - 1][x] <= 0 && c == 1) || (board[y - 1][x] >= 0 && c == -1)) {
                     possible.push({fromY: y, fromX: x, toY: y - 1, toX: x})
                 }}
-                if (x != 7 && y != 0) {if (!board[y - 1][x + 1].endsWith(end)) {
+                if (x != 7 && y != 0) {if ((board[y - 1][x + 1] <= 0 && c == 1) || (board[y - 1][x + 1] >= 0 && c == -1)) {
                     possible.push({fromY: y, fromX: x, toY: y - 1, toX: x + 1})
                 }}
-                if ( x != 7) {if (!board[y][x + 1].endsWith(end)) {
+                if ( x != 7) {if ((board[y][x + 1] <= 0 && c == 1) || (board[y][x + 1] >= 0 && c == -1)) {
                     possible.push({fromY: y, fromX: x, toY: y, toX: x + 1})
                 }}
-                if (x != 7 && y != 7) {if (!board[y + 1][x + 1].endsWith(end)) {
+                if (x != 7 && y != 7) {if ((board[y + 1][x + 1] <= 0 && c == 1) || (board[y + 1][x + 1] >= 0 && c == -1)) {
                     possible.push({fromY: y, fromX: x, toY: y + 1, toX: x + 1})
                 }}
-                if (y != 7) {if (!board[y + 1][x].endsWith(end)) {
+                if (y != 7) {if ((board[y + 1][x] <= 0 && c == 1) || (board[y + 1][x] >= 0 && c == -1)) {
                     possible.push({fromY: y, fromX: x, toY: y + 1, toX: x})
                 }}
-                if (x != 0 && y != 7) {if (!board[y + 1][x - 1].endsWith(end)) {
+                if (x != 0 && y != 7) {if ((board[y + 1][x - 1] <= 0 && c == 1) || (board[y + 1][x - 1] >= 0 && c == -1)) {
                     possible.push({fromY: y, fromX: x, toY: y + 1, toX: x - 1})
                 }}
-                if (x != 0) {if (!board[y][x - 1].endsWith(end)) {
+                if (x != 0) {if ((board[y][x - 1] <= 0 && c == 1) || (board[y][x - 1] >= 0 && c == -1)) {
                     possible.push({fromY: y, fromX: x, toY: y, toX: x - 1})
                 }}
 
-                if (!kinghasmoved && !rook2hasmoved) {if (board[y][x + 1] == "0" && board[y][x + 2] == "0" && board[y][x + 3] == "rook" + end){ // castling, possible if king and rook havent moved yet and the king 
+                if (!kinghasmoved && !rook2hasmoved) {if (board[y][x + 1] == 0 && board[y][x + 2] == 0 && board[y][x + 3] == c*r){ // castling, possible if king and rook havent moved yet and the king 
                     possible.push({fromY: y, fromX: x, toY: y, toX: x + 2, fromY2: y, fromX2: x + 3, toY2: y, toX2: x + 1}) // isnt in check before, after and on any square it crosses while castling (validated elsewhere)
                 }}
 
-                if (!kinghasmoved && !rook1hasmoved) {if (board[y][x - 1] == "0" && board[y][x - 2] == "0" && board[y][x - 3] == "0" && board[y][x - 4] == "rook" + end){
+                if (!kinghasmoved && !rook1hasmoved) {if (board[y][x - 1] == 0 && board[y][x - 2] == 0 && board[y][x - 3] == 0 && board[y][x - 4] == c*r){
                     possible.push({fromY: y, fromX: x, toY: y, toX: x - 2, fromY2: y, fromX2: x - 4, toY2: y, toX2: x - 1})
                 }}
             }
@@ -875,19 +897,20 @@ function possiblemoves(board, end, lastMove) {
 }
 
 function check(possible, board, end) {
-    let otherend
     let kingPosition
 
+    let c = 0
+
     if (end == "white") {
-        otherend = "black"
+        c = 1
     }
     else {
-        otherend = "white"
+        c = -1
     }
 
     for (let y = 0; y < 8; y++) {
         for (let x = 0; x < 8; x++) {
-            if (board[y][x] == "king" + end) {
+            if (board[y][x] == k*-c) {
                 kingPosition = {y:y, x:x}
                 break
             } 
@@ -898,7 +921,7 @@ function check(possible, board, end) {
         let check = false
 
         if (possible[i].toY2) {
-            if (canCapture(board, otherend, kingPosition)) { // cant castle if in check
+            if (canCapture(board, c, kingPosition)) { // cant castle if in check
                 check = true
             }
 
@@ -918,13 +941,13 @@ function check(possible, board, end) {
 
             let newBoard = doMove(possible[i], board)
 
-            if (canCapture(newBoard, otherend, newkingPosition)) { // cant castle if in check afterwards
+            if (canCapture(newBoard, c, newkingPosition)) { // cant castle if in check afterwards
                 check = true
             }
 
             newBoard = doMove(betweenMove, board)
 
-            if (canCapture(newBoard, otherend, betweenKingPosition)) {
+            if (canCapture(newBoard, c, betweenKingPosition)) {
                 check = true
             }
 
@@ -934,27 +957,24 @@ function check(possible, board, end) {
             let newBoard = doMove(possible[i], board)
             let newKing = {y:0 ,x:0}
 
-            if (newBoard[kingPosition.y][kingPosition.x] != 'king'+end) {
-                if (kingPosition.y - 1 >= 0 && kingPosition.x - 1 >= 0) {if (newBoard[kingPosition.y - 1][kingPosition.x - 1] == 'king'+end) {newKing.y = kingPosition.y - 1; newKing.x = kingPosition.x - 1}}
-                if (kingPosition.y - 1 >= 0 && kingPosition.x + 1 <= 7) {if (newBoard[kingPosition.y - 1][kingPosition.x + 1] == 'king'+end) {newKing.y = kingPosition.y - 1; newKing.x = kingPosition.x + 1}}
-                if (kingPosition.y + 1 <= 7 && kingPosition.x - 1 >= 0) {if (newBoard[kingPosition.y + 1][kingPosition.x - 1] == 'king'+end) {newKing.y = kingPosition.y + 1; newKing.x = kingPosition.x - 1}}
-                if (kingPosition.y + 1 <= 7 && kingPosition.x + 1 <= 7) {if (newBoard[kingPosition.y + 1][kingPosition.x + 1] == 'king'+end) {newKing.y = kingPosition.y + 1; newKing.x = kingPosition.x + 1}}
-                if (kingPosition.y - 1 >= 0) {if (newBoard[kingPosition.y - 1][kingPosition.x] == 'king'+end) {newKing.y = kingPosition.y - 1; newKing.x = kingPosition.x}}
-                if (kingPosition.y + 1 <= 7) {if (newBoard[kingPosition.y + 1][kingPosition.x] == 'king'+end) {newKing.y = kingPosition.y + 1; newKing.x = kingPosition.x}}
-                if (kingPosition.x - 1 >= 0) {if (newBoard[kingPosition.y][kingPosition.x - 1] == 'king'+end) {newKing.y = kingPosition.y; newKing.x = kingPosition.x - 1}}
-                if (kingPosition.x + 1 <= 7) {if (newBoard[kingPosition.y][kingPosition.x + 1] == 'king'+end) {newKing.y = kingPosition.y; newKing.x = kingPosition.x + 1}}
+            if (newBoard[kingPosition.y][kingPosition.x] != k*-c) {
+                if (kingPosition.y - 1 >= 0 && kingPosition.x - 1 >= 0) {if (newBoard[kingPosition.y - 1][kingPosition.x - 1] == k*-c) {newKing.y = kingPosition.y - 1; newKing.x = kingPosition.x - 1}}
+                if (kingPosition.y - 1 >= 0 && kingPosition.x + 1 <= 7) {if (newBoard[kingPosition.y - 1][kingPosition.x + 1] == k*-c) {newKing.y = kingPosition.y - 1; newKing.x = kingPosition.x + 1}}
+                if (kingPosition.y + 1 <= 7 && kingPosition.x - 1 >= 0) {if (newBoard[kingPosition.y + 1][kingPosition.x - 1] == k*-c) {newKing.y = kingPosition.y + 1; newKing.x = kingPosition.x - 1}}
+                if (kingPosition.y + 1 <= 7 && kingPosition.x + 1 <= 7) {if (newBoard[kingPosition.y + 1][kingPosition.x + 1] == k*-c) {newKing.y = kingPosition.y + 1; newKing.x = kingPosition.x + 1}}
+                if (kingPosition.y - 1 >= 0) {if (newBoard[kingPosition.y - 1][kingPosition.x] == k*-c) {newKing.y = kingPosition.y - 1; newKing.x = kingPosition.x}}
+                if (kingPosition.y + 1 <= 7) {if (newBoard[kingPosition.y + 1][kingPosition.x] == k*-c) {newKing.y = kingPosition.y + 1; newKing.x = kingPosition.x}}
+                if (kingPosition.x - 1 >= 0) {if (newBoard[kingPosition.y][kingPosition.x - 1] == k*-c) {newKing.y = kingPosition.y; newKing.x = kingPosition.x - 1}}
+                if (kingPosition.x + 1 <= 7) {if (newBoard[kingPosition.y][kingPosition.x + 1] == k*-c) {newKing.y = kingPosition.y; newKing.x = kingPosition.x + 1}}
 
-                if (canCapture(newBoard, otherend, newKing)) {
+                if (canCapture(newBoard, c, newKing)) {
                     check = true
                 }
             } else {
-                if (canCapture(newBoard, otherend, kingPosition)) {
+                if (canCapture(newBoard, c, kingPosition)) {
                     check = true
                 }
             }
-
-            
-
         }
 
         if (check) {
@@ -981,7 +1001,7 @@ function maxi(arr) {
     return a
 }
 
-function absolute(number) {
+function abs(number) {
     if (number < 0) {
         return -1 * number
     } else {
@@ -995,15 +1015,15 @@ function doMove(move, board) {
     let newBoard = board.map(row => row.slice());
 
     newBoard[move.toY][move.toX] = newBoard[move.fromY][move.fromX];
-    newBoard[move.fromY][move.fromX] = "0";
+    newBoard[move.fromY][move.fromX] = 0;
     if (move.promoto){
         newBoard[move.toY][move.toX] = move.promoto
     }
     else if (move.toY2) {
         newBoard[move.toY2][move.toX2] = newBoard[move.fromY2][move.fromX2];
-        newBoard[move.fromY2][move.fromX2] = "0";
+        newBoard[move.fromY2][move.fromX2] = 0;
     } else if (move.enPassant) {
-        newBoard[move.toY - 1][move.toX] = "0";
+        newBoard[move.toY - 1][move.toX] = 0;
     }
 
     return newBoard;
@@ -1013,46 +1033,46 @@ function evaluate(board) {
     
     let material = Material(board)
     let evaluation = material[0]
-    let b = material[1]
-    let w = material[2]
+    let black = material[1]
+    let white = material[2]
 
     if (moveCount < 12) { // opening
-        if (board[0][4] != 'kingblack') {evaluation -= 64}
-        if (board[0][2] == 'kingblack' || board[0][6] == 'kingblack') {evaluation += 96}
-        if (board[0][3] != 'queenblack') {evaluation -= 32}
-        if (board[1][3] != 'pawnblack') {evaluation += 16}
-        if (board[1][4] != 'pawnblack') {evaluation += 16}
-        if (board[0][1] != 'knightblack') {evaluation += 16}
-        if (board[0][6] != 'knightblack') {evaluation += 16}
-        if (board[0][2] != 'bishopblack') {evaluation += 16}
-        if (board[0][5] != 'bishopblack') {evaluation += 16}
+        if (board[0][4] != k) {evaluation -= 64}
+        if (board[0][2] == k || board[0][6] == k) {evaluation += 96}
+        if (board[0][3] != q) {evaluation -= 32}
+        if (board[1][3] != p) {evaluation += 16}
+        if (board[1][4] != p) {evaluation += 16}
+        if (board[0][1] != n) {evaluation += 16}
+        if (board[0][6] != n) {evaluation += 16}
+        if (board[0][2] != b) {evaluation += 16}
+        if (board[0][5] != b) {evaluation += 16}
 
-    } else if ((b < 12000 || w < 12000) && moveCount > 30) { // endgame
+    } else if ((black < 12000 || white < 12000) && moveCount > 30) { // endgame
         let blackKingPosition = [100, 100]
         let whiteKingPosition = [100, 100]
         for (let x = 0; x < 8; x++) {
-            if (board[4][x] == "pawnblack") {evaluation += 4}
-            if (board[5][x] == "pawnblack") {evaluation += 8}
-            if (board[6][x] == "pawnblack") {evaluation += 16}
-            if (board[7][x] == "pawnblack") {evaluation += 32}
+            if (board[4][x] == p) {evaluation += 4}
+            if (board[5][x] == p) {evaluation += 8}
+            if (board[6][x] == p) {evaluation += 16}
+            if (board[7][x] == p) {evaluation += 32}
             for (let y = 0; y < 8; y++) {
-                if (board[y][x] == 'kingblack') {blackKingPosition[0] = y; blackKingPosition[1] = x}
-                if (board[y][x] == 'kingwhite') {whiteKingPosition[0] = y; whiteKingPosition[1] = x}
+                if (board[y][x] == k) {blackKingPosition[0] = y; blackKingPosition[1] = x}
+                else if (board[y][x] == K) {whiteKingPosition[0] = y; whiteKingPosition[1] = x}
             }
         }
-        if (b == 10500 && w <= 10200 || b == 11000 && w <= 10200 || b == 10900 && w <= 10200) {
+        if (black == 10500 && white <= 10200 || black == 11000 && white <= 10200 || black == 10900 && white <= 10200) {
             let whiteKingDistToCenter = Math.max(3 - whiteKingPosition[0], whiteKingPosition[0] - 4) + Math.max(3 - whiteKingPosition[1], whiteKingPosition[1] - 4)
-            let distBetweenKings = absolute(blackKingPosition[0] - whiteKingPosition[0]) + absolute(blackKingPosition[1] - whiteKingPosition[1])
+            let distBetweenKings = abs(blackKingPosition[0] - whiteKingPosition[0]) + abs(blackKingPosition[1] - whiteKingPosition[1])
             if (distBetweenKings > 4) {evaluation -= distBetweenKings}
             else if (distBetweenKings <= 3) {evaluation += whiteKingDistToCenter}
         }
 
     } else { // middlegame
-        if (board[0][4] != 'kingblack') {evaluation -= 64}
-        if (board[0][2] == 'kingblack' || board[0][6] == 'kingblack') {evaluation += 96}
-        if (board[0][0] != 'rookblack') {evaluation += 16}
-        if (board[0][7] != 'rookblack') {evaluation += 16}
-        if (board[0][3] != 'queenblack') {evaluation += 16}
+        if (board[0][4] != k) {evaluation -= 64}
+        if (board[0][2] == k || board[0][6] == k) {evaluation += 96}
+        if (board[0][0] != r) {evaluation += 16}
+        if (board[0][7] != r) {evaluation += 16}
+        if (board[0][3] != q) {evaluation += 16}
     }
     
     return evaluation
@@ -1061,7 +1081,7 @@ function evaluate(board) {
 let transTable = new Map();
 
 const ZOBRIST_TABLE = [];
-const PIECE_TYPES = ['0', 'pawnblack', 'rookblack', 'knightblack', 'bishopblack', 'queenblack', 'kingblack', 'pawnwhite', 'rookwhite', 'knightwhite', 'bishopwhite', 'queenwhite', 'kingwhite'];
+const PIECE_TYPES = [0, p, r, n, b, q, k, P, R, N, B, Q, K];
 
 // Initialize the Zobrist table
 for (let i = 0; i < 8; i++) {
@@ -1106,14 +1126,11 @@ function hashBoard(board) {
         }
 
     let color;
-    let other
 
     if (maximizingPlayer) {
         color = "black";
-        other = 'white'
       } else {
         color = "white";
-        other = 'black'
       }
 
     if (depth == 0) {
@@ -1125,16 +1142,19 @@ function hashBoard(board) {
     if (check(moves, board, color).length == 0) {
         let kingpos
         let king
+        let c
         if (maximizingPlayer) {
             king = kingb
+            c = 1
           } else {
             king = kingw
+            c = -1
           }
         kingpos = king
-        if (board[kingpos.y][kingpos.x] != 'king' + color) {
+        if (board[kingpos.y][kingpos.x] != k*c) {
             for (let y = 0; y < 8; y++) {
                 for (let x = 0; x < 8; x++) {
-                    if (board[y][x] == 'king' + color) {
+                    if (board[y][x] == k*c) {
                         kingpos = {y:y, x:x}
                         break
                     } 
@@ -1142,7 +1162,7 @@ function hashBoard(board) {
             }
         }
         if (kingpos !== undefined) {
-            if (canCapture(board, other, kingpos)) {
+            if (canCapture(board, -c, kingpos)) {
                 if (color == 'white') {return 100000} else {return -100000}
             }
             else {
@@ -1196,7 +1216,7 @@ function hashBoard(board) {
     return array;
   }
 
-  function order(moves, board) { // todo improve
+  function order(moves, board) {
     let scores = []
     for (let i = 0; i < moves.length; i++) {
       let guess = 0
@@ -1206,17 +1226,17 @@ function hashBoard(board) {
       if (moves[i].promoto) {
         guess += pieceValue(moves[i].promoto)
       }
-      if (board[moves[i].fromY][moves[i].fromX].startsWith('king') && moveCount < 25) {
+      if (abs(board[moves[i].fromY][moves[i].fromX]) == k && moveCount < 25) {
         guess -= 50
       }
-      else if (board[moves[i].fromY][moves[i].fromX].startsWith('knight') && moveCount < 20 && (moves[i].toY == 0 || moves[i].toY == 7)) {
+      else if (abs(board[moves[i].fromY][moves[i].fromX]) == n && moveCount < 20 && (moves[i].toY == 0 || moves[i].toY == 7)) {
         guess -= 25
       }
-      else if (board[moves[i].fromY][moves[i].fromX].startsWith('pawn') && moveCount < 10) {
+      else if (abs(board[moves[i].fromY][moves[i].fromX]) == p && moveCount < 10) {
         if (moves[i].toY == 3 || moves[i].toY == 4) {guess += 10}
         else if (moves[i].toY == 2 || moves[i].toY == 5) {guess += 5}
       }
-      else if (board[moves[i].fromY][moves[i].fromX].startsWith('queen') && moveCount < 15) {
+      else if (abs(board[moves[i].fromY][moves[i].fromX]) == q && moveCount < 15) {
         guess -= 50
       }
       scores.push(guess)
@@ -1238,13 +1258,13 @@ function bestMove(possible, board, lastMove) {
     transpositions = 0
 
     let best;
-    let p = [];
+    let pos = [];
     let maxTime
 
     possible = shuffle(possible)
     possible = order(possible, board)
 
-    let maxDepth = 13 // 3 or 7 for rook + king mate // 3 for 2 rooks + king mate // 7 or 3 for queen + king mate
+    let maxDepth = 11 // 3 or 7 for rook + king mate // 3 for 2 rooks + king mate // 7 or 3 for queen + king mate
     if (moveCount > 50) {maxTime = 30000} else if (moveCount < 10) {maxTime = 5000} else {maxTime = 10000}
     let start = Date.now()
     let stopSearch = false
@@ -1252,9 +1272,9 @@ function bestMove(possible, board, lastMove) {
 
     for (let y = 0; y < 8; y++) {
         for (let x = 0; x < 8; x++) {
-            if (board[y][x] == "kingblack") {
+            if (board[y][x] == k) {
                 kingb = {y:y, x:x}
-            } else if (board[y][x] == "kingwhite") {
+            } else if (board[y][x] == K) {
                 kingw = {y:y, x:x}
             }
         } 
@@ -1262,7 +1282,7 @@ function bestMove(possible, board, lastMove) {
 
     for (let depth = 0; depth < maxDepth; depth++) {
         console.log('searching', depth)
-        p = []
+        pos = []
         for (let i = 0; i < possible.length; i++) {
             let value
             if (stopSearch) {
@@ -1272,16 +1292,16 @@ function bestMove(possible, board, lastMove) {
                 lastMove = possible[i]
                 value = tree(newBoard, depth, -Infinity, Infinity, false, lastMove) 
             }
-            p.push(value)
+            pos.push(value)
             if (Date.now() - start > maxTime) {break}
             else if (value == 100000) {
                 console.log('mate in', depth)
                 stopSearch = true
             }
         }
-        possible = possible.sort((a, b) => p[possible.indexOf(b)] - p[possible.indexOf(a)])
+        possible = possible.sort((a, b) => pos[possible.indexOf(b)] - pos[possible.indexOf(a)])
         if (Date.now() - start > maxTime) {break}
-        console.log(p)
+        console.log(pos)
         console.log(possible)
         d = depth
         if (stopSearch) {break}
@@ -1314,7 +1334,7 @@ function bestMove(possible, board, lastMove) {
             best = possible[0]
         }
 
-        if (best.toY == 7 && board[best.fromY][best.fromX] == "pawnblack") {
+        if (best.toY == 7 && board[best.fromY][best.fromX] == p) {
             promote = true;
         }
     }
@@ -1357,10 +1377,10 @@ function firetheengineup(lastMove) {
     let toSquare = squares[best.toY * 8 + best.toX]
     
     if (promote) {
-        if (best.promoto.startsWith('queen')) {piece = 'queen'}
-        else if (best.promoto.startsWith('rook')) {piece = 'rook'}
-        else if (best.promoto.startsWith('bishop')) {piece = 'bishop'}
-        else if (best.promoto.startsWith('knight')) {piece = 'knight'}
+        if (abs(best.promoto) == q) {piece = 'queen'}
+        else if (abs(best.promoto) == r) {piece = 'rook'}
+        else if (abs(best.promoto) == b) {piece = 'bishop'}
+        else if (abs(best.promoto) == n) {piece = 'knight'}
         let newPiece = make(piece, 'black')
         newPiece.setAttribute("draggable", true);
         newPiece.addEventListener('dragstart', dragStart);
@@ -1414,13 +1434,13 @@ function firetheengineup(lastMove) {
         let msg
         for (let y = 0; y < 8; y++) { // todo only update by neighboring
             for (let x = 0; x < 8; x++) {
-                if (currentBoard[y][x] == "kingblack") {
+                if (currentBoard[y][x] == k) {
                     bkp = {y:y, x:x}
                     break
                 } 
             } 
         }
-        if (canCapture(currentBoard, 'white', bkp)) {msg = "you won, press ok to try again"}
+        if (canCapture(currentBoard, 1, bkp)) {msg = "you won, press ok to try again"}
         else {msg = "draw, press ok to try again"}
         setTimeout(() => {
             if (confirm(msg)) {
@@ -1430,20 +1450,6 @@ function firetheengineup(lastMove) {
     }
 
     currentBoard = doMove(best, currentBoard)
-    let blackKingPosition = [0,0]
-    let whiteKingPosition = [0,0]
-    for (let x = 0; x < 8; x++) {
-        for (let y = 0; y < 8; y++) {
-            if (currentBoard[y][x] == 'kingblack') {blackKingPosition[0] = y; blackKingPosition[1] = x}
-            if (currentBoard[y][x] == 'kingwhite') {whiteKingPosition[0] = y; whiteKingPosition[1] = x}
-        }
-    }
-    console.log(whiteKingPosition, blackKingPosition)
-    let whiteKingDistToCenter = Math.max(3 - whiteKingPosition[0], whiteKingPosition[0] - 4) + Math.max(3 - whiteKingPosition[1], whiteKingPosition[1] - 4)
-    console.log(whiteKingDistToCenter)
-    let distBetweenKings = absolute(blackKingPosition[0] - whiteKingPosition[0]) + absolute(blackKingPosition[1] - whiteKingPosition[1])
-    console.log(distBetweenKings)
-    console.log(whiteKingDistToCenter * 10 + (14 - distBetweenKings) * 4)
 
     console.timeEnd('engine')
 
@@ -1456,14 +1462,14 @@ function firetheengineup(lastMove) {
     if (whitemoves.length == 0) {
         for (let y = 0; y < 8; y++) { // todo only update by neighboring
             for (let x = 0; x < 8; x++) {
-                if (updatedBoard[y][x] == "kingwhite") {
+                if (updatedBoard[y][x] == K) {
                     wkp = {y:y, x:x}
                     break
                 } 
             } 
         }
         let msg
-        if (canCapture(updatedBoard, 'black', wkp)) {msg = "you lost, press ok to try again"}
+        if (canCapture(updatedBoard, 1, wkp)) {msg = "you lost, press ok to try again"}
         else {msg = "draw, press ok to try again"}
         setTimeout(() => {
             if (confirm(msg)) {
