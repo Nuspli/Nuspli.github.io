@@ -300,7 +300,9 @@ selectPieces.forEach(piece => {
 
         document.querySelector('.promote_selector').style.top = '-1000px'
         select = false
-        firetheengineup(move)
+        setTimeout(() => {
+            firetheengineup(move);
+        }, 10)
     });
 });
 
@@ -379,8 +381,6 @@ function validate(f, t, piece, lastfrom, lastto) {
             }
         }
 
-        if (!valid) {return}
-
         if (piece == 'pawn') {
 
             if (lastfrom !== undefined) {if (((lastfrom == 9 && lastto == 25) ||
@@ -420,6 +420,8 @@ function validate(f, t, piece, lastfrom, lastto) {
                 whitekinghasmoved = true
             }
         }
+
+        if (!valid) {return}
 
         if (castle2) {
             console.log("you: O-O");
@@ -615,7 +617,7 @@ function canCapture(board, c, kingPosition) {
     return yes
 }
 
-function possiblemoves(board, end, lastMove) {
+function possiblemoves(board, end, lastMove, rook1hasmoved, rook2hasmoved, kinghasmoved) {
 
     let possible = [];
     promote = false;
@@ -882,7 +884,7 @@ function possiblemoves(board, end, lastMove) {
                 if (x != 0) {if ((board[y][x - 1] <= 0 && c == 1) || (board[y][x - 1] >= 0 && c == -1)) {
                     possible.push({fromY: y, fromX: x, toY: y, toX: x - 1})
                 }}
-
+                // todo castling for white
                 if (!kinghasmoved && !rook2hasmoved) {if (board[y][x + 1] == 0 && board[y][x + 2] == 0 && board[y][x + 3] == c*r){ // castling, possible if king and rook havent moved yet and the king 
                     possible.push({fromY: y, fromX: x, toY: y, toX: x + 2, fromY2: y, fromX2: x + 3, toY2: y, toX2: x + 1}) // isnt in check before, after and on any square it crosses while castling (validated elsewhere)
                 }}
@@ -1108,7 +1110,7 @@ function hashBoard(board) {
 
   let transpositions = 0
 
-  function tree(board, depth, alpha, beta, maximizingPlayer, lastMove) {
+  function tree(board, depth, alpha, beta, maximizingPlayer, lastMove, brook1, brook2, bking, wrook1, wrook2, wking) { // todo implement null move pruning
 
     nodes++;
 
@@ -1126,18 +1128,27 @@ function hashBoard(board) {
         }
 
     let color;
+    let rook1
+    let rook2
+    let king
 
     if (maximizingPlayer) {
         color = "black";
+        rook1 = brook1
+        rook2 = brook2
+        king = bking
       } else {
         color = "white";
+        rook1 = wrook1
+        rook2 = wrook2
+        king = wking
       }
 
     if (depth == 0) {
         return evaluate(board)
     }
 
-    let moves = possiblemoves(board, color, lastMove);
+    let moves = possiblemoves(board, color, lastMove, rook1, rook2, king);
 
     if (check(moves, board, color).length == 0) {
         let kingpos
@@ -1174,12 +1185,19 @@ function hashBoard(board) {
     moves = order(moves, board);
 
     if (maximizingPlayer) {
-      let value = -Infinity;
+      let value = -inf;
       for (let i = 0; i < moves.length; i++) {
         let newBoard = doMove(moves[i], board);
+        if (board[moves[i].fromY][moves[i].fromX] == r && moves[i].fromX == 0) {
+            brook2 = true
+        } else if (board[moves[i].fromY][moves[i].fromX] == r && moves[i].fromX == 7) {
+            brook1 = true
+        } if (board[moves[i].fromY][moves[i].fromX] == k) {
+            bking = true
+        }
         value = Math.max(
           value,
-          tree(newBoard, depth - 1, alpha, beta, false, moves[i])
+          tree(newBoard, depth - 1, alpha, beta, false, moves[i], brook1, brook2, bking)
         );
         alpha = Math.max(alpha, value);
         if (beta <= alpha) {
@@ -1189,12 +1207,19 @@ function hashBoard(board) {
       transTable.set(hash, {depth: depth, value: value, flag: (value <= alpha ? "upperbound" : (value >= beta ? "lowerbound" : "exact"))});
       return value;
     } else {
-      let value = Infinity;
+      let value = inf;
       for (let i = 0; i < moves.length; i++) {
         let newBoard = doMove(moves[i], board);
+        if (board[moves[i].fromY][moves[i].fromX] == r && moves[i].fromX == 0) {
+            wrook2 = true
+        } else if (board[moves[i].fromY][moves[i].fromX] == r && moves[i].fromX == 7) {
+            wrook1 = true
+        } if (board[moves[i].fromY][moves[i].fromX] == k) {
+            wking = true
+        }
         value = Math.min(
           value,
-          tree(newBoard, depth - 1, alpha, beta, true, moves[i])
+          tree(newBoard, depth - 1, alpha, beta, true, moves[i], wrook1, wrook2, wking)
         );
         beta = Math.min(beta, value);
         if (beta <= alpha) {
@@ -1251,6 +1276,7 @@ let oldBoard
 let oldBoard2
 let kingw
 let kingb
+let inf
 
 function bestMove(possible, board, lastMove) {
     console.log(moveCount)
@@ -1269,6 +1295,7 @@ function bestMove(possible, board, lastMove) {
     let start = Date.now()
     let stopSearch = false
     let d = 0
+    inf = Infinity
 
     for (let y = 0; y < 8; y++) {
         for (let x = 0; x < 8; x++) {
@@ -1290,7 +1317,7 @@ function bestMove(possible, board, lastMove) {
             } else {
                 let newBoard = doMove(possible[i], board)
                 lastMove = possible[i]
-                value = tree(newBoard, depth, -Infinity, Infinity, false, lastMove) 
+                value = tree(newBoard, depth, -inf, inf, false, lastMove, rook1hasmoved, rook2hasmoved, kinghasmoved, whiterook1hasmoved, whiterook2hasmoved, whitekinghasmoved) 
             }
             pos.push(value)
             if (Date.now() - start > maxTime) {break}
@@ -1309,20 +1336,6 @@ function bestMove(possible, board, lastMove) {
 
     console.log('t:', transpositions)
 
-    /*
-    for (let i = 0; i < q.length; i++) {
-        if (q.length != 1) {
-            if (possible[q[i]].fromY2 !== undefined) { // when castling is among the best moves, castle
-                castlee = true
-                best = possible[q[i]]
-                break
-            } else if (possible[q[i]].fromY * 8 + possible[q[i]].fromX + 1 == lastto) { // dont repeat moves
-                q.splice(i, 1)
-                i--
-            }
-        }
-    }
-    */
     if (possible.length != 0) {
 
         if ((possible[0].toY == square2yx(lastfrom).y && possible[0].toX == square2yx(lastfrom).x) &&
@@ -1381,6 +1394,9 @@ function firetheengineup(lastMove) {
         else if (abs(best.promoto) == r) {piece = 'rook'}
         else if (abs(best.promoto) == b) {piece = 'bishop'}
         else if (abs(best.promoto) == n) {piece = 'knight'}
+        lastfrom = best.fromY * 8 + best.fromX + 1
+        lastto = best.toY * 8 + best.toX + 1
+        console.log("cpu: " + fromSquare.firstChild.firstChild.className + " from " + lastfrom + " to " + lastto + " promotiong to: " + piece)
         let newPiece = make(piece, 'black')
         newPiece.setAttribute("draggable", true);
         newPiece.addEventListener('dragstart', dragStart);
@@ -1432,7 +1448,7 @@ function firetheengineup(lastMove) {
 
     if (best === undefined){
         let msg
-        for (let y = 0; y < 8; y++) { // todo only update by neighboring
+        for (let y = 0; y < 8; y++) {
             for (let x = 0; x < 8; x++) {
                 if (currentBoard[y][x] == k) {
                     bkp = {y:y, x:x}
@@ -1440,7 +1456,7 @@ function firetheengineup(lastMove) {
                 } 
             } 
         }
-        if (canCapture(currentBoard, 1, bkp)) {msg = "you won, press ok to try again"}
+        if (canCapture(currentBoard, -1, bkp)) {msg = "you won, press ok to try again"}
         else {msg = "draw, press ok to try again"}
         setTimeout(() => {
             if (confirm(msg)) {
