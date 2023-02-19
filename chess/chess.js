@@ -487,18 +487,6 @@ function Material(board) {
     return material;
 }
 
-function pieceValue(piece) {
-    let value = 0
-    if (piece == p || piece == P) {value = 100}
-    else if (piece == n || piece == N) {value = 300}
-    else if (piece == b || piece == B) {value = 300}
-    else if (piece == r || piece == R) {value = 500}
-    else if (piece == q || piece == Q) {value = 900}
-    else if (piece == k || piece == K) {value = 10000}
-    return value
-    
-}
-
 function getBoard() {
     let a = 1;
     for (let i = 0; i < 8; i++) {
@@ -941,42 +929,51 @@ function check(possible, board, end) {
                 betweenKingPosition = {y: kingPosition.y, x: 5}
             }
 
-            let newBoard = doMove(possible[i], board)
+            let temp = board[possible[i].toY][possible[i].toX]
+            board = doMove(possible[i], board)
 
-            if (canCapture(newBoard, c, newkingPosition)) { // cant castle if in check afterwards
+            if (canCapture(board, c, newkingPosition)) { // cant castle if in check afterwards
                 check = true
             }
 
-            newBoard = doMove(betweenMove, board)
+            board = undoMove(possible[i], board, temp)
 
-            if (canCapture(newBoard, c, betweenKingPosition)) {
+            temp = board[betweenMove.toY][betweenMove.toX]
+            board = doMove(betweenMove, board)
+
+            if (canCapture(board, c, betweenKingPosition)) {
                 check = true
             }
+
+            undoMove(betweenMove, board, temp)
 
 
         } else {
+            let temp = board[possible[i].toY][possible[i].toX]
 
-            let newBoard = doMove(possible[i], board)
+            board = doMove(possible[i], board)
             let newKing = {y:0 ,x:0}
 
-            if (newBoard[kingPosition.y][kingPosition.x] != k*-c) {
-                if (kingPosition.y - 1 >= 0 && kingPosition.x - 1 >= 0) {if (newBoard[kingPosition.y - 1][kingPosition.x - 1] == k*-c) {newKing.y = kingPosition.y - 1; newKing.x = kingPosition.x - 1}}
-                if (kingPosition.y - 1 >= 0 && kingPosition.x + 1 <= 7) {if (newBoard[kingPosition.y - 1][kingPosition.x + 1] == k*-c) {newKing.y = kingPosition.y - 1; newKing.x = kingPosition.x + 1}}
-                if (kingPosition.y + 1 <= 7 && kingPosition.x - 1 >= 0) {if (newBoard[kingPosition.y + 1][kingPosition.x - 1] == k*-c) {newKing.y = kingPosition.y + 1; newKing.x = kingPosition.x - 1}}
-                if (kingPosition.y + 1 <= 7 && kingPosition.x + 1 <= 7) {if (newBoard[kingPosition.y + 1][kingPosition.x + 1] == k*-c) {newKing.y = kingPosition.y + 1; newKing.x = kingPosition.x + 1}}
-                if (kingPosition.y - 1 >= 0) {if (newBoard[kingPosition.y - 1][kingPosition.x] == k*-c) {newKing.y = kingPosition.y - 1; newKing.x = kingPosition.x}}
-                if (kingPosition.y + 1 <= 7) {if (newBoard[kingPosition.y + 1][kingPosition.x] == k*-c) {newKing.y = kingPosition.y + 1; newKing.x = kingPosition.x}}
-                if (kingPosition.x - 1 >= 0) {if (newBoard[kingPosition.y][kingPosition.x - 1] == k*-c) {newKing.y = kingPosition.y; newKing.x = kingPosition.x - 1}}
-                if (kingPosition.x + 1 <= 7) {if (newBoard[kingPosition.y][kingPosition.x + 1] == k*-c) {newKing.y = kingPosition.y; newKing.x = kingPosition.x + 1}}
+            if (board[kingPosition.y][kingPosition.x] != k*-c) {
+                if (kingPosition.y - 1 >= 0 && kingPosition.x - 1 >= 0) {if (board[kingPosition.y - 1][kingPosition.x - 1] == k*-c) {newKing.y = kingPosition.y - 1; newKing.x = kingPosition.x - 1}}
+                if (kingPosition.y - 1 >= 0 && kingPosition.x + 1 <= 7) {if (board[kingPosition.y - 1][kingPosition.x + 1] == k*-c) {newKing.y = kingPosition.y - 1; newKing.x = kingPosition.x + 1}}
+                if (kingPosition.y + 1 <= 7 && kingPosition.x - 1 >= 0) {if (board[kingPosition.y + 1][kingPosition.x - 1] == k*-c) {newKing.y = kingPosition.y + 1; newKing.x = kingPosition.x - 1}}
+                if (kingPosition.y + 1 <= 7 && kingPosition.x + 1 <= 7) {if (board[kingPosition.y + 1][kingPosition.x + 1] == k*-c) {newKing.y = kingPosition.y + 1; newKing.x = kingPosition.x + 1}}
+                if (kingPosition.y - 1 >= 0) {if (board[kingPosition.y - 1][kingPosition.x] == k*-c) {newKing.y = kingPosition.y - 1; newKing.x = kingPosition.x}}
+                if (kingPosition.y + 1 <= 7) {if (board[kingPosition.y + 1][kingPosition.x] == k*-c) {newKing.y = kingPosition.y + 1; newKing.x = kingPosition.x}}
+                if (kingPosition.x - 1 >= 0) {if (board[kingPosition.y][kingPosition.x - 1] == k*-c) {newKing.y = kingPosition.y; newKing.x = kingPosition.x - 1}}
+                if (kingPosition.x + 1 <= 7) {if (board[kingPosition.y][kingPosition.x + 1] == k*-c) {newKing.y = kingPosition.y; newKing.x = kingPosition.x + 1}}
 
-                if (canCapture(newBoard, c, newKing)) {
+                if (canCapture(board, c, newKing)) {
                     check = true
                 }
             } else {
-                if (canCapture(newBoard, c, kingPosition)) {
+                if (canCapture(board, c, kingPosition)) {
                     check = true
                 }
             }
+        
+            board = undoMove(possible[i], board, temp)
         }
 
         if (check) {
@@ -1014,21 +1011,48 @@ function abs(number) {
 let nodes = 0
 
 function doMove(move, board) {
-    let newBoard = board.map(row => row.slice());
-
-    newBoard[move.toY][move.toX] = newBoard[move.fromY][move.fromX];
-    newBoard[move.fromY][move.fromX] = 0;
+    
+    board[move.toY][move.toX] = board[move.fromY][move.fromX];
+    board[move.fromY][move.fromX] = 0;
     if (move.promoto){
-        newBoard[move.toY][move.toX] = move.promoto
+        board[move.toY][move.toX] = move.promoto
     }
     else if (move.toY2) {
-        newBoard[move.toY2][move.toX2] = newBoard[move.fromY2][move.fromX2];
-        newBoard[move.fromY2][move.fromX2] = 0;
+        board[move.toY2][move.toX2] = board[move.fromY2][move.fromX2];
+        board[move.fromY2][move.fromX2] = 0;
     } else if (move.enPassant) {
-        newBoard[move.toY - 1][move.toX] = 0;
+        if (move.toY == 1) {
+            board[move.toY + 1][move.toX] = 0
+        } else if (move.toY == 6) {
+            board[move.toY - 1][move.toX] = 0
+        }
     }
 
-    return newBoard;
+    return board;
+}
+
+function undoMove(move, board, temp) {
+    board[move.fromY][move.fromX] = board[move.toY][move.toX]
+    board[move.toY][move.toX] = temp;
+    if (move.promoto){
+        if (move.toY == 7) {
+            board[move.fromY][move.fromX] = 1
+        } else {
+            board[move.fromY][move.fromX] = -1
+        }
+    }
+    else if (move.toY2) {
+        board[move.fromY2][move.fromX2] = board[move.toY2][move.toX2]
+        board[move.toY2][move.toX2] = 0;
+    } else if (move.enPassant) {
+        if (move.toY == 1) {
+            board[move.toY + 1][move.toX] = 1
+        } else if (move.toY == 6) {
+            board[move.toY - 1][move.toX] = -1
+        }
+    }
+
+    return board;
 }
 
 function evaluate(board) {
@@ -1187,7 +1211,8 @@ function hashBoard(board) {
     if (maximizingPlayer) {
       let value = -inf;
       for (let i = 0; i < moves.length; i++) {
-        let newBoard = doMove(moves[i], board);
+        let temp = board[moves[i].toY][moves[i].toX]
+        board = doMove(moves[i], board);
         if (board[moves[i].fromY][moves[i].fromX] == r && moves[i].fromX == 0) {
             brook2 = true
         } else if (board[moves[i].fromY][moves[i].fromX] == r && moves[i].fromX == 7) {
@@ -1197,8 +1222,9 @@ function hashBoard(board) {
         }
         value = Math.max(
           value,
-          tree(newBoard, depth - 1, alpha, beta, false, moves[i], brook1, brook2, bking)
+          tree(board, depth - 1, alpha, beta, false, moves[i], brook1, brook2, bking)
         );
+        board = undoMove(moves[i], board, temp)
         alpha = Math.max(alpha, value);
         if (beta <= alpha) {
           break;
@@ -1209,7 +1235,8 @@ function hashBoard(board) {
     } else {
       let value = inf;
       for (let i = 0; i < moves.length; i++) {
-        let newBoard = doMove(moves[i], board);
+        let temp = board[moves[i].toY][moves[i].toX]
+        board = doMove(moves[i], board);
         if (board[moves[i].fromY][moves[i].fromX] == r && moves[i].fromX == 0) {
             wrook2 = true
         } else if (board[moves[i].fromY][moves[i].fromX] == r && moves[i].fromX == 7) {
@@ -1219,8 +1246,9 @@ function hashBoard(board) {
         }
         value = Math.min(
           value,
-          tree(newBoard, depth - 1, alpha, beta, true, moves[i], wrook1, wrook2, wking)
+          tree(board, depth - 1, alpha, beta, true, moves[i], wrook1, wrook2, wking)
         );
+        board = undoMove(moves[i], board, temp)
         beta = Math.min(beta, value);
         if (beta <= alpha) {
           break;
@@ -1245,11 +1273,11 @@ function hashBoard(board) {
     let scores = []
     for (let i = 0; i < moves.length; i++) {
       let guess = 0
-      if (board[moves[i].toY][moves[i].toX] != '0') {
-        guess = 10 * pieceValue(board[moves[i].toY][moves[i].toX]) - pieceValue(board[moves[i].fromY][moves[i].fromX])
+      if (board[moves[i].toY][moves[i].toX] != 0) {
+        guess = 10 * PIECE_VALUES[abs(board[moves[i].toY][moves[i].toX]) - 1] - PIECE_VALUES[abs(board[moves[i].fromY][moves[i].fromX]) - 1]
       }
       if (moves[i].promoto) {
-        guess += pieceValue(moves[i].promoto)
+        guess += PIECE_VALUES[abs(moves[i].promoto) - 1]
       }
       if (abs(board[moves[i].fromY][moves[i].fromX]) == k && moveCount < 25) {
         guess -= 50
@@ -1290,7 +1318,7 @@ function bestMove(possible, board, lastMove) {
     possible = shuffle(possible)
     possible = order(possible, board)
 
-    let maxDepth = 11 // 3 or 7 for rook + king mate // 3 for 2 rooks + king mate // 7 or 3 for queen + king mate
+    let maxDepth = 13 // 3 or 7 for rook + king mate // 3 for 2 rooks + king mate // 7 or 3 for queen + king mate
     if (moveCount > 50) {maxTime = 30000} else if (moveCount < 10) {maxTime = 5000} else {maxTime = 10000}
     let start = Date.now()
     let stopSearch = false
@@ -1307,6 +1335,7 @@ function bestMove(possible, board, lastMove) {
         } 
     }
 
+    
     for (let depth = 0; depth < maxDepth; depth++) {
         console.log('searching', depth)
         pos = []
@@ -1315,9 +1344,11 @@ function bestMove(possible, board, lastMove) {
             if (stopSearch) {
                 value = 0
             } else {
-                let newBoard = doMove(possible[i], board)
+                let temp = board[possible[i].toY][possible[i].toX]
+                board = doMove(possible[i], board)
                 lastMove = possible[i]
-                value = tree(newBoard, depth, -inf, inf, false, lastMove, rook1hasmoved, rook2hasmoved, kinghasmoved, whiterook1hasmoved, whiterook2hasmoved, whitekinghasmoved) 
+                value = tree(board, depth, -inf, inf, false, lastMove, rook1hasmoved, rook2hasmoved, kinghasmoved, whiterook1hasmoved, whiterook2hasmoved, whitekinghasmoved)
+                board = undoMove(possible[i], board, temp)
             }
             pos.push(value)
             if (Date.now() - start > maxTime) {break}
@@ -1464,8 +1495,6 @@ function firetheengineup(lastMove) {
             }
         }, 10)
     }
-
-    currentBoard = doMove(best, currentBoard)
 
     console.timeEnd('engine')
 
