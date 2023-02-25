@@ -49,11 +49,11 @@ function boardSetup() {
                          [P,P,P,P,P,P,P,P],
                          [R,N,B,Q,K,B,N,R]]
 
-    let startPosition1 = [[0,k,0,0,0,0,0,r],
+    let startPosition1 = [[0,0,0,0,0,0,0,0],
+                         [0,0,0,0,0,0,0,P],
                          [0,0,0,0,0,0,0,0],
                          [0,0,0,0,0,0,0,0],
-                         [0,0,0,0,0,0,0,0],
-                         [0,0,0,0,0,0,0,0],
+                         [0,0,0,0,k,0,0,0],
                          [0,0,0,0,0,0,0,0],
                          [0,0,0,0,0,0,0,0],
                          [0,K,0,0,0,0,0,0]]
@@ -382,29 +382,11 @@ function validate(f, t, piece, lastfrom, lastto) {
         }
 
         if (piece == 'pawn') {
-
-            if (lastfrom !== undefined) {if (((lastfrom == 9 && lastto == 25) ||
-                                              (lastfrom == 10 && lastto == 26) ||
-                                              (lastfrom == 11 && lastto == 27) ||
-                                              (lastfrom == 12 && lastto == 28) ||
-                                              (lastfrom == 13 && lastto == 29) ||
-                                              (lastfrom == 14 && lastto == 30) ||
-                                              (lastfrom == 15 && lastto == 31) ||
-                                              (lastfrom == 16 && lastto == 32)) && t + 8 == lastto && getPiece(lastto) == 'pawnblack') {
-                                                valid = true;
-                                                enpassant = true;
-                                            }}
-            if ((f - t == 8 && !hasPiece(t)) || // 1 step
-                (f - t == 16 && !hasPiece(t) && !hasPiece(f - 8) && f >= 49) || // 2 step first move
-                (f - t == 7 && hasPiece(t)) || // take right
-                (f - t == 9 && hasPiece(t)) // take left
-                ) {
-                    valid = true;
-                    if (t == 0 || t == 1 || t == 2 || t == 3 || t == 4 || t == 5 || t == 6 || t == 7 || t == 8) {
-                        promo = true;
-                        valid = false;
-                    }
-                }
+            valid = true;
+            if (t == 0 || t == 1 || t == 2 || t == 3 || t == 4 || t == 5 || t == 6 || t == 7 || t == 8) {
+                promo = true;
+            }
+                
         }
 
         if (piece == 'king') {
@@ -872,7 +854,6 @@ function possiblemoves(board, end, lastMove, rook1hasmoved, rook2hasmoved, kingh
                 if (x != 0) {if ((board[y][x - 1] <= 0 && c == 1) || (board[y][x - 1] >= 0 && c == -1)) {
                     possible.push({fromY: y, fromX: x, toY: y, toX: x - 1})
                 }}
-                // todo castling for white
                 if (!kinghasmoved && !rook2hasmoved) {if (board[y][x + 1] == 0 && board[y][x + 2] == 0 && board[y][x + 3] == c*r){ // castling, possible if king and rook havent moved yet and the king 
                     possible.push({fromY: y, fromX: x, toY: y, toX: x + 2, fromY2: y, fromX2: x + 3, toY2: y, toX2: x + 1}) // isnt in check before, after and on any square it crosses while castling (validated elsewhere)
                 }}
