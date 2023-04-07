@@ -142,7 +142,7 @@
 
     console.log(bitboards.whiteCastleKingSide)
     
-    let startPosition = [[r,n,b,q,k,b,n,r],
+    let startPosition1 = [[r,n,b,q,k,b,n,r],
                          [p,p,p,p,p,p,p,p],
                          [0,0,0,0,0,0,0,0],
                          [0,0,0,0,0,0,0,0],
@@ -151,14 +151,14 @@
                          [P,P,P,P,P,P,P,P],
                          [R,N,B,Q,K,B,N,R]]
     
-    let startPosition1= [[k,0,0,0,0,0,0,0],
+    let startPosition = [[0,0,0,0,0,0,0,K],
                          [0,0,0,0,0,0,0,0],
-                         [0,0,0,0,0,0,0,0],
+                         [0,0,0,k,0,0,0,0],
                          [0,0,0,0,0,0,0,0],
                          [0,0,0,0,r,0,0,0],
                          [0,0,0,0,0,0,0,0],
                          [0,0,0,0,0,0,0,0],
-                         [0,0,0,0,0,0,0,K]]
+                         [0,0,0,0,0,0,0,0]]
 
     let startPosition2 = [[r,0,b,0,k,0,0,r],
                         [0,p,p,0,0,p,p,p],
@@ -1823,7 +1823,7 @@
         // todo use precomputed table instead
         if (isWhitePawn) {
             let pawn = [0x00000000, 0x00000000]
-            let o = Math.floor(pawnIndex >> 5)
+            let o = pawnIndex >> 5
             pawn[o] = setBit(pawn[o], pawnIndex & 0x1F)
             let attacks = leftShiftBoth(pawn, 7)
 
@@ -1856,7 +1856,7 @@
 
         } else {
             let pawn = [0x00000000, 0x00000000]
-            let o = Math.floor(pawnIndex >> 5)
+            let o = pawnIndex >> 5
             pawn[o] = setBit(pawn[o], pawnIndex & 0x1F)
             
             let attacks = rightShiftBoth(pawn, 7)
@@ -1893,7 +1893,7 @@
     function generatePawnAttacks(pawnIndex, isWhitePawn) {
         if (isWhitePawn) {
             let pawn = [0x00000000, 0x00000000]
-            let o = Math.floor(pawnIndex >> 5)
+            let o = pawnIndex >> 5
             pawn[o] = setBit(pawn[o], pawnIndex & 0x1F)
             let attacks = leftShiftBoth(pawn, 7)
 
@@ -1912,7 +1912,7 @@
 
         } else {
             let pawn = [0x00000000, 0x00000000]
-            let o = Math.floor(pawnIndex >> 5)
+            let o = pawnIndex >> 5
             pawn[o] = setBit(pawn[o], pawnIndex & 0x1F)
             
             let attacks = rightShiftBoth(pawn, 9)
@@ -2383,27 +2383,27 @@
          0,  0,  0,  0,  0,  0,  0,  0
     ]
 
-    // const kingEval = [
-    //     -900,-900,-900,-900,-900,-900,-900,-900,
-    //     -900,-900,-900,-900,-900,-900,-900,-900,
-    //     -900,-900,-900,-900,-900,-900,-900,-900,
-    //     -900,-900,-900,-900,-900,-900,-900,-900,
-    //     -900,-900,-900,-900,-900,-900,-900,-900,
-    //     -700,-700,-700,-700,-700,-700,-700,-700,
-    //     -200,-200,-500,-500,-500,-500,-200,-200,
-    //      200, 300, 100,-300, 300, 100, 300, 200
-    // ]
-
     const kingEval = [
-        200, 300, 100,-300, 300, 100, 300, 200,
-        -200,-200,-500,-500,-500,-500,-200,-200,
+        -900,-900,-900,-900,-900,-900,-900,-900,
+        -900,-900,-900,-900,-900,-900,-900,-900,
+        -900,-900,-900,-900,-900,-900,-900,-900,
+        -900,-900,-900,-900,-900,-900,-900,-900,
+        -900,-900,-900,-900,-900,-900,-900,-900,
         -700,-700,-700,-700,-700,-700,-700,-700,
-        -900,-900,-900,-900,-900,-900,-900,-900,
-        -900,-900,-900,-900,-900,-900,-900,-900,
-        -900,-900,-900,-900,-900,-900,-900,-900,
-        -900,-900,-900,-900,-900,-900,-900,-900,
-        -900,-900,-900,-900,-900,-900,-900,-900
+        -200,-200,-500,-500,-500,-500,-200,-200,
+         200, 300, 100, 300,-300, 100, 300, 200
     ]
+
+    // const kingEval = [
+    //     200, 300, 100,-300, 300, 100, 300, 200,
+    //     -200,-200,-500,-500,-500,-500,-200,-200,
+    //     -700,-700,-700,-700,-700,-700,-700,-700,
+    //     -900,-900,-900,-900,-900,-900,-900,-900,
+    //     -900,-900,-900,-900,-900,-900,-900,-900,
+    //     -900,-900,-900,-900,-900,-900,-900,-900,
+    //     -900,-900,-900,-900,-900,-900,-900,-900,
+    //     -900,-900,-900,-900,-900,-900,-900,-900
+    // ]
 
     const kingEvalEnd = [
           0,  30,  50, 200, 200,  50,  30,   0,
@@ -2425,119 +2425,118 @@
 
         let black = material[1]
         let white = material[2]
-    
-        if ((black < 12000 || white < 12000) && moveCount > 30) { // endgame
-            // todo
-            let blackKingPosition = [100, 100]
-            let whiteKingPosition = [100, 100]
-            for (let x = 0; x < 8; x++) {
-                if (board[4][x] == p) {evaluation += 4}
-                if (board[5][x] == p) {evaluation += 8}
-                if (board[6][x] == p) {evaluation += 16}
-                if (board[7][x] == p) {evaluation += 32}
-                for (let y = 0; y < 8; y++) {
-                    if (board[y][x] == k) {blackKingPosition[0] = y; blackKingPosition[1] = x}
-                    else if (board[y][x] == K) {whiteKingPosition[0] = y; whiteKingPosition[1] = x}
-                }
+        // endgame
+        if ((black == 10500 && white <= 10200 || black == 11000 && white <= 10200 || black == 10900 && white <= 10200) && moveCount > 30) {
+
+            let blackKingPosition;
+            let whiteKingPosition;
+            if (bitCount(BITBOARDS.blackKing[1]) != 0) {
+                blackKingPosition = [(lsb(BITBOARDS.blackKing[1]) + 32) % 8, lsb(BITBOARDS.blackKing[1]) + 32 >> 3]
+            } else {
+                blackKingPosition = [(lsb(BITBOARDS.blackKing[0]) + 32) % 8, lsb(BITBOARDS.blackKing[0]) + 32 >> 3]
             }
-            if (black == 10500 && white <= 10200 || black == 11000 && white <= 10200 || black == 10900 && white <= 10200) {
-                let whiteKingDistToCenter = Math.max(3 - whiteKingPosition[0], whiteKingPosition[0] - 4) + Math.max(3 - whiteKingPosition[1], whiteKingPosition[1] - 4)
-                let distBetweenKings = abs(blackKingPosition[0] - whiteKingPosition[0]) + abs(blackKingPosition[1] - whiteKingPosition[1])
-                if (distBetweenKings > 4) {evaluation -= distBetweenKings}
-                else if (distBetweenKings <= 3) {evaluation += whiteKingDistToCenter}
+
+            if (bitCount(BITBOARDS.whiteKing[1]) != 0) {
+                whiteKingPosition = [(lsb(BITBOARDS.whiteKing[1]) + 32) % 8, lsb(BITBOARDS.whiteKing[1]) + 32 >> 3]
+            } else {
+                whiteKingPosition = [(lsb(BITBOARDS.whiteKing[0]) + 32) % 8, lsb(BITBOARDS.whiteKing[0]) + 32 >> 3]
             }
-    
-        } 
-        else { // openig and middlegame
+            
+            let whiteKingDistToCenter = Math.max(3 - whiteKingPosition[0], whiteKingPosition[0] - 4) + Math.max(3 - whiteKingPosition[1], whiteKingPosition[1] - 4)
+            let distBetweenKings = abs(blackKingPosition[0] - whiteKingPosition[0]) + abs(blackKingPosition[1] - whiteKingPosition[1])
+            if (distBetweenKings > 4) {evaluation -= distBetweenKings}
+            else if (distBetweenKings <= 3) {evaluation += whiteKingDistToCenter}
+        } else {
             if (bitCount(BITBOARDS.blackKing[1]) != 0) {
                 evaluation += kingEval[lsb(BITBOARDS.blackKing[1]) + 32]
             } else if (bitCount(BITBOARDS.blackKing[0]) != 0) {
                 evaluation += kingEval[lsb(BITBOARDS.blackKing[0])]
             }
+        }
+        
+        // openig and middlegame
+        
+        let index = 0
 
-            let index = 0
+        for (let i = 0; i < bitCount(BITBOARDS.blackKnights[1]); i++) {
+            let lknight = nextBit(BITBOARDS.blackKnights[1], index)
+            evaluation += knightEval[lknight + 32]
+            index = lknight
+        }
 
-            for (let i = 0; i < bitCount(BITBOARDS.blackKnights[1]); i++) {
-                let lknight = nextBit(BITBOARDS.blackKnights[1], index)
-                evaluation += knightEval[lknight + 32]
-                index = lknight
-            }
-    
-            index = 0
-    
-            for (let i = 0; i < bitCount(BITBOARDS.blackKnights[0]); i++) {
-                let lknight = nextBit(BITBOARDS.blackKnights[0], index)
-                evaluation += knightEval[lknight]
-                index = lknight
-            }
+        index = 0
 
-            index = 0
+        for (let i = 0; i < bitCount(BITBOARDS.blackKnights[0]); i++) {
+            let lknight = nextBit(BITBOARDS.blackKnights[0], index)
+            evaluation += knightEval[lknight]
+            index = lknight
+        }
 
-            for (let i = 0; i < bitCount(BITBOARDS.blackBishops[1]); i++) {
-                let lbishop = nextBit(BITBOARDS.blackBishops[1], index)
-                evaluation += bishopEval[lbishop + 32]
-                index = lbishop
-            }
+        index = 0
 
-            index = 0
+        for (let i = 0; i < bitCount(BITBOARDS.blackBishops[1]); i++) {
+            let lbishop = nextBit(BITBOARDS.blackBishops[1], index)
+            evaluation += bishopEval[lbishop + 32]
+            index = lbishop
+        }
 
-            for (let i = 0; i < bitCount(BITBOARDS.blackBishops[0]); i++) {
-                let lbishop = nextBit(BITBOARDS.blackBishops[0], index)
-                evaluation += bishopEval[lbishop]
-                index = lbishop
-            }
+        index = 0
 
-            index = 0
+        for (let i = 0; i < bitCount(BITBOARDS.blackBishops[0]); i++) {
+            let lbishop = nextBit(BITBOARDS.blackBishops[0], index)
+            evaluation += bishopEval[lbishop]
+            index = lbishop
+        }
 
-            for (let i = 0; i < bitCount(BITBOARDS.blackRooks[1]); i++) {
-                let lrook = nextBit(BITBOARDS.blackRooks[1], index)
-                evaluation += rookEval[lrook + 32]
-                index = lrook
-            }
+        index = 0
 
-            index = 0
+        for (let i = 0; i < bitCount(BITBOARDS.blackRooks[1]); i++) {
+            let lrook = nextBit(BITBOARDS.blackRooks[1], index)
+            evaluation += rookEval[lrook + 32]
+            index = lrook
+        }
 
-            for (let i = 0; i < bitCount(BITBOARDS.blackRooks[0]); i++) {
-                let lrook = nextBit(BITBOARDS.blackRooks[0], index)
-                evaluation += rookEval[lrook]
-                index = lrook
-            }
+        index = 0
 
-            index = 0
+        for (let i = 0; i < bitCount(BITBOARDS.blackRooks[0]); i++) {
+            let lrook = nextBit(BITBOARDS.blackRooks[0], index)
+            evaluation += rookEval[lrook]
+            index = lrook
+        }
 
-            for (let i = 0; i < bitCount(BITBOARDS.blackQueens[1]); i++) {
-                let lqueen = nextBit(BITBOARDS.blackQueens[1], index)
-                evaluation += queenEval[lqueen + 32]
-                index = lqueen
-            }
+        index = 0
 
-            index = 0
+        for (let i = 0; i < bitCount(BITBOARDS.blackQueens[1]); i++) {
+            let lqueen = nextBit(BITBOARDS.blackQueens[1], index)
+            evaluation += queenEval[lqueen + 32]
+            index = lqueen
+        }
 
-            for (let i = 0; i < bitCount(BITBOARDS.blackQueens[0]); i++) {
-                let lqueen = nextBit(BITBOARDS.blackQueens[0], index)
-                evaluation += queenEval[lqueen]
-                index = lqueen
-            }
+        index = 0
 
-            index = 0
+        for (let i = 0; i < bitCount(BITBOARDS.blackQueens[0]); i++) {
+            let lqueen = nextBit(BITBOARDS.blackQueens[0], index)
+            evaluation += queenEval[lqueen]
+            index = lqueen
+        }
 
-            for (let i = 0; i < bitCount(BITBOARDS.blackPawns[1]); i++) {
-                let lpawn = nextBit(BITBOARDS.blackPawns[1], index)
-                evaluation += pawnEval[lpawn + 32]
-                index = lpawn
-            }
+        index = 0
 
-            index = 0
+        for (let i = 0; i < bitCount(BITBOARDS.blackPawns[1]); i++) {
+            let lpawn = nextBit(BITBOARDS.blackPawns[1], index)
+            evaluation += pawnEval[lpawn + 32]
+            index = lpawn
+        }
 
-            for (let i = 0; i < bitCount(BITBOARDS.blackPawns[0]); i++) {
-                let lpawn = nextBit(BITBOARDS.blackPawns[0], index)
-                evaluation += pawnEval[lpawn]
-                index = lpawn
-            }
+        index = 0
+
+        for (let i = 0; i < bitCount(BITBOARDS.blackPawns[0]); i++) {
+            let lpawn = nextBit(BITBOARDS.blackPawns[0], index)
+            evaluation += pawnEval[lpawn]
+            index = lpawn
         }
         return evaluation
     }
-
 
     let transTable = new Map();
     
@@ -2666,6 +2665,7 @@
     
         if (maximizingPlayer) { // black's turn
           let value = -inf;
+          let legalMoves = 0
           for (let i = 0; i < moves.length; i++) {
             let newBoard = doMove(moves[i], BITBOARDS, !maximizingPlayer);
             if (!canCaptureKing(newBoard, !maximizingPlayer) && (moves[i].castle ? !illegalCastle(moves[i], BITBOARDS, !maximizingPlayer) && !canCaptureKing(BITBOARDS, !maximizingPlayer) : true)) {
@@ -2673,16 +2673,25 @@
                 value,
                 tree(newBoard, depth - 1, alpha, beta, false)
                 );
+                legalMoves++
             }
             alpha = Math.max(alpha, value);
             if (beta <= alpha) {
               break;
             }
           }
+          if (legalMoves === 0) {
+            if (canCaptureKing(BITBOARDS, !maximizingPlayer)) {
+              return -inf + depth;
+            } else {
+              return 0;
+            }
+          }
           transTable.set(hash, {depth: depth, value: value, flag: (value <= alpha ? "upperbound" : (value >= beta ? "lowerbound" : "exact"))});
           return value;
         } else { // white's turn
           let value = inf;
+          let legalMoves = 0
           for (let i = 0; i < moves.length; i++) {
             let newBoard = doMove(moves[i], BITBOARDS, !maximizingPlayer); // on first call do white moves
             // if black cant capture the king after the move or its not an illegal castle move, then continue
@@ -2691,6 +2700,7 @@
               value,
               tree(newBoard, depth - 1, alpha, beta, true)
               );
+              legalMoves++
             }
 
             beta = Math.min(beta, value); // todo fix whats wrong with the search or castling
@@ -2698,6 +2708,13 @@
               break;
             }
           }
+            if (legalMoves === 0) {
+                if (canCaptureKing(BITBOARDS, !maximizingPlayer)) {
+                    return inf - depth;
+                } else {
+                    return 0;
+                }
+            }
             transTable.set(hash, {depth: depth, value: value, flag: (value <= alpha ? "upperbound" : (value >= beta ? "lowerbound" : "exact"))});
           return value;
         }
@@ -2805,10 +2822,10 @@
                 }
                 pos.push(value)
                 if (Date.now() - start > maxTime) {break}
-                // else if (value == 100000) {
-                //     console.log('mate in', depth)
-                //     stopSearch = true
-                // }
+                else if (value >= 90000) {
+                    console.log('mate in', depth)
+                    stopSearch = true
+                }
             }
             if (Date.now() - start > maxTime) {break}
             console.log(pos)
