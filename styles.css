@@ -43,10 +43,6 @@
     font-size: 2rem;
 }
 
-.fa-gem {
-    margin-right: 0.5rem;
-}
-
 .navbar__menu {
     display: flex;
     align-items: center;
@@ -560,11 +556,10 @@
 }
 
 .footer__container {
-    padding-bottom: 2rem ;
     background-color: #141414;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: bottom;
     align-items: center;
 }
 

@@ -19,9 +19,21 @@ diff.addEventListener('click', function() {
 const play = document.querySelector('.play__button');
 
 play.addEventListener('click', function() {
+    // no snake on mobile
+    if (window.innerWidth < 960) {
+        alert("Sorry, this game is not available on mobile devices.")
+        return
+    }
     var selected = document.getElementById('diff__select').value
     SNAKE_SPEED = selected * SNAKE_SPEED
     localStorage.speed = SNAKE_SPEED
     window.location.replace("snake.html");
 });
 
+const menu = document.querySelector('#mobile-menu');
+const menuLinks = document.querySelector('.navbar__menu');
+
+menu.addEventListener('click', function() {
+    menu.classList.toggle('is-active');
+    menuLinks.classList.toggle('active');
+});

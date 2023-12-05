@@ -9,4 +9,5 @@ audiobtn.addEventListener('click', function() {
         audio.pause()
     }
     else {audiobtn.innerHTML = "pause"; audio.play()}
+    this.blur()
 });

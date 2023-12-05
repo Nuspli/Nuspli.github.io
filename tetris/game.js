@@ -596,6 +596,8 @@ let keys = { // defining key states to be able to use multiple inputs at once
   c: false
 }
 
+let mul = 5
+
 window.addEventListener('keydown', e => {
 
     // if a key is down, set the keystate to true
@@ -603,8 +605,10 @@ window.addEventListener('keydown', e => {
         keys.u = true
     }
     if(e.key === 'ArrowDown'){
-        speed = 5 * localStorage.difficulty // except for the soft drop, here the speed is just increased
-    }
+        speed = localStorage.difficulty * mul // except for the soft drop, here the speed is just increased
+        if (mul < 12)
+          mul += 2
+      }
     if (e.key === 'ArrowLeft') {
         keys.l = true
     }
@@ -615,7 +619,9 @@ window.addEventListener('keydown', e => {
         keys.w = true
     }
     if(e.key === 's'){
-        speed = 5 * localStorage.difficulty
+      speed = localStorage.difficulty * mul // except for the soft drop, here the speed is just increased
+      if (mul < 12)
+        mul += 2
     }
     if (e.key === 'a') {
         keys.a = true
@@ -696,9 +702,11 @@ window.addEventListener('keydown', e => {
     switch (e.key) {
       case 'ArrowDown':
         speed = localStorage.difficulty
+        mul = 5
         break
       case 's':
         speed = localStorage.difficulty
+        mul = 5
         break
     }
   })

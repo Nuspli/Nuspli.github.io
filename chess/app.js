@@ -23,3 +23,11 @@ play.addEventListener('click', function() {
     else {localStorage.difficulty = 3}
     window.location.replace("chess.html");
 });
+
+const menu = document.querySelector('#mobile-menu');
+const menuLinks = document.querySelector('.navbar__menu');
+
+menu.addEventListener('click', function() {
+    menu.classList.toggle('is-active');
+    menuLinks.classList.toggle('active');
+});
