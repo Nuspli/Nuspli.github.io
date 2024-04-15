@@ -211,11 +211,11 @@ html{
     justify-content: center;
     align-items: center;
     margin: 0 auto;
-    
+    max-width: 50vh;
 }
 
 #main__img {
-    width: 35%;
+    max-width: 100%;
 }
 
 .play__button {
@@ -390,17 +390,12 @@ html{
     width: 100%;
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 800px) {
     
     .highscore__container {
         position: absolute;
         top: 20%;
         left: 20%;
-    }
-
-    .main__img--container img {
-        width: 75%;
-        height: 75%;
     }
 
     .play__button {

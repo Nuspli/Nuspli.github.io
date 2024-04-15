@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>snake</title>
+    <title>chess</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,7 +32,7 @@
                     <a href="../tetris/menu.html" class="navbar__links">Tetris</a>
                 </li>
                 <li class="navbar__item">
-                    <a href="../chess/menu.html" class="navbar__links">Chess</a>
+                    <a href="../chess/index.html" class="navbar__links">Chess</a>
                 </li>
                 <li class="navbar__btn">
                     <a href="../extras/index.html" class="button">Extras</a>
@@ -43,36 +43,32 @@
     <div class="main">
         <div class="main__container">
             <div class="main__content">
-                <h1>SNAKE</h1>
+                <h1>CHESS</h1>
             </div>
         </div>
         <div class="main__img--container">
-            <img src="images_snake/pic7.png" alt="pic" id="main__img" />
+            <img src="images_chess/title_screen.jpg" alt="pic" id="main__img">
         </div>
         <div class="menu__container">
             <button class="info__button"><p>Info</p></button>
             <div class="info__container">
-                <h2>a simple snake clone</h2>
+                <h2>play against my chess engine</h2>
                 <p>
-                    <br>
-                    controls: <br>
-                    <br>
-                    w-a-s-d or arrow keys <br>
-                    --> changing direction <br>
+                    adding info later
                 </p>
-            </div> 
+            </div>   
             <button class="play__button"><a>Play</a></button>
-            <button class="diff__button"><p>Speed</p></button>
+            <button class="diff__button"><p>Difficulty</p></button>
             <div class="diff__container">
-                <h2>choose a speed level</h2>
+                <h2>choose a difficulty</h2>
                 <select name="diff__select" id="diff__select">
-                    <option value="1">Slow</option>
+                    <option value="1">Easy</option>
                     <option value="2">Medium</option>
-                    <option value="3">Fast</option>
+                    <option value="3">Hard</option>
                 </select>
             </div>   
         </div>
     </div>
-    <script src="app.js" defer type = "module"></script>
+    <script src="app.js"></script>
 </body>
 </html>

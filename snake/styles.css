@@ -213,9 +213,9 @@ html{
     margin: 0 auto;
 }
 
-.main__img {
-    height: 400px;
-    width: 400px;
+#main__img {
+    max-width: 100%;
+    height: auto;
 }
 
 .play__button {
@@ -258,12 +258,6 @@ html{
     width: 100%;
 }
 
-@media screen and (max-width: 960px) {
-    .play__button {
-        background-image: linear-gradient(to top, #ffd0d0 0%, #453e3e 100%);
-    }
-}
-
 .main__content h1 {
     justify-self: center;
     font-size: 6rem;
@@ -278,6 +272,19 @@ html{
 
 .menu__container {
     color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    padding: 10px;
+}
+
+@media (max-width: 800px) {
+    .menu__container button {
+        font-size: 1.5rem;
+        padding: 10px;
+    }
 }
 
 .info__container {

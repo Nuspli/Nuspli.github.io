@@ -213,6 +213,12 @@ html{
     margin: 0 auto;
     position: relative;
     top: 10%;
+    max-width: 100%;
+}
+
+#main__img {
+    max-width: 100%;
+    height: auto;
 }
 
 .play__button {
@@ -407,11 +413,6 @@ html{
         position: absolute;
         top: 20%;
         left: 20%;
-    }
-
-    .main__img--container img {
-        width: 75%;
-        height: 75%;
     }
 
     .play__button {
