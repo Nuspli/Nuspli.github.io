@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Dithering - Von Limitierungen zu Illusionen</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="hero">
+    <h1>Dithering</h1>
+    <p>Wie begrenzte Farbpaletten zu visueller Illusion werden</p>
+</header>
+
+<main>
+
+<section>
+    <h2>Was ist Dithering?</h2>
+    <p>
+        Dithering ist eine Methode der Bildverarbeitung, bei der durch bestimmte Pixelmuster
+        der Eindruck von mehr Farben oder Graustufen entsteht, als tatsächlich vorhanden sind.
+    </p>
+    <p>
+        Früher wurde das vor allem eingesetzt, weil Monitore, Spielekonsolen oder Drucker
+        nur wenige Farben darstellen konnten. Durch Dithering ließen sich trotzdem
+        detailreichere Bilder erzeugen.
+    </p>
+    <p>
+        Auf dieser Seite werden verschiedene Dithering-Algorithmen erklärt.
+        Die Effekte lassen sich interaktiv an Beispielbildern ausprobieren.
+    </p>
+</section>
+
+<section>
+    <h2>Historischer Ursprung</h2>
+    <p>
+        Dithering wurde in den 1970er Jahren entwickelt, als Monitore, Spielekonsolen
+        und Drucker nur sehr wenige Farben darstellen konnten.
+    </p>
+    <p>
+        Mit Dithering konnte man trotzdem detailreichere Bilder erzeugen, indem
+        die begrenzten Farben geschickt verteilt wurden.
+    </p>
+    <p>
+        Typische Einsatzbereiche waren frühe Computerspiele, Grafikanzeigen und
+        Drucktechnik.
+    </p>
+    <br>
+    <figure>
+        <img src="img/f1ps1.jpg" alt="1996 Formula 1 auf PS1" style="width:100%; max-width:800px; margin:auto; display:block;">
+        <figcaption style="text-align:center;">1996 Formula 1 auf der PlayStation 1</figcaption>
+    </figure>
+    <div class="image-row">
+        <figure>
+            <img src="img/ditcc64.png" alt="Death in the Carribbean auf dem Commodore 64">
+            <figcaption>Death in the Carribbean auf dem Commodore 64</figcaption>
+        </figure>
+        <figure>
+            <img src="img/np.png" alt="Alter Druck eines Porträts in Schwarz-Weiß">
+            <figcaption>Alter Druck eines Porträts in Schwarz-Weiß</figcaption>
+        </figure>
+    </div>
+</section>
+
+<h1>Verschieden Arten von Dithering</h1>
+
+<section>
+    <h2>Error Diffusion</h2>
+    <p>
+        Bei der Fehlerdiffusion wird der Quantisierungsfehler eines Pixels nicht verworfen,
+        sondern auf die umliegenden Pixel verteilt. Dadurch wirken Abstufungen im Bild
+        glatter, auch wenn nur wenige Graustufen oder Farben verfügbar sind.
+    </p>
+    <p>
+        Beispiel (ein Pixel wird quantisiert, Fehler = Originalwert - gerundeter Wert):
+    </p>
+    <pre>
+                 [x]  Pixel wird quantisiert
+                  |
+                  v
+        +------+------+------+
+        | ...  |  x   | 7/16 |   <- aktuelle Zeile, x ist Pixel
+        +------+------+------+
+        | 3/16 | 5/16 | 1/16 |   <- nächste Zeile
+        +------+------+------+</pre>
+    <p>
+        Angenommen, der Originalwert von x ist 150, aber nur 0 und 255 sind erlaubt.
+        x wird auf 255 gerundet, der Fehler ist also -105. Dieser Fehler wird wie folgt verteilt:
+        <ul>
+            <li>7/16 * -105 wird zu dem Pixel rechts von x addiert</li>
+            <li>3/16 * -105 wird zu dem Pixel unten links addiert</li>
+            <li>5/16 * -105 wird zu dem Pixel unten addiert</li>
+            <li>1/16 * -105 wird zu dem Pixel unten rechts addiert</li>
+        </ul>
+            
+        danach wird mit dem nächsten Pixel fortgefahren. usw.
+    </p>
+    <br>
+    <p>
+        Unterschiedliche Algorithmen verteilen den Fehler verschieden:
+    </p>
+    <ul>
+        <li><strong>Floyd-Steinberg:</strong> klassisch, verteilt auf vier Nachbarn (wie im ASCII-Beispiel).</li>
+        <li><strong>JJN (Jarvis, Judice, Ninke):</strong> nutzt ein größeres Fenster, glättet stärker.</li>
+        <li><strong>Stucki:</strong> ähnlich wie JJN, aber effizienter, etwas weniger fehlerverteilend.</li>
+        <li><strong>Atkinson:</strong> verteilt auf weniger Pixel, erzeugt charakteristische Punktmuster (bekannt von alten Macs).</li>
+    </ul>
+    <p>
+        In der Demo kannst du zwischen den Algorithmen wechseln, die Farbtiefe ändern
+        und direkt sehen, wie sich der Fehler über die Pixel verteilt.
+    </p>
+
+    <section class="demo" data-type="diffusion">
+        <div class="controls">
+            <label>
+                Algorithmus:
+                <select class="algorithm">
+                    <option value="floyd-steinberg">Floyd-Steinberg</option>
+                    <option value="jarvis-judice-ninke">JJN</option>
+                    <option value="stucki">Stucki</option>
+                    <option value="atkinson">Atkinson</option>
+                </select>
+            </label>
+
+            <label>
+                Farbtiefe:
+                <input type="range" min="2" max="24" value="4" class="levels">
+            </label>
+
+            <label>
+                Auflösung:
+                <input type="range" min="0" max="4" value="4" class="resolution">
+            </label>
+
+            <button class="toggle">Dithering an / aus</button>
+        </div>
+
+        <canvas></canvas>
+    </section>
+</section>
+
+<section>
+    <h2>Ordered Dithering</h2>
+    <p>
+        Ordered Dithering arbeitet nicht mit Fehlerverteilung wie Floyd-Steinberg,
+        sondern benutzt eine feste Muster-Matrix (häufig Bayer-Matrix), um die
+        Quantisierung der Pixel zu steuern.
+    </p>
+    <p>
+        Die Matrix wiederholt sich über das ganze Bild, sodass sich ein regelmäßiges
+        Punktmuster ergibt. Dieses Muster erzeugt die Illusion von mehr Graustufen,
+        obwohl nur wenige Farbstufen verfügbar sind.
+    </p>
+    <p>
+        Beispiel: Eine 4x4-Bayer-Matrix für Graustufen:
+    </p>
+    <pre>
+[  0   8   2  10 ]
+[ 12   4  14   6 ]
+[  3  11   1   9 ]
+[ 15   7  13   5 ]</pre>
+    <p>
+        Jeder Wert in der Matrix wird mit dem Pixelwert (normalisiert auf 0-1)
+        verglichen. Pixel, deren Wert höher als der Matrixwert sind, werden hell,
+        sonst dunkel. So entstehen die typischen "regelmäßigen Punkte" des Ordered
+        Dithering.
+    </p>
+    <br>
+    <p>
+        Im Dropdown der Demo kannst du zwischen verschiedenen Matrixgrößen wählen.
+        Kleinere Matrizen erzeugen gröbere Muster, größere Matrizen feinere Abstufungen.
+    </p>
+    <section class="demo" data-type="ordered">
+        <div class="controls">
+            <label>
+                Algorithmus:
+                <select class="algorithm">
+                    <option value="bayer2">Bayer 2x2</option>
+                    <option value="bayer4" selected>Bayer 4x4</option>
+                    <option value="bayer8">Bayer 8x8</option>
+                </select>
+            </label>
+
+            <label>
+                Farbtiefe:
+                <input type="range" min="2" max="24" value="4" class="levels">
+            </label>
+
+            <label>
+                Auflösung:
+                <input type="range" min="0" max="4" value="4" class="resolution">
+            </label>
+
+            <button class="toggle">Dithering an / aus</button>
+        </div>
+
+        <canvas></canvas>
+    </section>
+</section>
+
+<section>
+    <h2>Random / Noise Dithering</h2>
+    <p>
+        Beim Random Dithering wird jeder Pixelwert mit einem kleinen zufälligen Rauschwert
+        (Noise) verändert, bevor er auf die nächstgelegene darstellbare Farbstufe gerundet wird.
+    </p>
+    <p>
+        Anders als bei Ordered Dithering oder Fehlerdiffusion entsteht hier kein regelmäßiges
+        Muster. Stattdessen wirkt das Bild "körnig" oder "gestreut", was die Illusion
+        von mehr Graustufen erzeugt.
+    </p>
+    <p>
+        Beispiel (ein Pixel mit Normalwert 0.6, Levels = 4, Noise = +-0.1):
+    </p>
+    <pre>
+Pixelwert:   0.6
+Noise:       +-0.1 -> zufällig z.B. +0.05
+Neuer Wert:  0.65
+Quantisiert: rundet auf nächstgelegene Stufe (0, 0.33, 0.66, 1)
+Ergebnis:    0.66</pre>
+    <p>
+        In der Demo kannst du die Farbtiefe verändern und beobachten, wie das zufällige
+        Rauschen die Pixel verteilt. Größere Farbtiefen glätten das Bild, kleinere Farbtiefen
+        verstärken den "Körnungseffekt".
+    </p>
+    <section class="demo" data-type="random">
+        <div class="controls">
+            <label>
+                Farbtiefe:
+                <input type="range" min="2" max="24" value="4" class="levels">
+            </label>
+
+            <label>
+                Auflösung:
+                <input type="range" min="0" max="4" value="4" class="resolution">
+            </label>
+
+            <button class="toggle">Dithering an / aus</button>
+        </div>
+
+        <canvas></canvas>
+    </section>
+</section>
+
+<section>
+    <h2>Anwendungen über die Jahre</h2>
+    <ul>
+        <li><strong>Frühe Computerspiele:</strong> Systeme wie der Commodore 64 oder NES hatten nur wenige Farben. Dithering half, Grafiken lebendiger wirken zu lassen.</li>
+        <li><strong>Drucktechnik:</strong> Auch beim Schwarz-Weiß-Druck oder im Zeitungsdruck werden Graustufen durch Punktmuster erzeugt.</li>
+        <li><strong>Bildkompression:</strong> Mit Dithering lassen sich Bilder mit niedriger Farbtiefe speichern, ohne dass sie grob oder blockartig wirken.</li>
+        <li><strong>Pixel Art:</strong> Künstler nutzen gezielt Dithering, um Texturen und Tiefe zu erzeugen, ohne zusätzliche Farben zu verwenden.</li>
+        <li><strong>Moderne Shader und Filter:</strong> In Computergrafik und Filtern simuliert Dithering subtile Farbverläufe oder Retro-Effekte.</li>
+    </ul>
+    <p>
+        In den Demos kannst du sehen, wie die gleichen Prinzipien auf einem einzelnen Bild
+        funktionieren. Je nach Algorithmus entstehen unterschiedliche Effekte: strukturierte
+        Muster (Ordered Dithering), weiche Abstufungen (Floyd-Steinberg) oder körnige
+        Texturen (Random Dithering).
+    </p>
+    <p>
+        Dithering macht sichtbar, wie das menschliche Auge Farben und Helligkeiten interpoliert,
+        und wie einfache Regeln zu erstaunlich komplexen visuellen Effekten führen können.
+        Sei es in Spielen, Pixel Art, Filtern oder künstlerischen Projekten, Dithering ist noch heute relevant.
+    </p>
+</section>
+
+
+</main>
+
+<footer>
+    <p>Interaktive Kiosk-Präsentation - Seminarfach</p>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>
